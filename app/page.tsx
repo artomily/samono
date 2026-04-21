@@ -1,65 +1,197 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { getTopEarners } from "@/lib/dal/leaderboard";
+import {
+  PlayCircle,
+  Coins,
+  Shield,
+  Zap,
+  TrendingUp,
+  ArrowRight,
+  Trophy,
+} from "lucide-react";
 
-export default function Home() {
+const FEATURES = [
+  {
+    icon: PlayCircle,
+    title: "Watch & Earn",
+    description:
+      "Watch curated videos from our official channel and earn SMT tokens for every minute you engage.",
+    color: "text-primary",
+    bg: "bg-primary/10",
+  },
+  {
+    icon: Shield,
+    title: "Fraud-Proof",
+    description:
+      "Advanced anti-cheat: tab-switch detection, speed change tracking, and activity monitoring.",
+    color: "text-blue-400",
+    bg: "bg-blue-400/10",
+  },
+  {
+    icon: Zap,
+    title: "Streak Multiplier",
+    description:
+      "Watch daily to build streaks up to 2× reward multiplier. Consistency is rewarded.",
+    color: "text-orange-400",
+    bg: "bg-orange-400/10",
+  },
+  {
+    icon: TrendingUp,
+    title: "On-Chain Rewards",
+    description:
+      "Real SPL tokens on Solana. Claim directly to your Phantom or Solflare wallet.",
+    color: "text-green-400",
+    bg: "bg-green-400/10",
+  },
+];
+
+const STEPS = [
+  { step: "01", title: "Register & Connect Wallet", desc: "Create an account and link your Solana wallet." },
+  { step: "02", title: "Watch Videos", desc: "Browse the video library and watch to completion." },
+  { step: "03", title: "Earn SMT", desc: "Rewards accumulate in your queue after each completed video." },
+  { step: "04", title: "Claim Anytime", desc: "Hit Claim and receive SMT tokens directly on-chain." },
+];
+
+export default async function LandingPage() {
+  const topEarners = await getTopEarners(5).catch(() => []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="flex flex-col">
+      {/* Hero */}
+      <section className="relative flex flex-col items-center justify-center py-24 px-4 text-center overflow-hidden">
+        {/* Background glow */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              "radial-gradient(ellipse 80% 50% at 50% -10%, hsl(var(--primary)/0.15), transparent)",
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+        <Badge className="mb-6 bg-primary/10 text-primary border-primary/30 hover:bg-primary/20">
+          <Coins className="mr-1 h-3.5 w-3.5" />
+          Powered by Solana
+        </Badge>
+
+        <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+          Watch.{" "}
+          <span className="bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+            Earn.
+          </span>{" "}
+          Grow.
+        </h1>
+
+        <p className="max-w-xl text-lg text-muted-foreground mb-10 leading-relaxed">
+          Turn your watch time into real <strong className="text-foreground">SMT tokens</strong> on
+          Solana. The only Watch-to-Earn platform that rewards genuine engagement.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button render={<Link href="/register" />} size="lg" className="font-semibold px-8 text-base">
+            Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+          <Button render={<Link href="/watch" />} size="lg" variant="outline" className="font-semibold px-8 text-base">
+            Browse Videos
+          </Button>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 px-4">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="text-3xl font-bold text-center mb-4">Why SMT Watch?</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-xl mx-auto">
+            We built the infrastructure to make Watch-to-Earn fair, transparent, and genuinely
+            rewarding.
           </p>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {FEATURES.map(({ icon: Icon, title, description, color, bg }) => (
+              <Card key={title} className="border-border/50 bg-card/50 hover:border-primary/30 transition-colors">
+                <CardContent className="p-6">
+                  <div className={`inline-flex rounded-lg p-2.5 mb-4 ${bg}`}>
+                    <Icon className={`h-5 w-5 ${color}`} />
+                  </div>
+                  <h3 className="font-semibold mb-2">{title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* How it works */}
+      <section className="py-20 px-4 bg-muted/20">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {STEPS.map(({ step, title, desc }) => (
+              <div key={step} className="flex flex-col items-center text-center">
+                <div className="text-4xl font-black text-primary/30 mb-2 font-mono">{step}</div>
+                <h3 className="font-semibold mb-1">{title}</h3>
+                <p className="text-sm text-muted-foreground">{desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Mini leaderboard */}
+      {topEarners.length > 0 && (
+        <section className="py-20 px-4">
+          <div className="mx-auto max-w-lg">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Trophy className="h-6 w-6 text-yellow-400" />
+                Top Earners
+              </h2>
+              <Button render={<Link href="/leaderboard" />} variant="ghost" size="sm">
+                View All <ArrowRight className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <Card className="border-border/50 overflow-hidden">
+              {topEarners.map((entry, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between px-4 py-3 border-b border-border/30 last:border-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg w-6 text-center">
+                      {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`}
+                    </span>
+                    <span className="font-medium">{entry.username}</span>
+                  </div>
+                  <span className="flex items-center gap-1 text-sm text-primary font-semibold">
+                    <Coins className="h-3.5 w-3.5" />
+                    {entry.total_earned.toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </Card>
+          </div>
+        </section>
+      )}
+
+      {/* CTA */}
+      <section className="py-24 px-4 text-center">
+        <h2 className="text-4xl font-bold mb-4">Ready to Start Earning?</h2>
+        <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+          Join thousands of users already earning SMT tokens. It's free, instant, and on-chain.
+        </p>
+        <Button render={<Link href="/register" />} size="lg" className="font-semibold px-10 text-base">
+          Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border/30 py-8 px-4 text-center text-sm text-muted-foreground">
+        <p>© {new Date().getFullYear()} SMT Watch. Built on Solana.</p>
+      </footer>
     </div>
   );
 }
+
