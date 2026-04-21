@@ -2,10 +2,10 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 // Routes that require authentication
-const PROTECTED_PATHS = ["/dashboard", "/watch", "/wallet", "/leaderboard"];
+const PROTECTED_PATHS = ["/dashboard", "/watch", "/wallet", "/leaderboard", "/referral"];
 
 // Routes that should redirect to dashboard if already logged in
-const AUTH_PATHS = ["/login", "/register"];
+const AUTH_PATHS = ["/login"];
 
 export async function middleware(request: NextRequest) {
   const { supabaseResponse, user } = await updateSession(request);

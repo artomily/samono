@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Wallet } from "lucide-react";
+import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Wallet, Users } from "lucide-react";
 import { signOut } from "@/lib/auth/actions";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +23,7 @@ const NAV_LINKS = [
   { href: "/watch", label: "Watch", icon: PlayCircle },
   { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
   { href: "/wallet", label: "Wallet", icon: Wallet },
+  { href: "/referral", label: "Referral", icon: Users },
 ];
 
 export function Navbar() {
@@ -40,8 +41,8 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
           <Coins className="h-6 w-6 text-primary" />
-          <span className="bg-gradient-to-r from-primary to-orange-400 bg-clip-text text-transparent">
-            SMT Watch
+          <span className="bg-linear-to-r from-primary to-zinc-900 bg-clip-text text-transparent">
+            SAMONO
           </span>
         </Link>
 
@@ -93,6 +94,7 @@ export function Navbar() {
               )}
             <DropdownMenuItem render={<Link href="/wallet" />}>My Wallet</DropdownMenuItem>
             <DropdownMenuItem render={<Link href="/dashboard" />}>Dashboard</DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/referral" />}>Referral</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"

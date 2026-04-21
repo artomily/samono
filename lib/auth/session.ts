@@ -1,12 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import type { Profile } from "@/types/database";
+import { DUMMY_MODE, DUMMY_USER } from "@/lib/dummy";
 
 /**
  * Returns the current user session or null.
  * Safe to call from Server Components.
  */
 export async function getSession() {
+  if (DUMMY_MODE) {
+    const cookieStore = await cookies();
+    return cookieStore.has("dummy_auth") ? DUMMY_USER : null;
+  }
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) return null;

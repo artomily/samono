@@ -1,9 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Video, VideoInsert } from "@/types/database";
+import { DUMMY_MODE, DUMMY_VIDEOS } from "@/lib/dummy";
 
 /** Get all active videos for the dashboard */
 export async function getVideos(): Promise<Video[]> {
+  if (DUMMY_MODE) return DUMMY_VIDEOS as unknown as Video[];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("videos")
@@ -17,6 +19,7 @@ export async function getVideos(): Promise<Video[]> {
 
 /** Get a single video by its DB id */
 export async function getVideoById(id: string): Promise<Video | null> {
+  if (DUMMY_MODE) return DUMMY_VIDEOS.find((v) => v.id === id) as unknown as Video ?? null;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("videos")

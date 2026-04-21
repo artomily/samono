@@ -44,7 +44,7 @@ export default async function LeaderboardPage() {
           {/* 2nd */}
           <div className="flex flex-col items-center gap-1">
             <div className="text-2xl">🥈</div>
-            <div className="bg-zinc-500/20 rounded-lg px-4 py-3 text-center min-w-[6rem]" style={{ height: "5rem" }}>
+            <div className="bg-zinc-500/20 rounded-lg px-4 py-3 text-center min-w-24" style={{ height: "5rem" }}>
               <p className="text-sm font-semibold truncate">{tableEntries[1].username}</p>
               <p className="text-xs text-muted-foreground">{tableEntries[1].total_earned.toFixed(1)} SMT</p>
             </div>
@@ -52,7 +52,7 @@ export default async function LeaderboardPage() {
           {/* 1st */}
           <div className="flex flex-col items-center gap-1">
             <div className="text-3xl">🥇</div>
-            <div className="bg-yellow-500/20 rounded-lg px-4 py-3 text-center border border-yellow-500/30 min-w-[6rem]" style={{ height: "6rem" }}>
+            <div className="bg-yellow-500/20 rounded-lg px-4 py-3 text-center border border-yellow-500/30 min-w-24" style={{ height: "6rem" }}>
               <p className="text-sm font-semibold truncate">{tableEntries[0].username}</p>
               <p className="text-xs text-yellow-400">{tableEntries[0].total_earned.toFixed(1)} SMT</p>
             </div>
@@ -60,7 +60,7 @@ export default async function LeaderboardPage() {
           {/* 3rd */}
           <div className="flex flex-col items-center gap-1">
             <div className="text-2xl">🥉</div>
-            <div className="bg-orange-500/20 rounded-lg px-4 py-3 text-center min-w-[6rem]" style={{ height: "4.5rem" }}>
+            <div className="bg-orange-500/20 rounded-lg px-4 py-3 text-center min-w-24" style={{ height: "4.5rem" }}>
               <p className="text-sm font-semibold truncate">{tableEntries[2].username}</p>
               <p className="text-xs text-muted-foreground">{tableEntries[2].total_earned.toFixed(1)} SMT</p>
             </div>

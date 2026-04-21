@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Profile, ProfileUpdate } from "@/types/database";
+import { DUMMY_MODE, DUMMY_PROFILE, DUMMY_STATS } from "@/lib/dummy";
 
 export async function getProfileById(userId: string): Promise<Profile | null> {
   return getProfile(userId);
 }
 
 export async function getProfile(userId: string): Promise<Profile | null> {
+  if (DUMMY_MODE) return DUMMY_PROFILE as unknown as Profile;
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
@@ -48,6 +50,7 @@ export async function getUserWatchStats(userId: string): Promise<{
   totalEarned: number;
   streakCount: number;
 }> {
+  if (DUMMY_MODE) return DUMMY_STATS;
   const supabase = await createClient();
 
   const [profileResult, sessionsResult] = await Promise.all([
@@ -63,5 +66,43 @@ export async function getUserWatchStats(userId: string): Promise<{
     totalEarned: profileResult.data?.total_earned ?? 0,
     streakCount: profileResult.data?.streak_count ?? 0,
     videosWatched: sessionsResult.count ?? 0,
+  };
+}
+
+/** Returns the list of users referred by this user + total bonus earned from referrals. */
+export async function getReferralStats(userId: string): Promise<{
+  referralCode: string | null;
+  totalReferrals: number;
+  referralEarnings: number;
+  referredUsers: Array<{ id: string; username: string | null; wallet_address: string | null; created_at: string }>;
+}> {
+  const supabase = await createClient();
+
+  const [profileResult, referredResult, earningsResult] = await Promise.all([
+    supabase.from("profiles").select("username").eq("id", userId).single(),
+    supabase
+      .from("profiles")
+      .select("id, username, wallet_address, created_at")
+      .eq("referrer_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(50),
+    supabase
+      .from("rewards")
+      .select("amount")
+      .eq("user_id", userId)
+      .eq("status", "completed"),
+  ]);
+
+  const referredUsers = referredResult.data ?? [];
+  // Referral earnings = 10% of total completed rewards (as a placeholder heuristic).
+  // Replace with a dedicated referral_rewards table for precision.
+  const totalEarned = (earningsResult.data ?? []).reduce((s, r) => s + r.amount, 0);
+  const referralEarnings = Math.round(totalEarned * 0.1 * 100) / 100;
+
+  return {
+    referralCode: profileResult.data?.username ?? null,
+    totalReferrals: referredUsers.length,
+    referralEarnings,
+    referredUsers,
   };
 }
