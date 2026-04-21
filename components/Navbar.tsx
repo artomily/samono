@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { ClientWalletButton } from "@/components/ClientWalletButton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,12 +69,12 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           {/* Wallet button - desktop */}
           <div className="hidden md:block">
-            <WalletMultiButton />
+            <ClientWalletButton />
           </div>
 
           {/* User dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger render={
+            <DropdownMenuTrigger>
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
@@ -82,7 +82,7 @@ export function Navbar() {
                   </AvatarFallback>
                 </Avatar>
               </Button>
-            } />
+            </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               {truncatedAddress && (
                 <>
@@ -92,9 +92,15 @@ export function Navbar() {
                   <DropdownMenuSeparator />
                 </>
               )}
-            <DropdownMenuItem render={<Link href="/wallet" />}>My Wallet</DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/dashboard" />}>Dashboard</DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/referral" />}>Referral</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/wallet">My Wallet</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/dashboard">Dashboard</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/referral">Referral</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive"
@@ -139,7 +145,7 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-          <WalletMultiButton />
+          <ClientWalletButton />
         </div>
       )}
     </header>

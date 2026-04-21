@@ -34,7 +34,7 @@ const FEATURES = [
     icon: Zap,
     title: "Streak Multiplier",
     description:
-      "Watch daily to build streaks up to 2× reward multiplier. Consistency is rewarded.",
+      "Watch daily to build streaks up to 2x reward multiplier. Consistency is rewarded.",
     color: "text-orange-400",
     bg: "bg-orange-400/10",
   },
@@ -79,7 +79,7 @@ export default async function LandingPage() {
 
         <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
           Watch.{" "}
-          <span className="bg-gradient-to-r from-primary to-green-400 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-primary to-green-400 bg-clip-text text-transparent">
             Earn.
           </span>{" "}
           Grow.
