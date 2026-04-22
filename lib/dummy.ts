@@ -109,3 +109,11 @@ export const DUMMY_STATS = {
   totalEarned: 1234.5,
   streakCount: 7,
 };
+
+export const DUMMY_LEADERBOARD = [
+  { id: "u1", username: "solana_whale", wallet_address: null, total_earned: 4820.5, rank: 1 },
+  { id: "u2", username: "crypto_daily", wallet_address: null, total_earned: 3241.0, rank: 2 },
+  { id: "u3", username: "phantom_rider", wallet_address: null, total_earned: 2987.75, rank: 3 },
+  { id: "u4", username: "web3_watcher", wallet_address: null, total_earned: 1654.2, rank: 4 },
+  { id: "u5", username: "smt_collector", wallet_address: null, total_earned: 1230.9, rank: 5 },
+];
