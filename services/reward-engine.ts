@@ -10,13 +10,14 @@ import { getProfileById, saveWalletAddress } from "@/lib/dal/profiles";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Video, Profile, Reward } from "@/types/database";
 
-const MAX_STREAK_MULTIPLIER = 2.0;
-const STREAK_BONUS_PER_DAY = 0.05; // +5% per streak day
-const REFERRAL_BONUS = 0.10; // +10% for having a referrer
+const MAX_STREAK_MULTIPLIER  = 2.0;
+const STREAK_BONUS_PER_DAY   = 0.05; // +5% per streak day
+const LEVEL_BONUS_PER_LEVEL  = 0.05; // +5% per level
+const REFERRAL_BONUS         = 0.10; // +10% for having a referrer
 
 /**
  * Calculate the SMT reward for a completed session.
- * Applies streak multiplier and referral bonus.
+ * Applies streak multiplier, level bonus, and referral bonus.
  */
 export function calculateReward(video: Video, profile: Profile): number {
   let amount = video.reward_amount;
@@ -27,6 +28,10 @@ export function calculateReward(video: Video, profile: Profile): number {
     1 + profile.streak_count * STREAK_BONUS_PER_DAY
   );
   amount *= streakMultiplier;
+
+  // Level bonus: +5% per level (no cap — levels scale naturally)
+  const levelBonus = profile.level * LEVEL_BONUS_PER_LEVEL;
+  amount *= 1 + levelBonus;
 
   // Referral bonus for users who were referred
   if (profile.referrer_id) {

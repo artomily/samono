@@ -71,6 +71,18 @@ export type Database = {
           referencedColumns: string[];
         }>;
       };
+      achievements: {
+        Row: Achievement;
+        Insert: Omit<Achievement, "id" | "created_at"> & { id?: string };
+        Update: Partial<Omit<Achievement, "id" | "created_at">>;
+        Relationships: [];
+      };
+      user_achievements: {
+        Row: UserAchievement;
+        Insert: UserAchievement;
+        Update: Partial<UserAchievement>;
+        Relationships: [];
+      };
     };
     Views: {
       leaderboard: {
@@ -104,13 +116,17 @@ export type Profile = {
   streak_count: number;
   last_watch_date: string | null;
   referrer_id: string | null;
+  xp: number;
+  level: number;
   created_at: string;
   updated_at: string;
 }
 
-export type ProfileInsert = Omit<Profile, "total_earned" | "streak_count" | "created_at" | "updated_at"> & {
+export type ProfileInsert = Omit<Profile, "total_earned" | "streak_count" | "xp" | "level" | "created_at" | "updated_at"> & {
   total_earned?: number;
   streak_count?: number;
+  xp?: number;
+  level?: number;
 };
 
 export type ProfileUpdate = Partial<Omit<Profile, "id" | "created_at">>;
@@ -233,3 +249,35 @@ export type LeaderboardEntry = {
   watch_streak: number;
   rank: number;
 }
+
+// ─────────────────────────────────────────────────────────────────
+// Achievements
+// ─────────────────────────────────────────────────────────────────
+export type AchievementConditionType = "videos_watched" | "streak_days" | "total_xp" | "watch_minutes";
+
+export type AchievementCondition = {
+  type: AchievementConditionType;
+  threshold: number;
+};
+
+export type Achievement = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  icon: string;
+  condition_json: Json;
+  xp_reward: number;
+  created_at: string;
+};
+
+export type UserAchievement = {
+  user_id: string;
+  achievement_id: string;
+  unlocked_at: string;
+};
+
+/** Achievement row joined with its unlock timestamp (null = not yet unlocked) */
+export type AchievementWithStatus = Achievement & {
+  unlocked_at: string | null;
+};

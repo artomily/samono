@@ -297,3 +297,66 @@ order by p.total_earned desc;
 
 -- Grant read access to authenticated users
 grant select on public.leaderboard to authenticated;
+
+-- ─────────────────────────────────────────────────────────────────
+-- 8. GAMIFICATION — XP, LEVEL, ACHIEVEMENTS
+-- ─────────────────────────────────────────────────────────────────
+
+-- Add GameFi columns to profiles (idempotent)
+alter table public.profiles
+  add column if not exists xp    int not null default 0,
+  add column if not exists level int not null default 0;
+
+-- ─────────────────────────────────────────────────────────────────
+-- 8a. ACHIEVEMENTS
+-- Stores achievement definitions with JSON condition rules
+-- ─────────────────────────────────────────────────────────────────
+create table if not exists public.achievements (
+  id             uuid        primary key default gen_random_uuid(),
+  slug           text        not null unique,
+  name           text        not null,
+  description    text        not null,
+  icon           text        not null default '🏆',
+  condition_json jsonb       not null,
+  xp_reward      int         not null default 0,
+  created_at     timestamptz not null default now()
+);
+
+alter table public.achievements enable row level security;
+
+create policy "achievements: public read" on public.achievements
+  for select using (true);
+
+-- ─────────────────────────────────────────────────────────────────
+-- 8b. USER ACHIEVEMENTS
+-- Junction table — which achievements each user has earned
+-- ─────────────────────────────────────────────────────────────────
+create table if not exists public.user_achievements (
+  user_id        uuid        not null references public.profiles(id) on delete cascade,
+  achievement_id uuid        not null references public.achievements(id) on delete cascade,
+  unlocked_at    timestamptz not null default now(),
+  primary key (user_id, achievement_id)
+);
+
+alter table public.user_achievements enable row level security;
+
+-- Public read — needed for profile pages
+create policy "user_achievements: public read" on public.user_achievements
+  for select using (true);
+
+create policy "user_achievements: service insert" on public.user_achievements
+  for insert with check (auth.uid() = user_id);
+
+create index if not exists idx_user_achievements_user
+  on public.user_achievements (user_id);
+
+-- ─────────────────────────────────────────────────────────────────
+-- 8c. SEED ACHIEVEMENTS
+-- ─────────────────────────────────────────────────────────────────
+insert into public.achievements (slug, name, description, icon, condition_json, xp_reward) values
+  ('first_watch',   'First Watch',    'Watch your first video to completion.',         '🎬', '{"type":"videos_watched","threshold":1}',  100),
+  ('loyal_viewer',  'Loyal Viewer',   'Complete 5 videos.',                            '👁', '{"type":"videos_watched","threshold":5}',  150),
+  ('grinder',       'Grinder',        'Complete 10 videos.',                           '💪', '{"type":"videos_watched","threshold":10}', 250),
+  ('streak_master', 'Streak Master',  'Maintain a 7-day watch streak.',                '🔥', '{"type":"streak_days","threshold":7}',     500),
+  ('focus_mode',    'Focus Mode',     'Accumulate 30 minutes of active watch time.',   '🎯', '{"type":"watch_minutes","threshold":30}',  200)
+on conflict (slug) do nothing;

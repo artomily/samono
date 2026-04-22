@@ -6,6 +6,8 @@ import { getVideoById } from "@/lib/dal/videos";
 import { getProfileById } from "@/lib/dal/profiles";
 import { validateSession } from "@/services/session-validator";
 import { calculateReward, createPendingReward, creditReferralBonus } from "@/services/reward-engine";
+import { awardXP, WATCH_XP_PER_MINUTE, FINISH_VIDEO_XP } from "@/services/xp-engine";
+import { evaluateAchievements } from "@/services/achievement-engine";
 
 const bodySchema = z.object({
   activeWatchSeconds: z.number().int().min(0),
@@ -95,6 +97,15 @@ export async function POST(
     creditReferralBonus(profile.referrer_id, sessionId, rewardAmount).catch(() => {});
   }
 
+  // Award XP: 1 XP per active minute + 50 XP for finishing
+  const xpAmount =
+    Math.floor(completedSession.active_watch_seconds / 60) * WATCH_XP_PER_MINUTE +
+    FINISH_VIDEO_XP;
+  const [xpResult, newAchievements] = await Promise.all([
+    awardXP(user.id, xpAmount),
+    evaluateAchievements(user.id),
+  ]);
+
   return NextResponse.json({
     success: true,
     data: {
@@ -102,6 +113,10 @@ export async function POST(
       rewardAmount,
       rewardId: reward.id,
       message: `You earned ${rewardAmount} SMT! Go to your wallet to claim.`,
+      xpGained: xpAmount,
+      leveledUp: xpResult.leveledUp,
+      newLevel: xpResult.newLevel,
+      newAchievements: newAchievements.map((a) => ({ id: a.id, name: a.name, icon: a.icon })),
     },
   });
 }

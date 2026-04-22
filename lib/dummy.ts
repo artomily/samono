@@ -35,6 +35,8 @@ export const DUMMY_PROFILE = {
   streak_count: 7,
   last_watch_date: new Date().toISOString(),
   referrer_id: null,
+  xp: 1250,
+  level: 3,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
 };
@@ -109,3 +111,59 @@ export const DUMMY_STATS = {
   totalEarned: 1234.5,
   streakCount: 7,
 };
+
+export const DUMMY_ACHIEVEMENTS = [
+  {
+    id: "ach-001",
+    slug: "first_watch",
+    name: "First Watch",
+    description: "Watch your first video to completion.",
+    icon: "🎬",
+    condition_json: { type: "videos_watched", threshold: 1 },
+    xp_reward: 100,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "ach-002",
+    slug: "loyal_viewer",
+    name: "Loyal Viewer",
+    description: "Complete 5 videos.",
+    icon: "👁",
+    condition_json: { type: "videos_watched", threshold: 5 },
+    xp_reward: 150,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "ach-003",
+    slug: "grinder",
+    name: "Grinder",
+    description: "Complete 10 videos.",
+    icon: "💪",
+    condition_json: { type: "videos_watched", threshold: 10 },
+    xp_reward: 250,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "ach-004",
+    slug: "streak_master",
+    name: "Streak Master",
+    description: "Maintain a 7-day watch streak.",
+    icon: "🔥",
+    condition_json: { type: "streak_days", threshold: 7 },
+    xp_reward: 500,
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: "ach-005",
+    slug: "focus_mode",
+    name: "Focus Mode",
+    description: "Accumulate 30 minutes of active watch time.",
+    icon: "🎯",
+    condition_json: { type: "watch_minutes", threshold: 30 },
+    xp_reward: 200,
+    created_at: new Date().toISOString(),
+  },
+];
+
+/** Achievements unlocked by dev_user — first two are earned */
+export const DUMMY_USER_ACHIEVEMENT_IDS = new Set(["ach-001", "ach-002"]);

@@ -1,7 +1,19 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/server";
-import type { Profile, ProfileUpdate } from "@/types/database";
-import { DUMMY_MODE, DUMMY_PROFILE, DUMMY_STATS } from "@/lib/dummy";
+import type { Profile, ProfileUpdate, AchievementWithStatus } from "@/types/database";
+import {
+  DUMMY_MODE,
+  DUMMY_PROFILE,
+  DUMMY_STATS,
+  DUMMY_ACHIEVEMENTS,
+  DUMMY_USER_ACHIEVEMENT_IDS,
+} from "@/lib/dummy";
+
+export type PublicProfileData = {
+  profile: Profile;
+  videosWatched: number;
+  achievements: AchievementWithStatus[];
+};
 
 export async function getProfileById(userId: string): Promise<Profile | null> {
   return getProfile(userId);
@@ -104,5 +116,68 @@ export async function getReferralStats(userId: string): Promise<{
     totalReferrals: referredUsers.length,
     referralEarnings,
     referredUsers,
+  };
+}
+
+/** Returns public profile data (profile + stats + all achievements with unlock status). */
+export async function getProfileByUsername(
+  username: string
+): Promise<PublicProfileData | null> {
+  if (DUMMY_MODE) {
+    const achievements: AchievementWithStatus[] = DUMMY_ACHIEVEMENTS.map((a) => ({
+      ...a,
+      unlocked_at: DUMMY_USER_ACHIEVEMENT_IDS.has(a.id)
+        ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+        : null,
+    }));
+    return {
+      profile: DUMMY_PROFILE as unknown as Profile,
+      videosWatched: DUMMY_STATS.videosWatched,
+      achievements,
+    };
+  }
+
+  const supabase = createServiceClient();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username)
+    .single();
+
+  if (!profile) return null;
+
+  const [sessionsResult, achievementsResult, userAchievementsResult] =
+    await Promise.all([
+      supabase
+        .from("watch_sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", profile.id)
+        .eq("status", "completed"),
+      supabase.from("achievements").select("*").order("xp_reward"),
+      supabase
+        .from("user_achievements")
+        .select("achievement_id, unlocked_at")
+        .eq("user_id", profile.id),
+    ]);
+
+  const unlockedMap = new Map(
+    (userAchievementsResult.data ?? []).map((ua) => [
+      ua.achievement_id,
+      ua.unlocked_at,
+    ])
+  );
+
+  const achievements: AchievementWithStatus[] = (
+    achievementsResult.data ?? []
+  ).map((a) => ({
+    ...a,
+    unlocked_at: unlockedMap.get(a.id) ?? null,
+  }));
+
+  return {
+    profile: profile as Profile,
+    videosWatched: sessionsResult.count ?? 0,
+    achievements,
   };
 }
