@@ -74,14 +74,12 @@ export function Navbar() {
 
           {/* User dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
-                    {truncatedAddress ? truncatedAddress.slice(0, 2).toUpperCase() : "?"}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
+            <DropdownMenuTrigger className="rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
+                  {truncatedAddress ? truncatedAddress.slice(0, 2).toUpperCase() : "?"}
+                </AvatarFallback>
+              </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               {truncatedAddress && (
