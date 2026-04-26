@@ -14,7 +14,7 @@ import { useMousePosition } from "@/hooks/useMousePosition";
 
 const STATS = [
   { value: "12.4K", label: "NODES ACTIVE" },
-  { value: "85K", label: "SMT DEPLOYED" },
+  { value: "85K", label: "SOL DEPLOYED" },
   { value: "320", label: "STREAMS LIVE" },
   { value: "1.2M", label: "MINS LOGGED" },
 ];
@@ -33,7 +33,7 @@ const STEPS = [
   {
     n: "03",
     label: "HARVEST",
-    text: "SMT tokens accumulate per verified engagement minute, automatically",
+    text: "SOL rewards accumulate per verified engagement minute, automatically",
   },
   {
     n: "04",
@@ -398,7 +398,7 @@ export default function ConceptCPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
-            Engage Web3 content streams. Extract SMT tokens. Direct to wallet.
+            Engage Web3 content streams. Extract SOL rewards. Direct to wallet.
             No intermediaries. Settled on Solana.
           </motion.p>
 

@@ -1,4 +1,4 @@
-import { transferSMT } from "@/lib/solana/token";
+import { transferSOL } from "@/lib/solana/token";
 import {
   getPendingRewards,
   markRewardsProcessing,
@@ -16,7 +16,7 @@ const LEVEL_BONUS_PER_LEVEL  = 0.05; // +5% per level
 const REFERRAL_BONUS         = 0.10; // +10% for having a referrer
 
 /**
- * Calculate the SMT reward for a completed session.
+ * Calculate the SOL reward for a completed session.
  * Applies streak multiplier, level bonus, and referral bonus.
  */
 export function calculateReward(video: Video, profile: Profile): number {
@@ -116,7 +116,7 @@ export async function createPendingReward(
 
 /**
  * Process manual claim for a user.
- * Transfers all pending SMT to the provided wallet address.
+ * Transfers all pending SOL to the provided wallet address.
  * Returns array of results.
  */
 export async function processClaimRequest(
@@ -141,7 +141,7 @@ export async function processClaimRequest(
 
   // Transfer each reward individually (for granular retry + audit trail)
   for (const reward of pending) {
-    const result = await transferSMT(walletAddress, reward.amount);
+    const result = await transferSOL(walletAddress, reward.amount);
 
     if (result.success && result.signature) {
       await markRewardCompleted(reward.id, result.signature, walletAddress);

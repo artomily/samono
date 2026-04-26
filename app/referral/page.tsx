@@ -92,7 +92,7 @@ export default function ReferralPage() {
   }, [fetchStats]);
 
   const origin =
-    typeof window !== "undefined" ? window.location.origin : "https://smtwatch.io";
+    typeof window !== "undefined" ? window.location.origin : "https://samono.io";
   const referralLink = stats?.referralCode
     ? `${origin}/login?ref=${stats.referralCode}`
     : null;
@@ -110,7 +110,7 @@ export default function ReferralPage() {
     if (navigator.share) {
       await navigator.share({
         title: "Join Samono — Earn tokens by watching videos",
-        text: "Sign up with my referral and we both earn bonus SMT tokens!",
+        text: "Sign up with my referral and we both earn bonus SOL rewards!",
         url: referralLink,
       });
     } else {
@@ -222,7 +222,7 @@ export default function ReferralPage() {
             />
             <StatCard
               label="Referral Earnings"
-              value={`${stats?.referralEarnings ?? 0} SMT`}
+              value={`${stats?.referralEarnings ?? 0} SOL`}
               icon={Coins}
               sub="10% of referred users' rewards"
             />

@@ -43,7 +43,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
       {/* Stats row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="SMT Earned" value={profile.total_earned.toLocaleString()} />
+        <StatCard label="SOL Earned" value={profile.total_earned.toLocaleString()} />
         <StatCard label="Videos Watched" value={videosWatched.toString()} />
         <StatCard label="Streak" value={`${profile.streak_count} days`} />
         <StatCard label="Total XP" value={profile.xp.toLocaleString()} />

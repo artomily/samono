@@ -13,7 +13,7 @@ export const DUMMY_USER = {
   id: DUMMY_USER_ID,
   aud: "authenticated",
   role: "authenticated",
-  email: `${DUMMY_WALLET.toLowerCase()}@wallet.smt`,
+  email: `${DUMMY_WALLET.toLowerCase()}@wallet.sol`,
   email_confirmed_at: new Date().toISOString(),
   phone: "",
   confirmed_at: new Date().toISOString(),

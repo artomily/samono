@@ -112,7 +112,7 @@ export async function POST(
       eligible: true,
       rewardAmount,
       rewardId: reward.id,
-      message: `You earned ${rewardAmount} SMT! Go to your wallet to claim.`,
+      message: `You earned ${rewardAmount} SOL! Go to your wallet to claim.`,
       xpGained: xpAmount,
       leveledUp: xpResult.leveledUp,
       newLevel: xpResult.newLevel,

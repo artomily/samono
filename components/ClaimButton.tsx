@@ -40,7 +40,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
           return;
         }
 
-        toast.success(`Claimed ${pendingAmount.toFixed(2)} SMT! Tx: ${data.signature?.slice(0, 8)}…`);
+        toast.success(`Claimed ${pendingAmount.toFixed(2)} SOL! Tx: ${data.signature?.slice(0, 8)}…`);
         onClaimed?.();
       } catch {
         toast.error("Network error. Please try again.");
@@ -61,7 +61,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
       ) : (
         <Coins className="h-4 w-4" />
       )}
-      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} SMT`}
+      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} SOL`}
     </Button>
   );
 }

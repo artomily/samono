@@ -25,7 +25,7 @@ const SHOWCASE_VIDEOS = [
     title: "DeFi Explained: Yield Farming Strategies",
     category: "DeFi",
     duration: "18:34",
-    reward: "45 SMT",
+    reward: "45 SOL",
     rating: 4.9,
     thumbnail: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=480&h=270&fit=crop",
   },
@@ -34,7 +34,7 @@ const SHOWCASE_VIDEOS = [
     title: "Solana NFT Masterclass for Creators",
     category: "NFTs",
     duration: "24:11",
-    reward: "60 SMT",
+    reward: "60 SOL",
     rating: 4.8,
     thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=480&h=270&fit=crop",
   },
@@ -43,7 +43,7 @@ const SHOWCASE_VIDEOS = [
     title: "Web3 Security: Protecting Your Assets",
     category: "Security",
     duration: "31:02",
-    reward: "75 SMT",
+    reward: "75 SOL",
     rating: 5.0,
     thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=480&h=270&fit=crop",
   },
@@ -52,7 +52,7 @@ const SHOWCASE_VIDEOS = [
     title: "Smart Contract Auditing 101",
     category: "Dev",
     duration: "42:18",
-    reward: "90 SMT",
+    reward: "90 SOL",
     rating: 4.7,
     thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=480&h=270&fit=crop",
   },
@@ -61,7 +61,7 @@ const SHOWCASE_VIDEOS = [
     title: "Crypto Trading Psychology & Risk Mgmt",
     category: "Trading",
     duration: "27:55",
-    reward: "55 SMT",
+    reward: "55 SOL",
     rating: 4.8,
     thumbnail: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=480&h=270&fit=crop",
   },
@@ -93,7 +93,7 @@ export function VideoCarousel() {
               className={cn(
                 "relative rounded-xl overflow-hidden border transition-all duration-300 shrink-0 cursor-pointer",
                 isActive
-                  ? "w-80 md:w-96 opacity-100 scale-100 border-primary shadow-[0_0_32px_var(--smt-glow)] z-10"
+                  ? "w-80 md:w-96 opacity-100 scale-100 border-primary shadow-[0_0_32px_rgba(0,229,255,0.35)] z-10"
                   : "w-52 md:w-64 opacity-40 scale-95 border-border hover:opacity-60"
               )}
             >

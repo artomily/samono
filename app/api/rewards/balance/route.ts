@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getPendingRewards, getRewardHistory, getClaimableAmount } from "@/lib/dal/rewards";
-import { getSMTBalance } from "@/lib/solana/token";
+import { getSOLBalance } from "@/lib/solana/token";
 import { getProfileById } from "@/lib/dal/profiles";
 
 export async function GET(_req: NextRequest) {
@@ -21,7 +21,7 @@ export async function GET(_req: NextRequest) {
   // Fetch on-chain balance if wallet connected
   let onChainBalance: number | null = null;
   if (profile?.wallet_address) {
-    const balance = await getSMTBalance(profile.wallet_address);
+    const balance = await getSOLBalance(profile.wallet_address);
     onChainBalance = balance?.uiAmount ?? null;
   }
 

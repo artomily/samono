@@ -40,10 +40,10 @@ const TEMPLATES: {
     prefix: "[+]",
     accent: "#00FF87",
     messages: [
-      "{n} SMT extracted · wallet 0x{addr}",
-      "Reward batch settled on-chain · {n} SMT",
+      "{n} SOL distributed · wallet 0x{addr}",
+      "Reward batch settled on-chain · {n} SOL",
       "Streak multiplier activated · {n}× applied",
-      "Claimable balance updated · +{n} SMT",
+      "Claimable balance updated · +{n} SOL",
     ],
   },
   {

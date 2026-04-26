@@ -34,7 +34,7 @@ export default async function LeaderboardPage() {
           Leaderboard
         </h1>
         <p className="text-muted-foreground">
-          Top earners on Samono, ranked by total SMT tokens earned
+          Top earners on Samono, ranked by total SOL rewards earned
         </p>
       </div>
 
@@ -46,7 +46,7 @@ export default async function LeaderboardPage() {
             <div className="text-2xl">🥈</div>
             <div className="bg-zinc-500/20 rounded-lg px-4 py-3 text-center min-w-24" style={{ height: "5rem" }}>
               <p className="text-sm font-semibold truncate">{tableEntries[1].username}</p>
-              <p className="text-xs text-muted-foreground">{tableEntries[1].total_earned.toFixed(1)} SMT</p>
+              <p className="text-xs text-muted-foreground">{tableEntries[1].total_earned.toFixed(1)} SOL</p>
             </div>
           </div>
           {/* 1st */}
@@ -54,7 +54,7 @@ export default async function LeaderboardPage() {
             <div className="text-3xl">🥇</div>
             <div className="bg-yellow-500/20 rounded-lg px-4 py-3 text-center border border-yellow-500/30 min-w-24" style={{ height: "6rem" }}>
               <p className="text-sm font-semibold truncate">{tableEntries[0].username}</p>
-              <p className="text-xs text-yellow-400">{tableEntries[0].total_earned.toFixed(1)} SMT</p>
+              <p className="text-xs text-yellow-400">{tableEntries[0].total_earned.toFixed(1)} SOL</p>
             </div>
           </div>
           {/* 3rd */}
@@ -62,7 +62,7 @@ export default async function LeaderboardPage() {
             <div className="text-2xl">🥉</div>
             <div className="bg-orange-500/20 rounded-lg px-4 py-3 text-center min-w-24" style={{ height: "4.5rem" }}>
               <p className="text-sm font-semibold truncate">{tableEntries[2].username}</p>
-              <p className="text-xs text-muted-foreground">{tableEntries[2].total_earned.toFixed(1)} SMT</p>
+              <p className="text-xs text-muted-foreground">{tableEntries[2].total_earned.toFixed(1)} SOL</p>
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@ export default async function LeaderboardPage() {
         <div className="rounded-lg border border-dashed border-border/50 py-20 text-center text-muted-foreground">
           <Trophy className="mx-auto h-10 w-10 mb-3 opacity-30" />
           <p className="font-medium">No rankings yet</p>
-          <p className="text-sm mt-1">Be the first to earn SMT tokens!</p>
+          <p className="text-sm mt-1">Be the first to earn SOL rewards!</p>
         </div>
       )}
     </div>

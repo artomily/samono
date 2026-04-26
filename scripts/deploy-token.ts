@@ -1,36 +1,27 @@
 #!/usr/bin/env node
 /**
- * SMT Token Deployment Script
- * Creates a new SPL Token (SMT) on Solana Devnet and mints initial supply to treasury.
+ * SOL Treasury Setup Script
+ * Prepares a treasury wallet for native SOL reward distribution on Solana Devnet.
  *
  * Usage:
  *   npm run deploy:token
  *
- * Output: SMT_MINT_ADDRESS + treasury wallet — add to .env.local
+ * Output: treasury wallet keypair — add to .env.local
  */
 
 import {
   Connection,
   Keypair,
   LAMPORTS_PER_SOL,
-  PublicKey,
 } from "@solana/web3.js";
-import {
-  createMint,
-  getOrCreateAssociatedTokenAccount,
-  mintTo,
-  getMint,
-} from "@solana/spl-token";
 import * as fs from "fs";
 import * as path from "path";
 
 const RPC_URL = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
-const DECIMALS = 6;
-const INITIAL_SUPPLY = 1_000_000; // 1 million SMT
 const TREASURY_KEYPAIR_PATH = path.join(process.cwd(), ".treasury-keypair.json");
 
 async function main() {
-  console.log("🚀 SMT Token Deployment Script");
+  console.log("🚀 SOL Treasury Setup Script");
   console.log(`📡 RPC: ${RPC_URL}\n`);
 
   const connection = new Connection(RPC_URL, "confirmed");
@@ -73,58 +64,22 @@ async function main() {
     console.log(`✅ Treasury SOL balance: ${balance / LAMPORTS_PER_SOL} SOL`);
   }
 
-  // ── Create SMT Mint ───────────────────────────────────────────
-  console.log("\n🪙 Creating SMT mint...");
-  const mint = await createMint(
-    connection,
-    treasury,           // payer
-    treasury.publicKey, // mint authority
-    treasury.publicKey, // freeze authority (set to null to fully decentralize)
-    DECIMALS
-  );
-  console.log(`✅ SMT Mint created: ${mint.toBase58()}`);
-
-  // ── Create Treasury ATA ───────────────────────────────────────
-  console.log("\n🏦 Creating treasury Associated Token Account...");
-  const treasuryATA = await getOrCreateAssociatedTokenAccount(
-    connection,
-    treasury,
-    mint,
-    treasury.publicKey
-  );
-  console.log(`✅ Treasury ATA: ${treasuryATA.address.toBase58()}`);
-
-  // ── Mint Initial Supply ───────────────────────────────────────
-  const mintAmount = BigInt(INITIAL_SUPPLY) * BigInt(10 ** DECIMALS);
-  console.log(`\n⚗️  Minting ${INITIAL_SUPPLY.toLocaleString()} SMT to treasury...`);
-  const mintTx = await mintTo(
-    connection,
-    treasury,
-    mint,
-    treasuryATA.address,
-    treasury, // mint authority
-    mintAmount
-  );
-  console.log(`✅ Mint tx: ${mintTx}`);
-
-  // ── Verify ────────────────────────────────────────────────────
-  const mintInfo = await getMint(connection, mint);
-  const supplyDisplay = Number(mintInfo.supply) / 10 ** DECIMALS;
-  console.log(`✅ Total supply: ${supplyDisplay.toLocaleString()} SMT`);
+  const finalBalance = await connection.getBalance(treasury.publicKey);
+  console.log(`✅ Treasury ready with ${finalBalance / LAMPORTS_PER_SOL} SOL`);
 
   // ── Output ────────────────────────────────────────────────────
   console.log("\n" + "═".repeat(60));
-  console.log("✅ SMT Token Deployed Successfully!");
+  console.log("✅ SOL Treasury Ready!");
   console.log("═".repeat(60));
   console.log("\n📋 Add these to your .env.local:\n");
-  console.log(`SMT_MINT_ADDRESS=${mint.toBase58()}`);
   console.log(
     `TREASURY_WALLET_KEYPAIR=${JSON.stringify(Array.from(treasury.secretKey))}`
   );
-  console.log("\n🔗 View on Solscan (devnet):");
-  console.log(`   https://solscan.io/token/${mint.toBase58()}?cluster=devnet`);
+  console.log(`NEXT_PUBLIC_SOLANA_NETWORK=${process.env.NEXT_PUBLIC_SOLANA_NETWORK ?? "devnet"}`);
+  console.log("\n🔗 View treasury on Solscan (devnet):");
+  console.log(`   https://solscan.io/account/${treasury.publicKey.toBase58()}?cluster=devnet`);
   console.log("\n⚠️  IMPORTANT:");
-  console.log("   - Keep .treasury-keypair.json SECRET — it controls your treasury");
+  console.log("   - Keep .treasury-keypair.json SECRET — it controls your SOL treasury");
   console.log("   - .treasury-keypair.json is gitignored");
   console.log("   - Copy TREASURY_WALLET_KEYPAIR to your .env.local NOW");
   console.log("═".repeat(60) + "\n");

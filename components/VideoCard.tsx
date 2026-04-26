@@ -64,7 +64,7 @@ export function VideoCard({
             </span>
             <span className="flex items-center gap-1 text-primary font-semibold">
               <Coins className="h-3 w-3" />
-              {rewardAmount} SMT
+              {rewardAmount} SOL
             </span>
           </div>
         </CardContent>

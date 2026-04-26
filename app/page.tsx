@@ -18,7 +18,7 @@ const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 
 const STATS = [
   { value: "12.4K", label: "NODES ACTIVE" },
-  { value: "85K", label: "SMT DEPLOYED" },
+  { value: "85K", label: "SOL DEPLOYED" },
   { value: "320", label: "STREAMS LIVE" },
   { value: "1.2M", label: "MINS LOGGED" },
 ];
@@ -26,20 +26,20 @@ const STATS = [
 const STEPS = [
   { n: "01", label: "SYNC", text: "Connect your Solana wallet — Phantom, Solflare, or any Wallet Standard adapter. Zero signup friction." },
   { n: "02", label: "OBSERVE", text: "Engage with curated Web3 content. Every verified minute of watch time generates a session heartbeat." },
-  { n: "03", label: "HARVEST", text: "SMT tokens accumulate per verified session. Streak multipliers up to 2× stack automatically on-chain." },
+  { n: "03", label: "HARVEST", text: "SOL rewards accumulate per verified session. Streak multipliers up to 2× stack automatically on-chain." },
   { n: "04", label: "EXTRACT", text: "Withdraw on-chain with zero intermediaries. Your rewards are verifiable by anyone, any time." },
 ];
 
 const TOKEN_TIERS = [
   {
     label: "BASE RATE",
-    rate: "1 SMT / MIN",
+    rate: "1 SOL / MIN",
     color: CYAN,
     perks: ["Every completed stream", "Instant queue credit", "Zero minimum runtime"],
   },
   {
     label: "STREAK BONUS",
-    rate: "UP TO 2× SMT",
+    rate: "UP TO 2× SOL",
     color: MAGENTA,
     perks: ["7-day streak: 1.5×", "30-day streak: 2×", "Protected by anti-cheat"],
   },
@@ -75,9 +75,9 @@ const TREASURY_FLOW = [
 const FAQS = [
   { q: "Is Samono free to use?", a: "Yes, completely free. You just need a Solana wallet and an account to start earning." },
   { q: "Which wallets are supported?", a: "Any Solana wallet — Phantom, Solflare, Backpack, Ledger, and more via Wallet Standard." },
-  { q: "When do I receive my SMT tokens?", a: "Rewards queue immediately after a video completes. Claim to your wallet any time." },
+  { q: "When do I receive my SOL rewards?", a: "Rewards queue immediately after a video completes. Claim to your wallet any time." },
   { q: "How does the anti-cheat system work?", a: "We monitor tab visibility, playback speed, and interaction patterns. Suspicious activity voids rewards for that session." },
-  { q: "What is SMT and where can I trade it?", a: "SMT is our Solana SPL token. Trade it on any Solana DEX (Jupiter, Raydium) once you've claimed." },
+  { q: "What is SOL and where can I use it?", a: "SOL is Solana's native asset. Once claimed, it can be held, transferred, or used anywhere supported in the Solana ecosystem." },
   { q: "Can I earn on mobile?", a: "Yes — fully responsive. Connect your mobile wallet and stream on any device." },
 ];
 
@@ -389,7 +389,7 @@ export default function LandingPage() {
 
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }}
             style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.88rem", letterSpacing: "0.08em", lineHeight: 1.7, maxWidth: "34rem", margin: "0 auto 2.6rem" }}>
-            THE FIRST WATCH-TO-EARN PROTOCOL THAT TURNS EDUCATIONAL CRYPTO CONTENT INTO REAL SMT TOKENS — FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
+            THE FIRST WATCH-TO-EARN PROTOCOL THAT TURNS EDUCATIONAL CRYPTO CONTENT INTO REAL SOL REWARDS — FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.35 }}
@@ -470,7 +470,7 @@ export default function LandingPage() {
           </motion.h2>
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
             style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
-            MAXIMIZE SMT YIELD
+            MAXIMIZE SOL YIELD
           </motion.p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 1fr))", gap: "1.5rem" }}>
             {TOKEN_TIERS.map((t, i) => (

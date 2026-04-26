@@ -19,7 +19,7 @@ const bodySchema = z.object({
 });
 
 function walletToEmail(publicKey: string) {
-  return `${publicKey.toLowerCase()}@wallet.smt`;
+  return `${publicKey.toLowerCase()}@wallet.sol`;
 }
 
 function walletToPassword(publicKey: string) {

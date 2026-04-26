@@ -152,7 +152,7 @@ export function VideoPlayer({
       if (res.ok) {
         setSessionState("completed");
         setEarnedAmount(data.reward_amount ?? rewardAmount);
-        toast.success(`You earned ${data.reward_amount ?? rewardAmount} SMT!`);
+        toast.success(`You earned ${data.reward_amount ?? rewardAmount} SOL!`);
       } else {
         setSessionState("error");
         toast.error(data.error ?? "Could not complete session");
@@ -296,7 +296,7 @@ export function VideoPlayer({
                 <p className="text-sm text-muted-foreground">
                   <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 mr-1">
                     <Coins className="h-3 w-3 mr-1" />
-                    {earnedAmount} SMT
+                    {earnedAmount} SOL
                   </Badge>
                   pending in your wallet
                 </p>

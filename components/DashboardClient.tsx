@@ -32,8 +32,8 @@ interface Props {
 }
 
 const STATS_CONFIG = [
-  { label: "TOTAL EARNED", getValue: (p: Props) => `${p.totalEarned.toFixed(2)} SMT`, color: CYAN },
-  { label: "PENDING", getValue: (p: Props) => `${p.pendingAmount.toFixed(2)} SMT`, color: MAGENTA },
+  { label: "TOTAL EARNED", getValue: (p: Props) => `${p.totalEarned.toFixed(2)} SOL`, color: CYAN },
+  { label: "PENDING", getValue: (p: Props) => `${p.pendingAmount.toFixed(2)} SOL`, color: MAGENTA },
   { label: "DAY STREAK", getValue: (p: Props) => `${p.watchStreak}×`, color: GREEN },
   { label: "STREAMS WATCHED", getValue: (p: Props) => `${p.videosWatched}`, color: CYAN },
 ];

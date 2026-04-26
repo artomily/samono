@@ -76,7 +76,7 @@ export default function WalletPage() {
           My Wallet
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Manage your SMT token rewards and wallet connection
+          Manage your SOL rewards and wallet connection
         </p>
       </div>
 
@@ -119,7 +119,7 @@ export default function WalletPage() {
             ) : (
               <p className="text-2xl font-bold text-primary">
                 {(data?.pending_amount ?? 0).toFixed(2)}{" "}
-                <span className="text-sm font-normal text-muted-foreground">SMT</span>
+                <span className="text-sm font-normal text-muted-foreground">SOL</span>
               </p>
             )}
           </CardContent>
@@ -135,7 +135,7 @@ export default function WalletPage() {
                 {data?.on_chain_balance != null
                   ? data.on_chain_balance.toFixed(2)
                   : "—"}{" "}
-                <span className="text-sm font-normal text-muted-foreground">SMT</span>
+                <span className="text-sm font-normal text-muted-foreground">SOL</span>
               </p>
             )}
           </CardContent>
@@ -185,7 +185,7 @@ export default function WalletPage() {
                   <div className="flex items-center gap-3">
                     <Coins className="h-4 w-4 text-primary shrink-0" />
                     <div>
-                      <p className="text-sm font-medium">+{tx.amount.toFixed(2)} SMT</p>
+                      <p className="text-sm font-medium">+{tx.amount.toFixed(2)} SOL</p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(tx.created_at).toLocaleDateString()}
                       </p>

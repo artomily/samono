@@ -20,7 +20,7 @@ export default async function WatchIndexPage() {
           All Videos
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Watch videos to completion to earn SMT tokens
+          Watch videos to completion to earn SOL rewards
         </p>
       </div>
 

@@ -17,14 +17,14 @@ export function StatsBar({
   const stats = [
     {
       label: "Total Earned",
-      value: `${totalEarned.toFixed(2)} SMT`,
+      value: `${totalEarned.toFixed(2)} SOL`,
       icon: Coins,
       color: "text-primary",
       bg: "bg-primary/10",
     },
     {
       label: "Pending Rewards",
-      value: `${pendingRewards.toFixed(2)} SMT`,
+      value: `${pendingRewards.toFixed(2)} SOL`,
       icon: TrendingUp,
       color: "text-orange-400",
       bg: "bg-orange-400/10",

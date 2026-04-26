@@ -106,7 +106,7 @@ export async function resetFailedReward(rewardId: string, userId: string): Promi
     .lt("retry_count", 3);
 }
 
-/** Total SMT earned by user (completed rewards) */
+/** Total SOL earned by user (completed rewards) */
 export async function getTotalEarned(userId: string): Promise<number> {
   const supabase = await createClient();
   const { data } = await supabase
