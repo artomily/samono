@@ -51,6 +51,27 @@ const TOKEN_TIERS = [
   },
 ];
 
+const TREASURY_INFLOW = [
+  { label: "ADSENSE", value: "$24.8K", width: 82, color: CYAN },
+  { label: "FIAT RAMP", value: "$12.1K", width: 54, color: MAGENTA },
+  { label: "EXTERNAL", value: "$6.4K", width: 31, color: GREEN },
+];
+
+const TREASURY_OUTFLOW = [
+  { label: "SOLANA DISTRIBUTION", value: "41%", width: 41, color: CYAN },
+  { label: "LIQUIDITY", value: "27%", width: 27, color: MAGENTA },
+  { label: "REWARDS BUFFER", value: "18%", width: 18, color: GREEN },
+  { label: "OPS RESERVE", value: "14%", width: 14, color: "rgba(255,255,255,0.75)" },
+];
+
+const TREASURY_FLOW = [
+  { label: "INTAKE", amount: "$43.3K", color: CYAN, height: 74 },
+  { label: "BUFFER", amount: "$11.2K", color: MAGENTA, height: 48 },
+  { label: "DISTRIBUTE", amount: "$17.8K", color: GREEN, height: 64 },
+  { label: "LP", amount: "$8.7K", color: MAGENTA, height: 36 },
+  { label: "VAULT", amount: "$5.6K", color: CYAN, height: 30 },
+];
+
 const FAQS = [
   { q: "Is Samono free to use?", a: "Yes, completely free. You just need a Solana wallet and an account to start earning." },
   { q: "Which wallets are supported?", a: "Any Solana wallet — Phantom, Solflare, Backpack, Ledger, and more via Wallet Standard." },
@@ -59,6 +80,234 @@ const FAQS = [
   { q: "What is SMT and where can I trade it?", a: "SMT is our Solana SPL token. Trade it on any Solana DEX (Jupiter, Raydium) once you've claimed." },
   { q: "Can I earn on mobile?", a: "Yes — fully responsive. Connect your mobile wallet and stream on any device." },
 ];
+
+function TreasuryPreview({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true, amount: 0.2 }}
+      style={{
+        position: "relative",
+        maxWidth: "72rem",
+        margin: "0 auto",
+        border: "1px solid rgba(0,229,255,0.18)",
+        background: "linear-gradient(180deg, rgba(0,229,255,0.035), rgba(255,0,170,0.02))",
+        backdropFilter: "blur(6px)",
+        overflow: "hidden",
+        boxShadow: "0 0 44px rgba(0,229,255,0.05)",
+      }}
+    >
+      <motion.div
+        aria-hidden
+        animate={{ opacity: [0.14, 0.22, 0.16] }}
+        transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "radial-gradient(circle at 20% 0%, rgba(0,229,255,0.12), transparent 34%), radial-gradient(circle at 82% 100%, rgba(255,0,170,0.08), transparent 28%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <motion.div
+        aria-hidden
+        animate={{ y: ["-10%", "110%"] }}
+        transition={{ repeat: Infinity, duration: 4.6, ease: "linear" }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.04), transparent)",
+          pointerEvents: "none",
+          mixBlendMode: "screen",
+        }}
+      />
+
+      <motion.div
+        aria-hidden
+        animate={{ opacity: [0.92, 0.84, 0.94, 0.88, 0.93] }}
+        transition={{ repeat: Infinity, duration: 0.45, ease: "easeInOut", repeatDelay: 2.8 }}
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          backgroundImage: "linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px)",
+          backgroundSize: "100% 5px",
+          opacity: 0.12,
+        }}
+      />
+
+      <motion.div
+        style={{
+          x: mouseX * 6,
+          y: mouseY * 4,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            padding: "1rem 1.2rem",
+            borderBottom: "1px solid rgba(0,229,255,0.12)",
+            fontSize: "0.62rem",
+            letterSpacing: "0.18em",
+            color: "rgba(0,229,255,0.58)",
+          }}
+        >
+          <span>⊕ TREASURY PREVIEW / ON-CHAIN WINDOW / FLOW MAP</span>
+          <motion.span
+            animate={{ opacity: [0.55, 1, 0.55] }}
+            transition={{ repeat: Infinity, duration: 1.7, ease: "easeInOut" }}
+            style={{ color: MAGENTA }}
+          >
+            STATUS: INITIALIZING...
+          </motion.span>
+        </div>
+
+        <div style={{ padding: "1.4rem 1.2rem 1.2rem" }}>
+          <div style={{ marginBottom: "1.4rem" }}>
+            <div style={{ fontSize: "2rem", fontWeight: 900, letterSpacing: "-0.02em", color: CYAN, marginBottom: "0.65rem" }}>
+              OBSERVE THE FLOW
+            </div>
+            <p style={{ maxWidth: "44rem", fontSize: "0.78rem", lineHeight: 1.7, color: "rgba(255,255,255,0.42)", letterSpacing: "0.05em" }}>
+              A preview of Samono’s on-chain treasury system. All flows will be verifiable.
+            </p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(0, 0.95fr)", gap: "1rem" }}>
+            <div style={{ display: "grid", gap: "1rem" }}>
+              <div style={{ border: "1px solid rgba(0,229,255,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: CYAN }}>
+                  <span>INFLOW</span>
+                  <span>ADSENSE / FIAT / EXTERNAL</span>
+                </div>
+                <div style={{ display: "grid", gap: "0.8rem" }}>
+                  {TREASURY_INFLOW.map((item, index) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.45, delay: index * 0.08 }}
+                      viewport={{ once: true }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.66rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.35rem", letterSpacing: "0.1em" }}>
+                        <span>{item.label}</span>
+                        <span style={{ color: item.color }}>{item.value}</span>
+                      </div>
+                      <div style={{ height: "7px", border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)", overflow: "hidden" }}>
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${item.width}%` }}
+                          transition={{ duration: 0.8, delay: 0.15 + index * 0.08 }}
+                          viewport={{ once: true }}
+                          style={{
+                            height: "100%",
+                            background: item.color,
+                            boxShadow: `0 0 18px ${item.color}`,
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ border: "1px solid rgba(255,0,170,0.16)", background: "rgba(0,0,0,0.24)", padding: "1rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: MAGENTA }}>
+                  <span>OUTFLOW</span>
+                  <span>DISTRIBUTION / LIQUIDITY / REWARDS</span>
+                </div>
+                <div style={{ display: "grid", gap: "0.8rem" }}>
+                  {TREASURY_OUTFLOW.map((item, index) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.45, delay: index * 0.08 }}
+                      viewport={{ once: true }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.66rem", color: "rgba(255,255,255,0.5)", marginBottom: "0.35rem", letterSpacing: "0.1em" }}>
+                        <span>{item.label}</span>
+                        <span style={{ color: item.color }}>{item.value}</span>
+                      </div>
+                      <div style={{ height: "7px", border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)", overflow: "hidden" }}>
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${item.width}%` }}
+                          transition={{ duration: 0.8, delay: 0.15 + index * 0.08 }}
+                          viewport={{ once: true }}
+                          style={{
+                            height: "100%",
+                            background: item.color,
+                            boxShadow: `0 0 18px ${item.color}`,
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ border: "1px solid rgba(0,229,255,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem", display: "grid", gridTemplateRows: "auto 1fr auto", minHeight: "100%" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: CYAN }}>
+                <span>FLOW VISUALIZATION</span>
+                <span>PREVIEW MODE</span>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "end", gap: "0.7rem", minHeight: "16rem", padding: "0.6rem 0.1rem 0.3rem", borderBottom: "1px solid rgba(0,229,255,0.12)", position: "relative" }}>
+                {TREASURY_FLOW.map((bar, index) => (
+                  <div key={bar.label} style={{ flex: 1, display: "grid", alignItems: "end", justifyItems: "center", gap: "0.5rem" }}>
+                    <motion.div
+                      animate={{ opacity: [0.75, 1, 0.82] }}
+                      transition={{ repeat: Infinity, duration: 2 + index * 0.25, ease: "easeInOut" }}
+                      style={{
+                        width: "100%",
+                        maxWidth: "4rem",
+                        height: `${bar.height * 2.2}px`,
+                        border: `1px solid ${bar.color}55`,
+                        background: `linear-gradient(to top, ${bar.color}55, rgba(0,0,0,0.04))`,
+                        boxShadow: `0 0 24px ${bar.color}25`,
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <motion.div
+                        aria-hidden
+                        animate={{ y: [24, -24] }}
+                        transition={{ repeat: Infinity, duration: 1.8 + index * 0.2, ease: "linear" }}
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.18), transparent)",
+                        }}
+                      />
+                    </motion.div>
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: "0.6rem", letterSpacing: "0.14em", color: "rgba(255,255,255,0.56)", marginBottom: "0.2rem" }}>{bar.label}</div>
+                      <div style={{ fontSize: "0.64rem", color: bar.color }}>{bar.amount}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ paddingTop: "0.8rem", display: "grid", gap: "0.35rem", fontSize: "0.62rem", letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)" }}>
+                <div>LEDGER STATE: <span style={{ color: CYAN }}>PENDING MIRROR</span></div>
+                <div>VERIFICATION MODE: <span style={{ color: MAGENTA }}>SIMULATION / PREVIEW</span></div>
+                <div>SETTLEMENT TARGET: <span style={{ color: GREEN }}>SOLANA MAINNET</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -77,6 +326,9 @@ export default function LandingPage() {
     rawX.set((mouse.nx - 0.5) * 28);
     rawY.set((mouse.ny - 0.5) * 28);
   }, [mouse.nx, mouse.ny, rawX, rawY]);
+
+  const treasuryMouseX = (mouse.nx - 0.5) * 14;
+  const treasuryMouseY = (mouse.ny - 0.5) * 10;
 
   return (
     <div style={{ background: "#000", fontFamily: MONO, color: "#fff", overflowX: "hidden" }}>
@@ -202,6 +454,11 @@ export default function LandingPage() {
           </motion.p>
           <ActivityStream maxItems={7} />
         </div>
+      </section>
+
+      {/* ── Treasury Preview ── */}
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+        <TreasuryPreview mouseX={treasuryMouseX} mouseY={treasuryMouseY} />
       </section>
 
       {/* ── Token Tiers ── */}
