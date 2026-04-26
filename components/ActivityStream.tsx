@@ -5,7 +5,15 @@ import { motion } from "motion/react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type EventKind = "node" | "reward" | "stream" | "wallet" | "sync" | "shield";
+export type EventKind = "node" | "reward" | "stream" | "wallet" | "sync" | "shield" | "swap";
+
+export interface ActivityStreamExternalEvent {
+  kind: EventKind;
+  message: string;
+  prefix?: string;
+  accent?: string;
+  ts?: number;
+}
 
 interface StreamEvent {
   id: string;
@@ -14,6 +22,29 @@ interface StreamEvent {
   message: string;
   accent: string;
   ts: number;
+}
+
+const EVENT_STYLES: Record<EventKind, { prefix: string; accent: string }> = {
+  node: { prefix: "[NODE]", accent: "#00E5FF" },
+  reward: { prefix: "[+]", accent: "#00FF87" },
+  stream: { prefix: "[•]", accent: "#FF00AA" },
+  wallet: { prefix: "[W]", accent: "#00E5FF" },
+  sync: { prefix: "[↻]", accent: "rgba(0,229,255,0.6)" },
+  shield: { prefix: "[✕]", accent: "#FF6B00" },
+  swap: { prefix: "[$]", accent: "#FF00AA" },
+};
+
+export function createActivityStreamEvent(event: ActivityStreamExternalEvent): StreamEvent {
+  const defaults = EVENT_STYLES[event.kind];
+
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    kind: event.kind,
+    prefix: event.prefix ?? defaults.prefix,
+    message: event.message,
+    accent: event.accent ?? defaults.accent,
+    ts: event.ts ?? Date.now(),
+  };
 }
 
 // ─── Event templates ──────────────────────────────────────────────────────────
@@ -90,6 +121,17 @@ const TEMPLATES: {
       "Anti-cheat layer engaged · trace {addr}",
     ],
   },
+  {
+    kind: "swap",
+    prefix: "[$]",
+    accent: "#FF00AA",
+    messages: [
+      "Swap executed — {amount} SOL",
+      "User converted {points} points",
+      "Conversion queue settled — {amount} SOL",
+      "Swap rail confirmed · {points} pts → {amount} SOL",
+    ],
+  },
 ];
 
 const CONTENT_TITLES = [
@@ -123,6 +165,8 @@ function generateEvent(): StreamEvent {
   const message = raw
     .replace("{addr}", rHex())
     .replace("{n}", String(rInt(1, 999)))
+    .replace("{points}", String(rInt(500, 10000)))
+    .replace("{amount}", (rInt(1, 10) / 100).toFixed(2))
     .replace("{title}", CONTENT_TITLES[Math.floor(Math.random() * CONTENT_TITLES.length)]);
 
   return {
@@ -141,6 +185,7 @@ interface ActivityStreamProps {
   maxItems?: number;
   label?: string;
   className?: string;
+  externalEvents?: ActivityStreamExternalEvent[];
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -149,6 +194,7 @@ export function ActivityStream({
   maxItems = 6,
   label = "LIVE NETWORK ACTIVITY",
   className = "",
+  externalEvents = [],
 }: ActivityStreamProps) {
   const [events, setEvents] = useState<StreamEvent[]>(() =>
     Array.from({ length: 3 }, generateEvent)
@@ -156,6 +202,7 @@ export function ActivityStream({
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(paused);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const processedExternalCountRef = useRef(0);
 
   // Keep ref in sync so the closure inside scheduleNext sees fresh value
   useEffect(() => {
@@ -177,6 +224,18 @@ export function ActivityStream({
       if (timerRef.current !== undefined) clearTimeout(timerRef.current);
     };
   }, [scheduleNext]);
+
+  useEffect(() => {
+    if (externalEvents.length <= processedExternalCountRef.current) return;
+
+    const nextEvents = externalEvents
+      .slice(processedExternalCountRef.current)
+      .map(createActivityStreamEvent)
+      .reverse();
+
+    setEvents((prev) => [...nextEvents, ...prev].slice(0, maxItems));
+    processedExternalCountRef.current = externalEvents.length;
+  }, [externalEvents, maxItems]);
 
   return (
     <div className={className}>

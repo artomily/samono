@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type MouseEvent, useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import Link from "next/link";
 import { useMousePosition } from "@/hooks/useMousePosition";
@@ -81,22 +81,49 @@ const FAQS = [
   { q: "Can I earn on mobile?", a: "Yes — fully responsive. Connect your mobile wallet and stream on any device." },
 ];
 
-function TreasuryPreview({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
+function TreasuryPreview() {
+  const shellRef = useRef<HTMLDivElement>(null);
+  const localX = useMotionValue(0);
+  const localY = useMotionValue(0);
+  const tiltX = useSpring(localX, { stiffness: 110, damping: 24 });
+  const tiltY = useSpring(localY, { stiffness: 110, damping: 24 });
+
+  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+    const node = shellRef.current;
+    if (!node) return;
+
+    const rect = node.getBoundingClientRect();
+    const nx = (event.clientX - rect.left) / rect.width - 0.5;
+    const ny = (event.clientY - rect.top) / rect.height - 0.5;
+
+    localX.set(nx * 8);
+    localY.set(ny * 6);
+  }
+
+  function handleMouseLeave() {
+    localX.set(0);
+    localY.set(0);
+  }
+
   return (
     <motion.div
+      ref={shellRef}
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true, amount: 0.2 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{
         position: "relative",
         maxWidth: "72rem",
         margin: "0 auto",
-        border: "1px solid rgba(0,229,255,0.18)",
-        background: "linear-gradient(180deg, rgba(0,229,255,0.035), rgba(255,0,170,0.02))",
-        backdropFilter: "blur(6px)",
+        borderRadius: "16px",
+        border: "1px solid rgba(255,255,255,0.2)",
+        background: "linear-gradient(180deg, rgba(30,30,30,0.96), rgba(10,10,10,0.96))",
+        backdropFilter: "blur(10px)",
         overflow: "hidden",
-        boxShadow: "0 0 44px rgba(0,229,255,0.05)",
+        boxShadow: "0 20px 64px rgba(0,0,0,0.55), 0 0 44px rgba(0,229,255,0.08)",
       }}
     >
       <motion.div
@@ -106,7 +133,7 @@ function TreasuryPreview({ mouseX, mouseY }: { mouseX: number; mouseY: number })
         style={{
           position: "absolute",
           inset: 0,
-          background: "radial-gradient(circle at 20% 0%, rgba(0,229,255,0.12), transparent 34%), radial-gradient(circle at 82% 100%, rgba(255,0,170,0.08), transparent 28%)",
+          background: "radial-gradient(circle at 20% 0%, rgba(0,229,255,0.1), transparent 34%), radial-gradient(circle at 82% 100%, rgba(255,0,170,0.1), transparent 28%)",
           pointerEvents: "none",
         }}
       />
@@ -140,33 +167,71 @@ function TreasuryPreview({ mouseX, mouseY }: { mouseX: number; mouseY: number })
 
       <motion.div
         style={{
-          x: mouseX * 6,
-          y: mouseY * 4,
+          x: tiltX,
+          y: tiltY,
           position: "relative",
           zIndex: 1,
         }}
       >
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "1rem",
-            padding: "1rem 1.2rem",
-            borderBottom: "1px solid rgba(0,229,255,0.12)",
-            fontSize: "0.62rem",
-            letterSpacing: "0.18em",
-            color: "rgba(0,229,255,0.58)",
+            display: "grid",
+            gap: "0.7rem",
+            padding: "0.9rem 1rem 0.8rem",
+            borderBottom: "1px solid rgba(255,255,255,0.14)",
+            background: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))",
           }}
         >
-          <span>⊕ TREASURY PREVIEW / ON-CHAIN WINDOW / FLOW MAP</span>
-          <motion.span
-            animate={{ opacity: [0.55, 1, 0.55] }}
-            transition={{ repeat: Infinity, duration: 1.7, ease: "easeInOut" }}
-            style={{ color: MAGENTA }}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ width: "10px", height: "10px", borderRadius: "999px", background: "#FF5F57", boxShadow: "0 0 12px rgba(255,95,87,0.4)" }} />
+              <span style={{ width: "10px", height: "10px", borderRadius: "999px", background: "#FEBC2E", boxShadow: "0 0 12px rgba(254,188,46,0.38)" }} />
+              <span style={{ width: "10px", height: "10px", borderRadius: "999px", background: "#28C840", boxShadow: "0 0 12px rgba(40,200,64,0.38)" }} />
+            </div>
+            <div style={{ fontSize: "0.6rem", letterSpacing: "0.18em", color: "rgba(255,255,255,0.55)" }}>
+              TREASURY WINDOW
+            </div>
+            <motion.div
+              animate={{ opacity: [0.55, 1, 0.55] }}
+              transition={{ repeat: Infinity, duration: 1.7, ease: "easeInOut" }}
+              style={{ color: CYAN, fontSize: "0.56rem", letterSpacing: "0.16em" }}
+            >
+              MOUSE INTERACTIVE
+            </motion.div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "0.35rem",
+              overflowX: "auto",
+              paddingBottom: "0.1rem",
+            }}
           >
-            STATUS: INITIALIZING...
-          </motion.span>
+            {[
+              { label: "OVERVIEW", active: true },
+              { label: "INFLOW", active: false },
+              { label: "OUTFLOW", active: false },
+              { label: "FLOW MAP", active: false },
+            ].map((tab) => (
+              <div
+                key={tab.label}
+                style={{
+                  fontSize: "0.55rem",
+                  letterSpacing: "0.16em",
+                  color: tab.active ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)",
+                  border: tab.active ? "1px solid rgba(0,229,255,0.35)" : "1px solid rgba(255,255,255,0.14)",
+                  background: tab.active ? "rgba(0,229,255,0.12)" : "rgba(255,255,255,0.04)",
+                  borderRadius: "10px 10px 0 0",
+                  padding: "0.5rem 0.8rem",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                {tab.label}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div style={{ padding: "1.4rem 1.2rem 1.2rem" }}>
@@ -179,7 +244,7 @@ function TreasuryPreview({ mouseX, mouseY }: { mouseX: number; mouseY: number })
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(0, 0.95fr)", gap: "1rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20rem, 1fr))", gap: "1rem" }}>
             <div style={{ display: "grid", gap: "1rem" }}>
               <div style={{ border: "1px solid rgba(0,229,255,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: CYAN }}>
@@ -327,9 +392,6 @@ export default function LandingPage() {
     rawY.set((mouse.ny - 0.5) * 28);
   }, [mouse.nx, mouse.ny, rawX, rawY]);
 
-  const treasuryMouseX = (mouse.nx - 0.5) * 14;
-  const treasuryMouseY = (mouse.ny - 0.5) * 10;
-
   return (
     <div style={{ background: "#000", fontFamily: MONO, color: "#fff", overflowX: "hidden" }}>
 
@@ -458,7 +520,7 @@ export default function LandingPage() {
 
       {/* ── Treasury Preview ── */}
       <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
-        <TreasuryPreview mouseX={treasuryMouseX} mouseY={treasuryMouseY} />
+        <TreasuryPreview />
       </section>
 
       {/* ── Token Tiers ── */}

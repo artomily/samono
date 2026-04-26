@@ -58,11 +58,36 @@ export function DashboardClient(props: Props) {
             ⊕ {username.toUpperCase()}
           </h1>
         </div>
-        {pendingAmount > 0 && (
-          <div style={{ clipPath: "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)", boxShadow: `0 0 24px rgba(255,0,170,0.4)` }}>
-            <ClaimButton pendingAmount={pendingAmount} />
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+          <Link
+            href="/dashboard/swap"
+            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            style={{
+              textDecoration: "none",
+              border: "1px solid rgba(0,229,255,0.18)",
+              color: "rgba(255,255,255,0.78)",
+              fontSize: "0.62rem",
+              letterSpacing: "0.18em",
+              padding: "0.8rem 1rem",
+              textTransform: "uppercase",
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = "rgba(0,229,255,0.6)";
+              e.currentTarget.style.color = CYAN;
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = "rgba(0,229,255,0.18)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.78)";
+            }}
+          >
+            SWAP POINTS →
+          </Link>
+          {pendingAmount > 0 && (
+            <div style={{ clipPath: "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)", boxShadow: `0 0 24px rgba(255,0,170,0.4)` }}>
+              <ClaimButton pendingAmount={pendingAmount} />
+            </div>
+          )}
           </div>
-        )}
       </div>
 
       {/* ── Stats Row ── */}
