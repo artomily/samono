@@ -109,7 +109,7 @@ export default function ReferralPage() {
     if (!referralLink) return;
     if (navigator.share) {
       await navigator.share({
-        title: "Join SMT Watch — Earn tokens by watching videos",
+        title: "Join Samono — Earn tokens by watching videos",
         text: "Sign up with my referral and we both earn bonus SMT tokens!",
         url: referralLink,
       });
@@ -125,7 +125,7 @@ export default function ReferralPage() {
           Referral Program
         </h1>
         <p className="mt-1 text-muted-foreground">
-          Invite friends to SMT Watch and earn bonus tokens together.
+          Invite friends to Samono and earn bonus tokens together.
         </p>
       </div>
 

@@ -49,7 +49,7 @@ function LoginForm() {
 
         const timestamp = Date.now();
         const message = new TextEncoder().encode(
-          `SMT Watch Login\n\nWallet: ${publicKey.toBase58()}\nTimestamp: ${timestamp}`
+          `Samono Login\n\nWallet: ${publicKey.toBase58()}\nTimestamp: ${timestamp}`
         );
         const signatureBytes = await signMessage(message);
         const bs58 = await import("bs58");
@@ -104,7 +104,7 @@ function LoginForm() {
           <div className="flex justify-center mb-2">
             <Coins className="h-10 w-10 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Welcome to SMT Watch</CardTitle>
+          <CardTitle className="text-2xl">Welcome to Samono</CardTitle>
           <CardDescription>
             Connect your Solana wallet to start earning tokens
           </CardDescription>

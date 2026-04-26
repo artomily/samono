@@ -36,31 +36,51 @@ export function Navbar() {
     : null;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
+    <header
+      className="sticky top-0 z-50 w-full"
+      style={{
+        borderBottom: "1px solid rgba(0,229,255,0.12)",
+        background: "#000",
+      }}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-          <Coins className="h-6 w-6 text-primary" />
-          <span className="bg-linear-to-r from-primary to-zinc-900 bg-clip-text text-transparent">
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl" style={{ color: "#00E5FF" }}>
+          <Coins className="h-6 w-6" />
+          <span
+            style={{
+              letterSpacing: "0.12em",
+              textShadow: "0 0 22px rgba(0,229,255,0.5)",
+              fontFamily: "var(--font-geist-mono), 'Courier New', monospace",
+            }}
+          >
             SAMONO
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-4">
           {NAV_LINKS.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "relative flex items-center gap-1.5 px-1 py-2 text-xs font-semibold tracking-[0.14em] transition-colors",
                 pathname === href || pathname.startsWith(href + "/")
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                  ? "text-cyan-300"
+                  : "text-cyan-100/40 hover:text-cyan-200"
               )}
+              style={{ fontFamily: "var(--font-geist-mono), 'Courier New', monospace" }}
             >
               <Icon className="h-4 w-4" />
               {label}
+              {(pathname === href || pathname.startsWith(href + "/")) && (
+                <span
+                  aria-hidden
+                  className="absolute -bottom-2.5 left-0 right-0 h-px"
+                  style={{ background: "#00E5FF" }}
+                />
+              )}
             </Link>
           ))}
         </nav>
@@ -74,17 +94,17 @@ export function Navbar() {
 
           {/* User dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-full hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1">
+            <DropdownMenuTrigger className="rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/60 focus:ring-offset-1 focus:ring-offset-black hover:bg-cyan-400/10">
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-primary/20 text-primary text-xs font-bold">
+                <AvatarFallback className="bg-cyan-400/15 text-cyan-300 text-xs font-bold">
                   {truncatedAddress ? truncatedAddress.slice(0, 2).toUpperCase() : "?"}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-48 border-cyan-400/20 bg-black text-cyan-100">
               {truncatedAddress && (
                 <>
-                  <div className="px-2 py-1.5 text-xs text-muted-foreground font-mono">
+                  <div className="px-2 py-1.5 text-xs text-cyan-200/55 font-mono">
                     {truncatedAddress}
                   </div>
                   <DropdownMenuSeparator />
@@ -113,7 +133,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="md:hidden text-cyan-200 hover:bg-cyan-400/10 hover:text-cyan-100"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -124,7 +144,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-border/50 bg-background px-4 pb-4 pt-2">
+        <div className="md:hidden border-t border-cyan-400/15 bg-black px-4 pb-4 pt-2">
           <nav className="flex flex-col gap-1 mb-4">
             {NAV_LINKS.map(({ href, label, icon: Icon }) => (
               <Link
@@ -134,9 +154,10 @@ export function Navbar() {
                 className={cn(
                   "flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                   pathname === href || pathname.startsWith(href + "/")
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    ? "bg-cyan-400/10 text-cyan-300"
+                    : "text-cyan-100/45 hover:bg-cyan-400/10 hover:text-cyan-200"
                 )}
+                style={{ fontFamily: "var(--font-geist-mono), 'Courier New', monospace" }}
               >
                 <Icon className="h-4 w-4" />
                 {label}

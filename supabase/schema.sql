@@ -1,5 +1,5 @@
 -- ─────────────────────────────────────────────────────────────────
--- SMT Watch — Supabase Database Schema
+-- Samono — Supabase Database Schema
 -- Run this in the Supabase SQL Editor (Database > SQL Editor > New Query)
 -- ─────────────────────────────────────────────────────────────────
 

@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     try {
       const bs58 = await import("bs58");
       const message = new TextEncoder().encode(
-        `SMT Watch Login\n\nWallet: ${walletAddress}\nTimestamp: ${timestamp}`
+        `Samono Login\n\nWallet: ${walletAddress}\nTimestamp: ${timestamp}`
       );
       const sigBytes = bs58.default.decode(signature);
       const keyBytes = bs58.default.decode(walletAddress);

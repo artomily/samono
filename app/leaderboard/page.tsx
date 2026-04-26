@@ -34,7 +34,7 @@ export default async function LeaderboardPage() {
           Leaderboard
         </h1>
         <p className="text-muted-foreground">
-          Top earners on SMT Watch, ranked by total SMT tokens earned
+          Top earners on Samono, ranked by total SMT tokens earned
         </p>
       </div>
 

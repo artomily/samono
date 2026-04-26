@@ -1,4 +1,4 @@
-// Solana-related types for the SMT Watch platform
+// Solana-related types for the Samono platform
 
 export interface SolanaTokenBalance {
   mint: string;
