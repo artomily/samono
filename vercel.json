@@ -11,26 +11,10 @@
       "schedule": "0 */4 * * *"
     }
   ],
-  "env": [
-    {
-      "key": "CRON_SECRET",
-      "description": "Secret for cron job authentication",
-      "value": "your-secret-key-here"
-    },
-    {
-      "key": "YOUTUBE_API_KEY",
-      "description": "YouTube Data API key",
-      "value": "your-youtube-api-key"
-    },
-    {
-      "key": "SUPABASE_URL",
-      "description": "Supabase project URL",
-      "value": "https://your-project.supabase.co"
-    },
-    {
-      "key": "SUPABASE_SERVICE_ROLE_KEY",
-      "description": "Supabase service role key",
-      "value": "your-service-role-key"
-    }
-  ]
+  "env": {
+    "CRON_SECRET": "your-secret-key-here",
+    "YOUTUBE_API_KEY": "your-youtube-api-key",
+    "SUPABASE_URL": "https://your-project.supabase.co",
+    "SUPABASE_SERVICE_ROLE_KEY": "your-service-role-key"
+  }
 }
