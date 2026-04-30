@@ -5,7 +5,7 @@ import { completeSession, getSessionById } from "@/lib/dal/sessions";
 import { getVideoById } from "@/lib/dal/videos";
 import { getProfileById } from "@/lib/dal/profiles";
 import { validateSession } from "@/services/session-validator";
-import { calculateReward, createPendingReward, creditReferralBonus } from "@/services/reward-engine";
+import { calculateReward, creditReferralBonus } from "@/services/reward-engine";
 import { awardXP, WATCH_XP_PER_MINUTE, FINISH_VIDEO_XP } from "@/services/xp-engine";
 import { evaluateAchievements } from "@/services/achievement-engine";
 
@@ -83,36 +83,38 @@ export async function POST(
     });
   }
 
-  // Calculate and create reward
+  // Calculate points reward (based on video reward_amount as points)
   const profile = await getProfileById(user.id);
   if (!profile) {
     return NextResponse.json({ success: false, error: "Profile not found" }, { status: 404 });
   }
 
+  // Points = video.reward_amount × streak/level multipliers (same multiplier logic)
   const rewardAmount = calculateReward(video, profile);
-  const reward = await createPendingReward(user.id, sessionId, rewardAmount);
+  const pointsEarned = Math.round(rewardAmount * 100); // e.g. 10 reward_amount → 1000 points
+
+  // Award XP = pointsEarned (points IS the XP)
+  const xpAmount = pointsEarned +
+    Math.floor(completedSession.active_watch_seconds / 60) * WATCH_XP_PER_MINUTE +
+    FINISH_VIDEO_XP;
+
+  const [xpResult, newAchievements] = await Promise.all([
+    awardXP(user.id, xpAmount),
+    evaluateAchievements(user.id),
+  ]);
 
   // Credit referral bonus to referrer (non-blocking)
   if (profile.referrer_id) {
     creditReferralBonus(profile.referrer_id, sessionId, rewardAmount).catch(() => {});
   }
 
-  // Award XP: 1 XP per active minute + 50 XP for finishing
-  const xpAmount =
-    Math.floor(completedSession.active_watch_seconds / 60) * WATCH_XP_PER_MINUTE +
-    FINISH_VIDEO_XP;
-  const [xpResult, newAchievements] = await Promise.all([
-    awardXP(user.id, xpAmount),
-    evaluateAchievements(user.id),
-  ]);
-
   return NextResponse.json({
     success: true,
     data: {
       eligible: true,
-      rewardAmount,
-      rewardId: reward.id,
-      message: `You earned ${rewardAmount} SOL! Go to your wallet to claim.`,
+      pointsEarned: xpAmount,
+      rewardAmount: xpAmount, // kept for backwards compat with VideoPlayer
+      message: `You earned ${xpAmount} points! Go to Swap to convert to SOL.`,
       xpGained: xpAmount,
       leveledUp: xpResult.leveledUp,
       newLevel: xpResult.newLevel,

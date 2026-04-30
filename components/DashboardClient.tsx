@@ -50,14 +50,14 @@ export function DashboardClient(props: Props) {
         padding: "1.4rem 2rem",
         display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem",
       }}>
-        <div>
+        {/* <div>
           <div style={{ fontSize: "0.6rem", letterSpacing: "0.22em", color: "rgba(0,229,255,0.45)", marginBottom: "0.3rem" }}>
             ─── OPERATOR COMMAND ───
           </div>
           <h1 style={{ fontSize: "1.2rem", fontWeight: 700, letterSpacing: "0.06em", color: CYAN }}>
             ⊕ {username.toUpperCase()}
           </h1>
-        </div>
+        </div> */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
           <Link
             href="/dashboard/swap"

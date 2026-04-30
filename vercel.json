@@ -1,0 +1,36 @@
+{
+  "$schema": "https://openapi.vercel.sh/schema.json?version=latest",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "devCommand": "npm run dev",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/sync-youtube",
+      "schedule": "0 */4 * * *"
+    }
+  ],
+  "env": [
+    {
+      "key": "CRON_SECRET",
+      "description": "Secret for cron job authentication",
+      "value": "your-secret-key-here"
+    },
+    {
+      "key": "YOUTUBE_API_KEY",
+      "description": "YouTube Data API key",
+      "value": "your-youtube-api-key"
+    },
+    {
+      "key": "SUPABASE_URL",
+      "description": "Supabase project URL",
+      "value": "https://your-project.supabase.co"
+    },
+    {
+      "key": "SUPABASE_SERVICE_ROLE_KEY",
+      "description": "Supabase service role key",
+      "value": "your-service-role-key"
+    }
+  ]
+}

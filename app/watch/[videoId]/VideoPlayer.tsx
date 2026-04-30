@@ -5,7 +5,7 @@ import { SessionProgress } from "@/components/SessionProgress";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Coins, AlertCircle } from "lucide-react";
+import { CheckCircle, Star, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -85,7 +85,7 @@ export function VideoPlayer({
       const res = await fetch("/api/sessions/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ video_id: videoId }),
+        body: JSON.stringify({ videoId }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -98,7 +98,7 @@ export function VideoPlayer({
         setSessionState("error");
         return;
       }
-      sessionIdRef.current = data.session_id;
+      sessionIdRef.current = data.data?.sessionId ?? data.session_id;
       setSessionState("active");
     } catch {
       toast.error("Network error starting session");
@@ -115,17 +115,20 @@ export function VideoPlayer({
     const ct = player.getCurrentTime();
     setCurrentTime(ct);
 
+    const watchPct = durationSeconds > 0 ? Math.min(ct / durationSeconds, 1) : 0;
     await fetch(`/api/sessions/${sessionIdRef.current}/heartbeat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        current_time: ct,
-        tab_switches: tabSwitchesRef.current,
-        speed_changes: speedChangesRef.current,
-        is_active: isPlayingRef.current && isPageVisible,
+        activeWatchSeconds: activeSecondsRef.current,
+        totalElapsedSeconds: totalSecondsRef.current,
+        watchPercentage: watchPct,
+        tabSwitchCount: tabSwitchesRef.current,
+        pauseCount: 0,
+        speedChangeCount: speedChangesRef.current,
       }),
     }).catch(() => {});
-  }, [sessionState, isPageVisible]);
+  }, [sessionState, isPageVisible, durationSeconds]);
 
   // Complete session
   const completeSession = useCallback(async () => {
@@ -137,22 +140,25 @@ export function VideoPlayer({
     const ct = player?.getCurrentTime() ?? durationSeconds;
 
     try {
+      const watchPct = durationSeconds > 0 ? Math.min(ct / durationSeconds, 1) : 1;
       const res = await fetch(`/api/sessions/${sessionIdRef.current}/complete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          current_time: ct,
-          tab_switches: tabSwitchesRef.current,
-          speed_changes: speedChangesRef.current,
-          active_seconds: activeSecondsRef.current,
-          total_seconds: totalSecondsRef.current,
+          activeWatchSeconds: activeSecondsRef.current,
+          totalElapsedSeconds: totalSecondsRef.current,
+          watchPercentage: watchPct,
+          tabSwitchCount: tabSwitchesRef.current,
+          pauseCount: 0,
+          speedChangeCount: speedChangesRef.current,
         }),
       });
       const data = await res.json();
       if (res.ok) {
         setSessionState("completed");
-        setEarnedAmount(data.reward_amount ?? rewardAmount);
-        toast.success(`You earned ${data.reward_amount ?? rewardAmount} SOL!`);
+        const pts = data.data?.pointsEarned ?? data.data?.rewardAmount ?? rewardAmount;
+        setEarnedAmount(pts);
+        toast.success(`You earned ${pts.toLocaleString()} points!`);
       } else {
         setSessionState("error");
         toast.error(data.error ?? "Could not complete session");
@@ -292,18 +298,18 @@ export function VideoPlayer({
             <div className="flex items-center gap-3">
               <CheckCircle className="h-6 w-6 text-primary shrink-0" />
               <div>
-                <p className="font-semibold">Reward earned!</p>
+                <p className="font-semibold">Points earned!</p>
                 <p className="text-sm text-muted-foreground">
                   <Badge variant="outline" className="text-primary border-primary/30 bg-primary/5 mr-1">
-                    <Coins className="h-3 w-3 mr-1" />
-                    {earnedAmount} SOL
+                    <Star className="h-3 w-3 mr-1" />
+                    {earnedAmount.toLocaleString()} points
                   </Badge>
-                  pending in your wallet
+                  added to your balance
                 </p>
               </div>
             </div>
-            <Button render={<Link href="/wallet" />} size="sm">
-              Claim Now
+            <Button render={<Link href="/dashboard/swap" />} size="sm">
+              Swap to SOL
             </Button>
           </CardContent>
         </Card>

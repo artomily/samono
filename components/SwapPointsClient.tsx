@@ -11,7 +11,6 @@ import {
 } from "@/components/ActivityStream";
 import {
   SWAP_OPTIONS,
-  simulatePointSwap,
   type SwapOption,
 } from "@/lib/mock-point-swap";
 
@@ -50,29 +49,52 @@ export function SwapPointsClient({
     setLastSignature(null);
     setLastSwapLabel(option.label);
     setLastStatus(`Routing ${option.pointsCost.toLocaleString("en-US")} points into settlement rail...`);
+    // Optimistic deduction
     setPointsBalance((current) => current - option.pointsCost);
 
     try {
-      const result = await simulatePointSwap({
-        option,
-        currentPointsBalance: previousPointsBalance,
-        currentSolBalance: previousSolBalance,
+      const res = await fetch("/api/rewards/swap", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ optionId: option.id }),
       });
 
-      setPointsBalance(result.nextPointsBalance);
-      setSolBalance(result.nextSolBalance);
-      setLastStatus(result.successMessage);
-      setLastSignature(result.txSignature);
+      const json = await res.json() as {
+        success: boolean;
+        error?: string;
+        data?: {
+          newPointsBalance: number;
+          solAmount: number;
+          txSignature?: string;
+          message: string;
+        };
+      };
+
+      if (!res.ok || !json.success) {
+        throw new Error(json.error ?? "Swap failed. Try again.");
+      }
+
+      const { data } = json;
+      setPointsBalance(data!.newPointsBalance);
+      setSolBalance((prev) => Number((prev + data!.solAmount).toFixed(4)));
+      setLastStatus(data!.message);
+      setLastSignature(data!.txSignature ?? null);
       setSuccessSwapId(option.id);
-      setExternalEvents((current) => [...current, ...result.activityEvents]);
-      toast.success(result.successMessage);
+      setExternalEvents((current) => [
+        ...current,
+        {
+          kind: "swap",
+          message: `${option.pointsCost.toLocaleString()} pts → ${option.solAmount} SOL`,
+        } as ActivityStreamExternalEvent,
+      ]);
+      toast.success(data!.message);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Swap failed. Try again.";
 
       setPointsBalance(previousPointsBalance);
       setSolBalance(previousSolBalance);
       setErrorMessage(message);
-      setLastStatus("Swap aborted. Points restored to the local balance mirror.");
+      setLastStatus("Swap aborted. Points restored.");
       toast.error(message);
     } finally {
       setActiveSwapId(null);

@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Eye, Coins } from "lucide-react";
+import { Clock, Eye, Star } from "lucide-react";
 import { formatDuration, formatNumber } from "@/lib/utils";
 
 interface VideoCardProps {
@@ -63,8 +63,8 @@ export function VideoCard({
               {formatNumber(viewCount)}
             </span>
             <span className="flex items-center gap-1 text-primary font-semibold">
-              <Coins className="h-3 w-3" />
-              {rewardAmount} SOL
+              <Star className="h-3 w-3" />
+              {Math.round(rewardAmount * 100)} pts
             </span>
           </div>
         </CardContent>
