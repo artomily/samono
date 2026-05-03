@@ -186,6 +186,8 @@ interface ActivityStreamProps {
   label?: string;
   className?: string;
   externalEvents?: ActivityStreamExternalEvent[];
+  /** When true, disables the auto-generated fake events — only externalEvents are shown. */
+  disableAutoGeneration?: boolean;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -195,9 +197,10 @@ export function ActivityStream({
   label = "LIVE NETWORK ACTIVITY",
   className = "",
   externalEvents = [],
+  disableAutoGeneration = false,
 }: ActivityStreamProps) {
   const [events, setEvents] = useState<StreamEvent[]>(() =>
-    Array.from({ length: 3 }, generateEvent)
+    disableAutoGeneration ? [] : Array.from({ length: 3 }, generateEvent)
   );
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(paused);
@@ -219,11 +222,12 @@ export function ActivityStream({
   }, [maxItems]);
 
   useEffect(() => {
+    if (disableAutoGeneration) return;
     scheduleNext();
     return () => {
       if (timerRef.current !== undefined) clearTimeout(timerRef.current);
     };
-  }, [scheduleNext]);
+  }, [scheduleNext, disableAutoGeneration]);
 
   useEffect(() => {
     if (externalEvents.length <= processedExternalCountRef.current) return;

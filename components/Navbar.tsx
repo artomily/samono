@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Wallet, Users } from "lucide-react";
+import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Wallet, Users, Gift } from "lucide-react";
 import { signOut } from "@/lib/auth/actions";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +22,7 @@ const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/watch", label: "Watch", icon: PlayCircle },
   { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
+  { href: "/dashboard/rewards", label: "Rewards", icon: Gift },
   { href: "/wallet", label: "Wallet", icon: Wallet },
   { href: "/referral", label: "Referral", icon: Users },
 ];

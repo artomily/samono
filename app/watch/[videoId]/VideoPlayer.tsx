@@ -61,6 +61,7 @@ export function VideoPlayer({
   const playerRef = useRef<YTPlayer | null>(null);
   const sessionIdRef = useRef<string | null>(null);
   const heartbeatTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const [sessionState, setSessionState] = useState<SessionState>("idle");
   const [currentTime, setCurrentTime] = useState(0);
@@ -199,6 +200,14 @@ export function VideoPlayer({
             if (state === YT.PLAYING) {
               isPlayingRef.current = true;
 
+              // Start 1-second progress timer for smooth bar updates
+              if (!progressTimerRef.current) {
+                progressTimerRef.current = setInterval(() => {
+                  const ct = playerRef.current?.getCurrentTime();
+                  if (ct !== undefined) setCurrentTime(ct);
+                }, 1_000);
+              }
+
               // Detect speed change
               const rate = playerRef.current?.getPlaybackRate() ?? 1;
               if (rate !== lastRateRef.current) {
@@ -220,6 +229,10 @@ export function VideoPlayer({
               }
             } else {
               isPlayingRef.current = false;
+              if (progressTimerRef.current) {
+                clearInterval(progressTimerRef.current);
+                progressTimerRef.current = null;
+              }
               if (heartbeatTimerRef.current) {
                 clearInterval(heartbeatTimerRef.current);
                 heartbeatTimerRef.current = null;
@@ -243,6 +256,7 @@ export function VideoPlayer({
 
     return () => {
       if (heartbeatTimerRef.current) clearInterval(heartbeatTimerRef.current);
+      if (progressTimerRef.current) clearInterval(progressTimerRef.current);
       playerRef.current?.destroy();
     };
   }, [youtubeId, startSession, sendHeartbeat, completeSession]);
@@ -282,7 +296,7 @@ export function VideoPlayer({
       </div>
 
       {/* Progress tracker */}
-      {sessionState === "active" && (
+      {(sessionState === "active" || sessionState === "idle") && (
         <SessionProgress
           currentTime={currentTime}
           duration={durationSeconds}

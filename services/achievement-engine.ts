@@ -1,5 +1,4 @@
 import { createServiceClient } from "@/lib/supabase/server";
-import { DUMMY_MODE } from "@/lib/dummy";
 import type { Achievement, AchievementCondition } from "@/types/database";
 
 // ─── Condition evaluator ─────────────────────────────────────────────────────
@@ -35,8 +34,6 @@ export type AchievementContext = {
  * Returns the list of newly-unlocked achievements (empty if DUMMY_MODE).
  */
 export async function evaluateAchievements(userId: string): Promise<Achievement[]> {
-  if (DUMMY_MODE) return [];
-
   const supabase = createServiceClient();
 
   const [

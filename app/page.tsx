@@ -17,29 +17,29 @@ const GREEN = "#00FF87";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 
 const STATS = [
-  { value: "12.4K", label: "NODES ACTIVE" },
-  { value: "85K", label: "SOL DEPLOYED" },
-  { value: "320", label: "STREAMS LIVE" },
-  { value: "1.2M", label: "MINS LOGGED" },
+  { value: "POINTS", label: "EARN PER VIDEO" },
+  { value: "SOL", label: "REWARDS ASSET" },
+  { value: "10×", label: "VIDEOS TO FIRST SWAP" },
+  { value: "∞", label: "REFERRAL EARNINGS" },
 ];
 
 const STEPS = [
   { n: "01", label: "SYNC", text: "Connect your Solana wallet — Phantom, Solflare, or any Wallet Standard adapter. Zero signup friction." },
-  { n: "02", label: "OBSERVE", text: "Engage with curated Web3 content. Every verified minute of watch time generates a session heartbeat." },
-  { n: "03", label: "HARVEST", text: "SOL rewards accumulate per verified session. Streak multipliers up to 2× stack automatically on-chain." },
-  { n: "04", label: "EXTRACT", text: "Withdraw on-chain with zero intermediaries. Your rewards are verifiable by anyone, any time." },
+  { n: "02", label: "OBSERVE", text: "Watch curated Web3 content. Every verified minute of watch time earns engagement points toward your balance." },
+  { n: "03", label: "HARVEST", text: "Points accumulate per completed session. Watch 10 videos to unlock your first SOL swap. Streak bonuses apply." },
+  { n: "04", label: "EXTRACT", text: "Swap your points for SOL and claim directly to your wallet. Every reward is traceable on-chain." },
 ];
 
 const TOKEN_TIERS = [
   {
     label: "BASE RATE",
-    rate: "1 SOL / MIN",
+    rate: "POINTS PER VIDEO",
     color: CYAN,
     perks: ["Every completed stream", "Instant queue credit", "Zero minimum runtime"],
   },
   {
     label: "STREAK BONUS",
-    rate: "UP TO 2× SOL",
+    rate: "UP TO 2× POINTS",
     color: MAGENTA,
     perks: ["7-day streak: 1.5×", "30-day streak: 2×", "Protected by anti-cheat"],
   },
@@ -52,9 +52,9 @@ const TOKEN_TIERS = [
 ];
 
 const TREASURY_INFLOW = [
-  { label: "ADSENSE", value: "$24.8K", width: 82, color: CYAN },
-  { label: "FIAT RAMP", value: "$12.1K", width: 54, color: MAGENTA },
-  { label: "EXTERNAL", value: "$6.4K", width: 31, color: GREEN },
+  { label: "AD REVENUE", value: "~60%", width: 82, color: CYAN },
+  { label: "FIAT RAMP", value: "~25%", width: 54, color: MAGENTA },
+  { label: "EXTERNAL", value: "~15%", width: 31, color: GREEN },
 ];
 
 const TREASURY_OUTFLOW = [
@@ -65,11 +65,11 @@ const TREASURY_OUTFLOW = [
 ];
 
 const TREASURY_FLOW = [
-  { label: "INTAKE", amount: "$43.3K", color: CYAN, height: 74 },
-  { label: "BUFFER", amount: "$11.2K", color: MAGENTA, height: 48 },
-  { label: "DISTRIBUTE", amount: "$17.8K", color: GREEN, height: 64 },
-  { label: "LP", amount: "$8.7K", color: MAGENTA, height: 36 },
-  { label: "VAULT", amount: "$5.6K", color: CYAN, height: 30 },
+  { label: "INTAKE", amount: "~60%", color: CYAN, height: 74 },
+  { label: "BUFFER", amount: "~12%", color: MAGENTA, height: 48 },
+  { label: "DISTRIBUTE", amount: "~41%", color: GREEN, height: 64 },
+  { label: "LP", amount: "~10%", color: MAGENTA, height: 36 },
+  { label: "VAULT", amount: "~7%", color: CYAN, height: 30 },
 ];
 
 const FAQS = [
@@ -363,7 +363,6 @@ function TreasuryPreview() {
 
               <div style={{ paddingTop: "0.8rem", display: "grid", gap: "0.35rem", fontSize: "0.62rem", letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)" }}>
                 <div>LEDGER STATE: <span style={{ color: CYAN }}>PENDING MIRROR</span></div>
-                <div>VERIFICATION MODE: <span style={{ color: MAGENTA }}>SIMULATION / PREVIEW</span></div>
                 <div>SETTLEMENT TARGET: <span style={{ color: GREEN }}>SOLANA MAINNET</span></div>
               </div>
             </div>
@@ -586,7 +585,7 @@ export default function LandingPage() {
             INITIALIZE YOUR NODE
           </h2>
           <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", lineHeight: 1.7, marginBottom: "2.5rem" }}>
-            JOIN 12,400+ OPERATORS. FREE, INSTANT, EVERY REWARD VERIFIABLE ON-CHAIN.
+            FREE TO JOIN. EVERY REWARD VERIFIABLE ON-CHAIN.
           </p>
           <Link href="/register" style={{
             display: "inline-block", background: CYAN, color: "#000", fontWeight: 900,

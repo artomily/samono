@@ -1,11 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Reward, RewardInsert } from "@/types/database";
-import { DUMMY_MODE, DUMMY_REWARDS } from "@/lib/dummy";
 
 /** Get all pending rewards for a user (ready to claim) */
 export async function getPendingRewards(userId: string): Promise<Reward[]> {
-  if (DUMMY_MODE) return DUMMY_REWARDS as unknown as Reward[];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("rewards")

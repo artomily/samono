@@ -91,7 +91,7 @@ export async function POST(
 
   // Points = video.reward_amount × streak/level multipliers (same multiplier logic)
   const rewardAmount = calculateReward(video, profile);
-  const pointsEarned = Math.round(rewardAmount * 100); // e.g. 10 reward_amount → 1000 points
+  const pointsEarned = Math.round(rewardAmount * 5); // e.g. reward_amount=10 → 50 pts base
 
   // Award XP = pointsEarned (points IS the XP)
   const xpAmount = pointsEarned +

@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/auth/session";
 import { getProfile, getUserWatchStats } from "@/lib/dal/profiles";
 import { getClaimableAmount } from "@/lib/dal/rewards";
 import { getVideos } from "@/lib/dal/videos";
+import { getRecentActivityEvents } from "@/lib/dal/activity";
 import { DashboardClient } from "@/components/DashboardClient";
 
 export const metadata: Metadata = {
@@ -12,11 +13,12 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const user = await requireAuth();
 
-  const [profile, stats, pendingAmount, videos] = await Promise.all([
+  const [profile, stats, pendingAmount, videos, recentActivity] = await Promise.all([
     getProfile(user.id),
     getUserWatchStats(user.id),
     getClaimableAmount(user.id),
     getVideos(),
+    getRecentActivityEvents(user.id),
   ]);
 
   const username = profile?.username ?? user.email?.split("@")[0] ?? "User";
@@ -29,6 +31,7 @@ export default async function DashboardPage() {
       watchStreak={profile?.streak_count ?? 0}
       videosWatched={stats?.videosWatched ?? 0}
       referralUsername={profile?.username ?? undefined}
+      recentActivity={recentActivity}
       videos={videos.map((video) => ({
         id: video.id,
         youtubeId: video.youtube_video_id,

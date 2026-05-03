@@ -1,10 +1,9 @@
 import { createServiceClient } from "@/lib/supabase/server";
-import { DUMMY_MODE } from "@/lib/dummy";
 
 // ─── XP constants ────────────────────────────────────────────────────────────
 
 export const WATCH_XP_PER_MINUTE = 1;   // 1 XP per minute of active watch time
-export const FINISH_VIDEO_XP    = 50;  // Bonus for completing a video
+export const FINISH_VIDEO_XP    = 10;  // Bonus for completing a video (~10 videos → 700 pts)
 export const STREAK_BONUS_XP    = 200; // Daily streak bonus
 
 // ─── Level formula ───────────────────────────────────────────────────────────
@@ -83,12 +82,6 @@ export async function awardXP(
   userId: string,
   amount: number
 ): Promise<{ newXp: number; newLevel: number; leveledUp: boolean }> {
-  if (DUMMY_MODE) {
-    const newXp   = 1250 + amount;
-    const newLevel = calculateLevel(newXp);
-    return { newXp, newLevel, leveledUp: newLevel > 3 };
-  }
-
   const supabase = createServiceClient();
 
   const { data: profile } = await supabase

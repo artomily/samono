@@ -1,18 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 
 import {
-  ActivityStream,
-  type ActivityStreamExternalEvent,
-} from "@/components/ActivityStream";
-import {
   SWAP_OPTIONS,
   type SwapOption,
-} from "@/lib/mock-point-swap";
+} from "@/lib/constants/swap";
 
 interface SwapPointsClientProps {
   username: string;
@@ -34,7 +30,14 @@ export function SwapPointsClient({
   const [lastSwapLabel, setLastSwapLabel] = useState<string | null>(null);
   const [successSwapId, setSuccessSwapId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [externalEvents, setExternalEvents] = useState<ActivityStreamExternalEvent[]>([]);
+
+  // Fetch real SOL balance on mount
+  useEffect(() => {
+    fetch("/api/rewards/balance")
+      .then(r => r.json())
+      .then(data => { if (typeof data.balance === "number") setSolBalance(data.balance); })
+      .catch(() => {});
+  }, []);
 
   async function handleSwap(option: SwapOption) {
     if (activeSwapId) return;
@@ -80,13 +83,6 @@ export function SwapPointsClient({
       setLastStatus(data!.message);
       setLastSignature(data!.txSignature ?? null);
       setSuccessSwapId(option.id);
-      setExternalEvents((current) => [
-        ...current,
-        {
-          kind: "swap",
-          message: `${option.pointsCost.toLocaleString()} pts → ${option.solAmount} SOL`,
-        } as ActivityStreamExternalEvent,
-      ]);
       toast.success(data!.message);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Swap failed. Try again.";
@@ -148,9 +144,9 @@ export function SwapPointsClient({
             accent="text-cyan-200"
           />
           <StatusPanel
-            label="Wallet Mirror"
-            value={`${solBalance.toFixed(2)} SOL`}
-            caption="Mock wallet balance updates on settlement"
+            label="SOL Balance"
+            value={`${solBalance.toFixed(4)} SOL`}
+            caption="On-chain SOL balance"
             accent="text-emerald-300"
             animatedKey={solBalance}
             reduceMotion={reduceMotion}
@@ -175,8 +171,7 @@ export function SwapPointsClient({
                 </h2>
               </div>
               <p className="max-w-md text-sm leading-6 text-white/54">
-                Each rail simulates confirmation latency, posts a wallet credit, and emits
-                synchronized feed events without touching the chain.
+                Points are burned on-chain and SOL is disbursed from the treasury wallet.
               </p>
             </div>
 
@@ -307,12 +302,6 @@ export function SwapPointsClient({
                 ) : null}
               </div>
             </section>
-
-            <ActivityStream
-              label="LAST ACTIVITY"
-              className="border border-white/10 bg-white/3"
-              externalEvents={externalEvents}
-            />
           </div>
         </div>
       </div>

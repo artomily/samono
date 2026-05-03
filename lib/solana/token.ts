@@ -12,6 +12,12 @@ import type { TransferResult, SolanaTokenBalance } from "@/types/solana";
 /**
  * Transfer native SOL from the treasury to a recipient wallet.
  * Amount is in human-readable units (e.g. 0.1 = 0.1 SOL).
+ *
+ * TODO(smart-contract): When your on-chain swap program is deployed,
+ * replace the SystemProgram.transfer below with a CPI call to your program:
+ *   - Set NEXT_PUBLIC_SWAP_PROGRAM_ID in .env.local to the deployed Program ID
+ *   - Call the swap instruction: { fromTreasury, toUser, pointsDeducted, solAmount }
+ *   - The program validates points were deducted on-chain before releasing SOL
  */
 export async function transferSOL(
   toWalletAddress: string,

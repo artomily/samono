@@ -1,13 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/server";
 import type { Profile, ProfileUpdate, AchievementWithStatus } from "@/types/database";
-import {
-  DUMMY_MODE,
-  DUMMY_PROFILE,
-  DUMMY_STATS,
-  DUMMY_ACHIEVEMENTS,
-  DUMMY_USER_ACHIEVEMENT_IDS,
-} from "@/lib/dummy";
 
 export type PublicProfileData = {
   profile: Profile;
@@ -20,7 +13,6 @@ export async function getProfileById(userId: string): Promise<Profile | null> {
 }
 
 export async function getProfile(userId: string): Promise<Profile | null> {
-  if (DUMMY_MODE) return DUMMY_PROFILE as unknown as Profile;
   const supabase = await createClient();
   const { data } = await supabase
     .from("profiles")
@@ -62,7 +54,6 @@ export async function getUserWatchStats(userId: string): Promise<{
   totalEarned: number;
   streakCount: number;
 }> {
-  if (DUMMY_MODE) return DUMMY_STATS;
   const supabase = await createClient();
 
   const [profileResult, sessionsResult] = await Promise.all([
@@ -123,20 +114,6 @@ export async function getReferralStats(userId: string): Promise<{
 export async function getProfileByUsername(
   username: string
 ): Promise<PublicProfileData | null> {
-  if (DUMMY_MODE) {
-    const achievements: AchievementWithStatus[] = DUMMY_ACHIEVEMENTS.map((a) => ({
-      ...a,
-      unlocked_at: DUMMY_USER_ACHIEVEMENT_IDS.has(a.id)
-        ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-        : null,
-    }));
-    return {
-      profile: DUMMY_PROFILE as unknown as Profile,
-      videosWatched: DUMMY_STATS.videosWatched,
-      achievements,
-    };
-  }
-
   const supabase = createServiceClient();
 
   const { data: profile } = await supabase

@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import Link from "next/link";
 import { VideoCard } from "@/components/VideoCard";
-import { ActivityStream } from "@/components/ActivityStream";
+import { ActivityStream, type ActivityStreamExternalEvent } from "@/components/ActivityStream";
 import { ClaimButton } from "@/components/ClaimButton";
 
 const CYAN = "#00E5FF";
@@ -28,6 +28,7 @@ interface Props {
   watchStreak: number;
   videosWatched: number;
   referralUsername?: string;
+  recentActivity: ActivityStreamExternalEvent[];
   videos: Video[];
 }
 
@@ -105,20 +106,26 @@ export function DashboardClient(props: Props) {
         ))}
       </div>
 
+      {/* ── Column Headers ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr min(22rem, 100%)", borderBottom: "1px solid rgba(0,229,255,0.08)" }}>
+        <div style={{ padding: "0.75rem 2rem", fontSize: "0.58rem", letterSpacing: "0.2em", color: "rgba(0,229,255,0.45)", borderRight: "1px solid rgba(0,229,255,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span>─── AVAILABLE STREAMS ───</span>
+          <Link href="/watch" style={{ fontSize: "0.58rem", letterSpacing: "0.16em", color: "rgba(0,229,255,0.45)", textDecoration: "none" }}
+            onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
+            onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.45)}")}>
+            VIEW ALL →
+          </Link>
+        </div>
+        <div style={{ padding: "0.75rem 2rem", fontSize: "0.58rem", letterSpacing: "0.2em", color: "rgba(0,229,255,0.45)" }}>
+          ─── ACTIVITY LOG ───
+        </div>
+      </div>
+
       {/* ── Main Content ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr min(22rem, 100%)", gap: "0", minHeight: "60vh" }}>
 
         {/* Left: Videos */}
         <div style={{ padding: "2rem", borderRight: "1px solid rgba(0,229,255,0.08)" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-            <div style={{ fontSize: "0.62rem", letterSpacing: "0.18em", color: CYAN }}>─── AVAILABLE STREAMS ───</div>
-            <Link href="/watch" style={{ fontSize: "0.6rem", letterSpacing: "0.16em", color: "rgba(0,229,255,0.45)", textDecoration: "none" }}
-              onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.45)")}>
-              VIEW ALL →
-            </Link>
-          </div>
-
           {videos.length === 0 ? (
             <div style={{ border: "1px solid rgba(0,229,255,0.15)", padding: "4rem 2rem", textAlign: "center", color: "rgba(255,255,255,0.3)" }}>
               <div style={{ fontSize: "0.75rem", letterSpacing: "0.1em" }}>NO STREAMS AVAILABLE</div>
@@ -144,7 +151,17 @@ export function DashboardClient(props: Props) {
 
         {/* Right: Activity + Referral */}
         <div style={{ padding: "2rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
-          <ActivityStream maxItems={6} label="LAST ACTIVITY" />
+          <ActivityStream
+            maxItems={6}
+            label=""
+            disableAutoGeneration={true}
+            externalEvents={props.recentActivity}
+          />
+          {props.recentActivity.length === 0 && (
+            <div style={{ fontSize: "0.65rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.25)", textAlign: "center", padding: "1.5rem 0" }}>
+              NO RECENT ACTIVITY
+            </div>
+          )}
 
           {referralUsername && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}

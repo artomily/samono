@@ -4,7 +4,7 @@ import { getSession } from "@/lib/auth/session";
 import { getProfileById } from "@/lib/dal/profiles";
 import { createServiceClient } from "@/lib/supabase/server";
 import { transferSOL } from "@/lib/solana/token";
-import { SWAP_OPTIONS } from "@/lib/mock-point-swap";
+import { SWAP_OPTIONS } from "@/lib/constants/swap";
 
 const bodySchema = z.object({
   optionId: z.string(),
