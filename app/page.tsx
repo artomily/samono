@@ -9,7 +9,6 @@ import { useMousePosition } from "@/hooks/useMousePosition";
 import { OrbitalRing } from "@/components/nexus/OrbitalRing";
 import { StatOrb } from "@/components/nexus/StatOrb";
 import { ProximityPanel } from "@/components/nexus/ProximityPanel";
-import { ActivityStream } from "@/components/ActivityStream";
 
 const WalletMultiButton = dynamic(
   async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
@@ -527,19 +526,6 @@ export default function LandingPage() {
       </section>
 
       {/* ── Activity Stream ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
-        <div style={{ maxWidth: "44rem", margin: "0 auto" }}>
-          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
-            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
-            ─── NETWORK TELEMETRY ───
-          </motion.h2>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3rem", letterSpacing: "-0.01em" }}>
-            LIVE ACTIVITY
-          </motion.p>
-          <ActivityStream maxItems={7} />
-        </div>
-      </section>
 
       {/* ── Treasury Preview ── */}
       <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>

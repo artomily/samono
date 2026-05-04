@@ -46,7 +46,7 @@ export default async function WatchVideoPage({ params }: Props) {
         <div className="flex items-center gap-3 flex-wrap">
           <Badge variant="outline" className="gap-1 text-primary border-primary/30 bg-primary/5">
             <Star className="h-3.5 w-3.5" />
-            {Math.round(video.reward_amount * 100)} pts reward
+            {Math.round(video.reward_amount * 5)} pts reward
           </Badge>
           <Badge variant="outline" className="gap-1 text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />

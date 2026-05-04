@@ -48,7 +48,7 @@ interface VideoPlayerProps {
 const HEARTBEAT_INTERVAL_MS = 10_000;
 const COMPLETION_THRESHOLD = 0.9; // 90%
 
-type SessionState = "idle" | "active" | "completed" | "error";
+type SessionState = "idle" | "active" | "completed" | "already_watched" | "error";
 
 export function VideoPlayer({
   videoId,
@@ -91,8 +91,7 @@ export function VideoPlayer({
       const data = await res.json();
       if (!res.ok) {
         if (data.code === "ALREADY_COMPLETED") {
-          setSessionState("completed");
-          toast.info("You've already earned rewards for this video");
+          setSessionState("already_watched");
           return;
         }
         toast.error(data.error ?? "Could not start session");
@@ -303,6 +302,21 @@ export function VideoPlayer({
           tabSwitches={tabSwitches}
           isActive={isPlayingRef.current && isPageVisible}
         />
+      )}
+
+      {/* Already watched banner */}
+      {sessionState === "already_watched" && (
+        <Card className="border-yellow-500/30 bg-yellow-500/8">
+          <CardContent className="p-4 flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-yellow-400 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-yellow-300">Sudah ditonton</p>
+              <p className="text-xs text-yellow-400/80 mt-0.5">
+                Kamu sudah menyelesaikan video ini dan mendapatkan poinnya. Kamu masih bisa menontonnya, tapi tidak ada poin tambahan.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Completed state */}
