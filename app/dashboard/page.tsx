@@ -26,6 +26,7 @@ export default async function DashboardPage() {
   return (
     <DashboardClient
       username={username}
+      userPoints={profile?.xp ?? 0}
       totalEarned={profile?.total_earned ?? 0}
       pendingAmount={pendingAmount}
       watchStreak={profile?.streak_count ?? 0}

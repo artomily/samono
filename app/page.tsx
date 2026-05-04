@@ -3,11 +3,18 @@
 import { type MouseEvent, useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import { OrbitalRing } from "@/components/nexus/OrbitalRing";
 import { StatOrb } from "@/components/nexus/StatOrb";
 import { ProximityPanel } from "@/components/nexus/ProximityPanel";
 import { ActivityStream } from "@/components/ActivityStream";
+
+const WalletMultiButton = dynamic(
+  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
+  { ssr: false }
+);
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -377,6 +384,17 @@ function TreasuryPreview() {
 
 export default function LandingPage() {
   const mouse = useMousePosition();
+  const { publicKey } = useWallet();
+
+  // Auto-save wallet to Supabase when connected (silently no-ops if not logged in)
+  useEffect(() => {
+    if (!publicKey) return;
+    fetch("/api/wallet/connect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ walletAddress: publicKey.toBase58(), walletType: "other" }),
+    }).catch(() => {});
+  }, [publicKey]);
 
   // Spring-based parallax for hero
   const rawX = useMotionValue(0);
@@ -411,11 +429,13 @@ export default function LandingPage() {
               {label}
             </Link>
           ))}
-          <Link href="/register" style={{
-            background: MAGENTA, color: "#000", fontWeight: 700, fontSize: "0.68rem",
-            letterSpacing: "0.12em", padding: "0.3rem 1rem", textDecoration: "none",
-            clipPath: "polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)",
-          }}>CONNECT</Link>
+          <div style={{ clipPath: "polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)", display: "inline-block" }}>
+            <WalletMultiButton style={{
+              background: MAGENTA, color: "#000", fontWeight: 700, fontSize: "0.65rem",
+              letterSpacing: "0.12em", padding: "0.3rem 1rem",
+              fontFamily: MONO, borderRadius: 0, border: "none",
+            }} />
+          </div>
         </div>
       </nav>
 
@@ -454,13 +474,17 @@ export default function LandingPage() {
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.35 }}
-            style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/register" style={{
-              background: CYAN, color: "#000", fontWeight: 700, fontSize: "0.75rem",
-              letterSpacing: "0.14em", padding: "0.75rem 2.2rem", textDecoration: "none",
-              clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
-              boxShadow: `0 0 32px rgba(0,229,255,0.35)`,
-            }}>INITIALIZE NODE</Link>
+            style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
+            <div style={{ clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)", boxShadow: `0 0 32px rgba(0,229,255,0.35)`, display: "inline-block" }}>
+              <WalletMultiButton style={{
+                background: CYAN, color: "#000", fontWeight: 900,
+                fontSize: "0.75rem", letterSpacing: "0.14em",
+                padding: "0.75rem 2.2rem",
+                fontFamily: MONO,
+                borderRadius: 0, border: "none",
+                clipPath: "none",
+              }} />
+            </div>
             <Link href="/watch" style={{
               border: `1px solid rgba(0,229,255,0.35)`, color: CYAN, fontWeight: 700, fontSize: "0.75rem",
               letterSpacing: "0.14em", padding: "0.75rem 2.2rem", textDecoration: "none",
@@ -587,12 +611,13 @@ export default function LandingPage() {
           <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", lineHeight: 1.7, marginBottom: "2.5rem" }}>
             FREE TO JOIN. EVERY REWARD VERIFIABLE ON-CHAIN.
           </p>
-          <Link href="/register" style={{
-            display: "inline-block", background: CYAN, color: "#000", fontWeight: 900,
-            fontSize: "0.85rem", letterSpacing: "0.14em", padding: "0.9rem 3rem", textDecoration: "none",
-            clipPath: "polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%)",
-            boxShadow: `0 0 48px rgba(0,229,255,0.4)`,
-          }}>CREATE FREE ACCOUNT</Link>
+          <div style={{ clipPath: "polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%)", display: "inline-block", boxShadow: `0 0 48px rgba(0,229,255,0.4)` }}>
+            <WalletMultiButton style={{
+              background: CYAN, color: "#000", fontWeight: 900,
+              fontSize: "0.85rem", letterSpacing: "0.14em", padding: "0.9rem 3rem",
+              fontFamily: MONO, borderRadius: 0, border: "none",
+            }} />
+          </div>
         </motion.div>
       </section>
 

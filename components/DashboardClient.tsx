@@ -23,6 +23,7 @@ interface Video {
 
 interface Props {
   username: string;
+  userPoints: number;
   totalEarned: number;
   pendingAmount: number;
   watchStreak: number;
@@ -33,6 +34,7 @@ interface Props {
 }
 
 const STATS_CONFIG = [
+  { label: "TOTAL POINTS", getValue: (p: Props) => p.userPoints.toLocaleString(), color: GREEN },
   { label: "TOTAL EARNED", getValue: (p: Props) => `${p.totalEarned.toFixed(2)} SOL`, color: CYAN },
   { label: "PENDING", getValue: (p: Props) => `${p.pendingAmount.toFixed(2)} SOL`, color: MAGENTA },
   { label: "DAY STREAK", getValue: (p: Props) => `${p.watchStreak}×`, color: GREEN },

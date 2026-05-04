@@ -56,7 +56,7 @@ export default function WalletPage() {
       await fetch("/api/wallet/connect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wallet_address: publicKey.toBase58() }),
+        body: JSON.stringify({ walletAddress: publicKey.toBase58(), walletType: "other" }),
       }).catch(() => {});
     });
   }, [publicKey]);
