@@ -163,7 +163,15 @@ export async function POST(req: NextRequest) {
 
   if (signInData?.session) {
     console.log("[Auth] User already exists, returning existing session");
+    // Check if the existing user still needs to complete registration (no username yet)
+    const { data: existingProfile } = await serviceClient
+      .from("profiles")
+      .select("username")
+      .eq("id", signInData.session.user.id)
+      .maybeSingle();
+    const needsRegistration = !existingProfile?.username;
     return NextResponse.json({
+      ...(needsRegistration && { isNewUser: true }),
       access_token: signInData.session.access_token,
       refresh_token: signInData.session.refresh_token,
       expires_at: signInData.session.expires_at,
@@ -213,6 +221,7 @@ export async function POST(req: NextRequest) {
         avatar_url: null,
         last_watch_date: null,
         referrer_id: referrerId,
+        xp: 5000,
       },
       { onConflict: "id" }
     );
@@ -262,6 +271,7 @@ export async function POST(req: NextRequest) {
 
     console.log("[Auth] New user signed in successfully");
     return NextResponse.json({
+      isNewUser: true,
       access_token: signInAfterCreate.session.access_token,
       refresh_token: signInAfterCreate.session.refresh_token,
       expires_at: signInAfterCreate.session.expires_at,

@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { ClientWalletButton } from "@/components/ClientWalletButton";
+import { ActivityStream } from "@/components/ActivityStream";
+import { createClient } from "@/lib/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Users, ArrowLeftRight } from "lucide-react";
-import { signOut } from "@/lib/auth/actions";
+import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Users, ArrowLeftRight, LogOut, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -26,14 +27,36 @@ const NAV_LINKS = [
   { href: "/referral", label: "Referral", icon: Users },
 ];
 
+const PROTECTED_PREFIXES = ["/dashboard", "/watch", "/wallet", "/leaderboard", "/referral", "/register"];
+
 export function Navbar() {
   const pathname = usePathname();
-  const { publicKey } = useWallet();
+  const router = useRouter();
+  const { publicKey, connected } = useWallet();
   const [menuOpen, setMenuOpen] = useState(false);
+  const prevConnected = useRef(false);
 
   const truncatedAddress = publicKey
     ? `${publicKey.toBase58().slice(0, 4)}…${publicKey.toBase58().slice(-4)}`
     : null;
+
+  const clientSignOut = useCallback(async () => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch { /* ignore */ }
+    router.push("/");
+    router.refresh();
+  }, [router]);
+
+  // Redirect to landing page when wallet disconnects
+  useEffect(() => {
+    const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
+    if (prevConnected.current && !connected && isProtected) {
+      clientSignOut();
+    }
+    prevConnected.current = connected;
+  }, [connected, pathname, clientSignOut]);
 
   return (
     <header
@@ -86,48 +109,79 @@ export function Navbar() {
         </nav>
 
         {/* Right section */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {/* Wallet button - desktop */}
           <div className="hidden md:block">
             <ClientWalletButton />
           </div>
 
-          {/* User dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/60 focus:ring-offset-1 focus:ring-offset-black hover:bg-cyan-400/10">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-cyan-400/15 text-cyan-300 text-xs font-bold">
-                  {truncatedAddress ? truncatedAddress.slice(0, 2).toUpperCase() : "?"}
-                </AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 border-cyan-400/20 bg-black text-cyan-100">
-              {truncatedAddress && (
-                <>
-                  <div className="px-2 py-1.5 text-xs text-cyan-200/55 font-mono">
-                    {truncatedAddress}
+          {/* Profile dropdown (desktop) */}
+          <div className="hidden md:block">
+            <DropdownMenu>
+              <DropdownMenuTrigger className="rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/60 focus:ring-offset-1 focus:ring-offset-black hover:bg-cyan-400/10">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="bg-cyan-400/15 text-cyan-300 text-xs font-mono font-bold">
+                    {truncatedAddress ? truncatedAddress.slice(0, 2).toUpperCase() : "?"}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80 border border-cyan-400/15 bg-black text-cyan-100 p-0">
+                {/* Wallet address header */}
+                {truncatedAddress && (
+                  <div className="px-3 py-2.5 border-b border-white/8">
+                    <div className="text-[10px] uppercase tracking-[0.3em] text-white/35 mb-1">Connected Wallet</div>
+                    <div className="font-mono text-xs text-cyan-200/80">{truncatedAddress}</div>
                   </div>
-                  <DropdownMenuSeparator />
-                </>
-              )}
-              <DropdownMenuItem>
-                <Link href="/wallet">My Wallet</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/dashboard">Dashboard</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Link href="/referral">Referral</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onClick={() => signOut()}
-              >
-                Sign Out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                )}
+
+                {/* Navigation links */}
+                <div className="py-1">
+                  <DropdownMenuItem className="focus:bg-cyan-400/8 focus:text-cyan-100 cursor-pointer mx-1 rounded-none p-0">
+                    <Link href="/dashboard" className="flex w-full items-center gap-2 px-2 py-1.5 text-xs tracking-[0.12em]">
+                      <LayoutDashboard className="h-3.5 w-3.5 text-cyan-300/70" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-cyan-400/8 focus:text-cyan-100 cursor-pointer mx-1 rounded-none p-0">
+                    <Link href="/wallet" className="flex w-full items-center gap-2 px-2 py-1.5 text-xs tracking-[0.12em]">
+                      <Wallet className="h-3.5 w-3.5 text-cyan-300/70" />
+                      My Wallet
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-cyan-400/8 focus:text-cyan-100 cursor-pointer mx-1 rounded-none p-0">
+                    <Link href="/referral" className="flex w-full items-center gap-2 px-2 py-1.5 text-xs tracking-[0.12em]">
+                      <Users className="h-3.5 w-3.5 text-cyan-300/70" />
+                      Referral
+                    </Link>
+                  </DropdownMenuItem>
+                </div>
+
+                <DropdownMenuSeparator className="bg-white/8" />
+
+                {/* Activity log */}
+                <div className="px-3 pt-3 pb-2">
+                  <ActivityStream
+                    maxItems={4}
+                    label="ACTIVITY LOG"
+                    className="text-xs"
+                  />
+                </div>
+
+                <DropdownMenuSeparator className="bg-white/8" />
+
+                {/* Sign out */}
+                <div className="py-1">
+                  <DropdownMenuItem
+                    className="focus:bg-red-500/10 focus:text-red-300 text-red-400/70 cursor-pointer mx-1 rounded-none flex items-center gap-2 text-xs tracking-[0.12em]"
+                    onClick={clientSignOut}
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           {/* Mobile menu toggle */}
           <Button
@@ -164,7 +218,19 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-          <ClientWalletButton />
+          <div className="flex flex-col gap-2">
+            <ClientWalletButton />
+            {truncatedAddress && (
+              <button
+                onClick={clientSignOut}
+                className="flex items-center gap-2 px-3 py-2 text-xs text-red-400/70 hover:text-red-300 transition-colors"
+                style={{ fontFamily: "var(--font-geist-mono), 'Courier New', monospace" }}
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
+            )}
+          </div>
         </div>
       )}
     </header>

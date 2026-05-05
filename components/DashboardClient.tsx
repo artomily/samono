@@ -119,7 +119,7 @@ export function DashboardClient(props: Props) {
           </Link>
         </div>
         <div style={{ padding: "0.75rem 2rem", fontSize: "0.58rem", letterSpacing: "0.2em", color: "rgba(0,229,255,0.45)" }}>
-          ─── ACTIVITY LOG ───
+          {/* ─── ACTIVITY LOG ─── */}
         </div>
       </div>
 
@@ -153,7 +153,7 @@ export function DashboardClient(props: Props) {
 
         {/* Right: Activity + Referral */}
         <div style={{ padding: "2rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
-          <ActivityStream
+          {/* <ActivityStream
             maxItems={6}
             label=""
             disableAutoGeneration={true}
@@ -163,7 +163,7 @@ export function DashboardClient(props: Props) {
             <div style={{ fontSize: "0.65rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.25)", textAlign: "center", padding: "1.5rem 0" }}>
               NO RECENT ACTIVITY
             </div>
-          )}
+          )} */}
 
           {referralUsername && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}

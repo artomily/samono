@@ -179,7 +179,13 @@ begin
   insert into public.profiles (id, username, avatar_url)
   values (
     new.id,
-    coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1)),
+    -- Wallet-based accounts (email ends in @wallet.sol) start with null username
+    -- so the user is routed to the /register page after first login.
+    -- Regular email/oauth accounts can use the username from metadata.
+    case
+      when new.email like '%@wallet.sol' then null
+      else coalesce(new.raw_user_meta_data->>'username', null)
+    end,
     new.raw_user_meta_data->>'avatar_url'
   )
   on conflict (id) do nothing;

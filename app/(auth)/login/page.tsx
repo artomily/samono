@@ -6,16 +6,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Coins, Loader2, FlaskConical, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, FlaskConical, CheckCircle2, AlertCircle } from "lucide-react";
 import { Suspense } from "react";
 
 const IS_DEV = process.env.NODE_ENV !== "production";
@@ -25,9 +16,6 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const { publicKey, connected, signMessage } = useWallet();
 
-  const [referralCode, setReferralCode] = useState(
-    searchParams.get("ref") ?? ""
-  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -40,7 +28,7 @@ function LoginForm() {
       let body: Record<string, unknown>;
 
       if (opts?.devMode) {
-        body = { devMode: true, referralCode: referralCode || undefined };
+        body = { devMode: true };
       } else {
         if (!publicKey || !signMessage) {
           setError("Please connect your wallet first.");
@@ -59,7 +47,6 @@ function LoginForm() {
           publicKey: publicKey.toBase58(),
           signature,
           timestamp,
-          referralCode: referralCode || undefined,
         };
       }
 
@@ -86,8 +73,13 @@ function LoginForm() {
       }
 
       setSuccess(true);
-      const next = searchParams.get("next") ?? "/dashboard";
-      router.push(next);
+      // New users go to register page to set username; returning users go to dashboard (or next)
+      if (data.isNewUser) {
+        router.push("/register");
+      } else {
+        const next = searchParams.get("next") ?? "/dashboard";
+        router.push(next);
+      }
       router.refresh();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Unknown error";
@@ -98,28 +90,31 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-sm border-border/50">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-2">
-            <Coins className="h-10 w-10 text-primary" />
+    <div className="flex min-h-screen items-center justify-center bg-black px-4 py-12">
+      <div className="w-full max-w-sm">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <div className="text-[10px] uppercase tracking-[0.4em] text-cyan-300/60 mb-3">
+            watch to earn
           </div>
-          <CardTitle className="text-2xl">Welcome to Samono</CardTitle>
-          <CardDescription>
-            Connect your Solana wallet to start earning tokens
-          </CardDescription>
-        </CardHeader>
+          <h1 className="font-mono text-3xl uppercase tracking-[0.12em] text-white">
+            Samono
+          </h1>
+          <p className="mt-2 text-sm text-white/50">
+            Connect your Solana wallet to start earning SOL
+          </p>
+        </div>
 
-        <CardContent className="space-y-5">
+        <div className="border border-white/10 bg-white/3 p-6 space-y-5">
           {error && (
-            <div className="flex items-start gap-2 text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2">
+            <div className="flex items-start gap-2 border border-red-400/30 bg-red-500/8 px-3 py-2.5 text-sm text-red-200">
               <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="flex items-center gap-2 text-sm text-green-400 bg-green-500/10 rounded-md px-3 py-2">
+            <div className="flex items-center gap-2 border border-emerald-400/30 bg-emerald-500/8 px-3 py-2.5 text-sm text-emerald-200">
               <CheckCircle2 className="h-4 w-4 shrink-0" />
               <span>Signed in! Redirecting…</span>
             </div>
@@ -129,53 +124,29 @@ function LoginForm() {
           <div className="flex flex-col items-center gap-3">
             <WalletMultiButton style={{ width: "100%" }} />
             {connected && publicKey && (
-              <p className="text-xs text-muted-foreground font-mono">
-                {publicKey.toBase58().slice(0, 8)}…
-                {publicKey.toBase58().slice(-8)}
+              <p className="text-[11px] text-white/35 font-mono">
+                {publicKey.toBase58().slice(0, 8)}…{publicKey.toBase58().slice(-8)}
               </p>
             )}
           </div>
 
-          {/* Referral code */}
-          <div className="space-y-1.5">
-            <Label htmlFor="referral">
-              Referral Code{" "}
-              <span className="text-muted-foreground text-xs">(optional)</span>
-            </Label>
-            <Input
-              id="referral"
-              placeholder="Enter a friend's username"
-              value={referralCode}
-              onChange={(e) => setReferralCode(e.target.value)}
-              autoComplete="off"
-            />
-            <p className="text-xs text-muted-foreground">
-              Both you and your referrer earn bonus tokens.
-            </p>
-          </div>
-
           {/* Sign in button */}
-          <Button
-            className="w-full font-semibold"
+          <button
+            className="w-full border border-cyan-300/30 bg-cyan-300/8 py-3 text-[11px] uppercase tracking-[0.3em] text-cyan-100 transition-colors hover:border-cyan-300/60 hover:bg-cyan-300/12 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black flex items-center justify-center gap-2"
             disabled={!connected || loading || success}
             onClick={() => handleSignIn()}
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {loading ? "Signing in…" : "Sign In with Wallet"}
-          </Button>
+          </button>
 
           {/* Dev mode — only rendered outside production */}
           {IS_DEV && (
             <>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border/50" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Dev only
-                  </span>
-                </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 border-t border-white/8" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-white/25">dev only</span>
+                <div className="flex-1 border-t border-white/8" />
               </div>
 
               <Button
@@ -187,13 +158,10 @@ function LoginForm() {
                 <FlaskConical className="h-4 w-4" />
                 Dev Mode (skip wallet)
               </Button>
-              <p className="text-center text-xs text-muted-foreground">
-                Dev Mode uses a test account. Not available in production.
-              </p>
             </>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
@@ -202,8 +170,8 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="flex min-h-screen items-center justify-center bg-black">
+          <Loader2 className="h-8 w-8 animate-spin text-cyan-300" />
         </div>
       }
     >
@@ -211,3 +179,4 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+

@@ -4,6 +4,14 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
+import { useWallet } from "@solana/wallet-adapter-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 import {
   SWAP_OPTIONS,
@@ -22,9 +30,12 @@ export function SwapPointsClient({
   initialSolBalance = 0,
 }: SwapPointsClientProps) {
   const reduceMotion = useReducedMotion();
+  const { publicKey } = useWallet();
+  const walletAddress = publicKey?.toBase58() ?? null;
   const [pointsBalance, setPointsBalance] = useState(initialPointsBalance);
   const [solBalance, setSolBalance] = useState(initialSolBalance);
   const [activeSwapId, setActiveSwapId] = useState<string | null>(null);
+  const [pendingOption, setPendingOption] = useState<SwapOption | null>(null);
   const [lastStatus, setLastStatus] = useState("Select a conversion rail to route points into SOL.");
   const [lastSignature, setLastSignature] = useState<string | null>(null);
   const [lastSwapLabel, setLastSwapLabel] = useState<string | null>(null);
@@ -100,6 +111,7 @@ export function SwapPointsClient({
   const currentOption = SWAP_OPTIONS.find((option) => option.id === activeSwapId) ?? null;
 
   return (
+    <>
     <main className="min-h-screen bg-black px-4 pb-12 pt-24 text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
         <div className="flex flex-col gap-4 border border-white/10 bg-white/3 p-5 md:flex-row md:items-end md:justify-between md:p-7">
@@ -186,7 +198,7 @@ export function SwapPointsClient({
                     key={option.id}
                     type="button"
                     disabled={disabled}
-                    onClick={() => handleSwap(option)}
+                    onClick={() => setPendingOption(option)}
                     initial={reduceMotion ? false : { opacity: 0, y: 20 }}
                     animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
                     transition={
@@ -306,6 +318,76 @@ export function SwapPointsClient({
         </div>
       </div>
     </main>
+
+    {/* Swap confirmation dialog */}
+    <Dialog open={!!pendingOption} onOpenChange={(open) => { if (!open) setPendingOption(null); }}>
+      <DialogContent className="border border-white/10 bg-black text-white sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="font-mono text-base uppercase tracking-[0.2em] text-white">
+            Confirm Swap
+          </DialogTitle>
+          <DialogDescription className="text-sm text-white/50">
+            Review the details before executing this conversion rail.
+          </DialogDescription>
+        </DialogHeader>
+
+        {pendingOption && (
+          <div className="mt-2 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="border border-white/8 bg-white/3 p-3">
+                <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">Spending</div>
+                <div className="mt-2 font-mono text-xl text-cyan-100">
+                  {pendingOption.pointsCost.toLocaleString("en-US")}
+                  <span className="ml-1 text-sm text-white/40">pts</span>
+                </div>
+              </div>
+              <div className="border border-white/8 bg-white/3 p-3">
+                <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">Receiving</div>
+                <div className="mt-2 font-mono text-xl text-emerald-300">
+                  {pendingOption.solAmount.toFixed(2)}
+                  <span className="ml-1 text-sm text-white/40">SOL</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border border-white/8 bg-white/3 p-3">
+              <div className="text-[10px] uppercase tracking-[0.3em] text-white/40 mb-2">
+                Destination Wallet
+              </div>
+              {walletAddress ? (
+                <div className="font-mono text-xs text-white/70 break-all">
+                  {walletAddress.slice(0, 16)}…{walletAddress.slice(-16)}
+                </div>
+              ) : (
+                <div className="text-xs text-amber-300/80">
+                  No wallet connected — SOL will be sent to your registered address.
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3 pt-1">
+              <button
+                className="flex-1 border border-white/15 py-2.5 text-[11px] uppercase tracking-[0.28em] text-white/60 transition-colors hover:border-white/30 hover:text-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+                onClick={() => setPendingOption(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="flex-1 border border-cyan-300/30 bg-cyan-300/8 py-2.5 text-[11px] uppercase tracking-[0.28em] text-cyan-100 transition-colors hover:border-cyan-300/60 hover:bg-cyan-300/12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                onClick={() => {
+                  const opt = pendingOption;
+                  setPendingOption(null);
+                  handleSwap(opt);
+                }}
+              >
+                Confirm Swap
+              </button>
+            </div>
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
 

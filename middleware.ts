@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 // Routes that require authentication
-const PROTECTED_PATHS = ["/dashboard", "/watch", "/wallet", "/leaderboard", "/referral"];
+const PROTECTED_PATHS = ["/dashboard", "/watch", "/wallet", "/leaderboard", "/referral", "/register"];
 
 // Routes that should redirect to dashboard if already logged in
 const AUTH_PATHS = ["/login"];
