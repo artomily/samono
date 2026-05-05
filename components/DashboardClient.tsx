@@ -50,7 +50,7 @@ export function DashboardClient(props: Props) {
       {/* ── Header ── */}
       <div style={{
         borderBottom: "1px solid rgba(0,229,255,0.10)",
-        padding: "1.4rem 2rem",
+        padding: "2rem 2rem 1.4rem",
         display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem",
       }}>
         {/* <div>
@@ -102,8 +102,8 @@ export function DashboardClient(props: Props) {
               padding: "1.6rem 1.5rem",
               borderRight: i < STATS_CONFIG.length - 1 ? "1px solid rgba(0,229,255,0.08)" : undefined,
             }}>
-            <div style={{ fontSize: "0.58rem", letterSpacing: "0.2em", color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem" }}>{s.label}</div>
-            <div style={{ fontSize: "1.4rem", fontWeight: 900, color: s.color, letterSpacing: "-0.01em" }}>{s.getValue(props)}</div>
+            <div style={{ fontSize: "0.62rem", letterSpacing: "0.28em", color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem", textTransform: "uppercase" }}>{s.label}</div>
+            <div style={{ fontSize: "1.5rem", fontWeight: 900, color: s.color, letterSpacing: "-0.01em" }}>{s.getValue(props)}</div>
           </motion.div>
         ))}
       </div>

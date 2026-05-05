@@ -9,7 +9,6 @@ import { useMousePosition } from "@/hooks/useMousePosition";
 import { OrbitalRing } from "@/components/nexus/OrbitalRing";
 import { StatOrb } from "@/components/nexus/StatOrb";
 import { ProximityPanel } from "@/components/nexus/ProximityPanel";
-
 const WalletMultiButton = dynamic(
   async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
   { ssr: false }
