@@ -21,7 +21,8 @@ export default async function LeaderboardPage() {
     username: e.username ?? `User ${i + 1}`,
     wallet_address: e.wallet_address,
     total_earned: e.total_earned,
-    watch_streak: e.watch_streak,
+    xp: e.xp ?? 0,
+    watch_streak: e.watch_streak ?? 0,
   }));
 
   return (
@@ -36,7 +37,7 @@ export default async function LeaderboardPage() {
             Leaderboard
           </h1>
           <p className="mt-2 text-sm leading-6 text-white/55">
-            Top earners ranked by total SOL rewards
+            Top players ranked by XP
           </p>
         </div>
 

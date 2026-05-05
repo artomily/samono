@@ -5,6 +5,7 @@ interface LeaderboardEntry {
   username: string;
   wallet_address: string | null;
   total_earned: number;
+  xp: number;
   watch_streak: number;
 }
 
@@ -27,11 +28,12 @@ export function LeaderboardTable({
   return (
     <div className="border border-white/10 overflow-hidden">
       {/* Table header */}
-      <div className="grid grid-cols-[3.5rem_1fr_4rem_6rem] gap-2 px-4 py-3 bg-white/4 border-b border-white/10">
+      <div className="grid grid-cols-[3.5rem_1fr_4rem_5rem_5rem] gap-2 px-4 py-3 bg-white/4 border-b border-white/10">
         <span className="text-[10px] uppercase tracking-[0.28em] text-white/35">rank</span>
         <span className="text-[10px] uppercase tracking-[0.28em] text-white/35">user</span>
         <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right hidden sm:block">streak</span>
-        <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right">earned</span>
+        <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right">xp</span>
+        <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right">sol</span>
       </div>
 
       {/* Rows */}
@@ -51,7 +53,7 @@ export function LeaderboardTable({
             <div
               key={entry.rank}
               className={cn(
-                "grid grid-cols-[3.5rem_1fr_4rem_6rem] gap-2 px-4 py-3 items-center border-b border-white/5 last:border-0",
+                "grid grid-cols-[3.5rem_1fr_4rem_5rem_5rem] gap-2 px-4 py-3 items-center border-b border-white/5 last:border-0",
                 "hover:bg-white/4 transition-colors duration-100",
                 idx % 2 === 0 ? "" : "bg-white/1.5"
               )}
@@ -78,10 +80,14 @@ export function LeaderboardTable({
                 🔥 {entry.watch_streak}
               </span>
 
-              {/* Earned */}
+              {/* XP */}
+              <span className="text-right font-mono text-sm text-cyan-300 whitespace-nowrap">
+                {entry.xp.toLocaleString()}
+              </span>
+
+              {/* SOL earned */}
               <span className="text-right font-mono text-sm text-emerald-300 whitespace-nowrap">
                 {entry.total_earned.toFixed(2)}
-                <span className="text-white/30 text-[11px] ml-1">SOL</span>
               </span>
             </div>
           );

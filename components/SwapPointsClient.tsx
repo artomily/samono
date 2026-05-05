@@ -85,7 +85,7 @@ export function SwapPointsClient({
       };
 
       if (!res.ok || !json.success) {
-        throw new Error(json.error ?? "Swap failed. Try again.");
+        throw new Error(json.error ?? "Swap failed — your points were not deducted. Please try again.");
       }
 
       const { data } = json;
@@ -96,7 +96,7 @@ export function SwapPointsClient({
       setSuccessSwapId(option.id);
       toast.success(data!.message);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Swap failed. Try again.";
+      const message = error instanceof Error ? error.message : "Swap failed — your points were not deducted. Please try again.";
 
       setPointsBalance(previousPointsBalance);
       setSolBalance(previousSolBalance);

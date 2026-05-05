@@ -246,6 +246,7 @@ export type LeaderboardEntry = {
   avatar_url: string | null;
   wallet_address: string | null;
   total_earned: number;
+  xp: number;
   watch_streak: number;
   rank: number;
 }

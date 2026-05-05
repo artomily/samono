@@ -45,12 +45,14 @@ export function DashboardClient(props: Props) {
   const { username, pendingAmount, referralUsername, videos } = props;
 
   return (
-    <div style={{ background: "#000", fontFamily: MONO, color: "#fff", minHeight: "100vh" }}>
+    <div className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 pb-16 pt-8" style={{ fontFamily: MONO }}>
+      <div className="mx-auto max-w-7xl">
 
       {/* ── Header ── */}
       <div style={{
         borderBottom: "1px solid rgba(0,229,255,0.10)",
-        padding: "2rem 2rem 1.4rem",
+        paddingBottom: "1.4rem",
+        marginBottom: "0",
         display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem",
       }}>
         {/* <div>
@@ -178,6 +180,7 @@ export function DashboardClient(props: Props) {
             </motion.div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

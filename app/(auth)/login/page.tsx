@@ -59,7 +59,7 @@ function LoginForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Sign-in failed. Please try again.");
+        setError(data.error ?? "Sign-in failed. Please reconnect your wallet and try again.");
         return;
       }
 
@@ -82,8 +82,12 @@ function LoginForm() {
       }
       router.refresh();
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Unknown error";
-      setError(msg.includes("rejected") ? "Signature request was rejected." : msg);
+      const msg = e instanceof Error ? e.message : "";
+      setError(
+        msg.toLowerCase().includes("rejected") || msg.toLowerCase().includes("user rejected")
+          ? "You declined the signature request in your wallet. Please try again."
+          : "Something went wrong. Please refresh the page and try again."
+      );
     } finally {
       setLoading(false);
     }

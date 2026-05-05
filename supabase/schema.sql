@@ -294,12 +294,14 @@ select
   p.id,
   p.username,
   p.avatar_url,
+  p.wallet_address,
   p.total_earned,
-  p.streak_count,
-  rank() over (order by p.total_earned desc) as rank
+  p.xp,
+  p.streak_count as watch_streak,
+  rank() over (order by p.xp desc, p.total_earned desc) as rank
 from public.profiles p
-where p.total_earned > 0
-order by p.total_earned desc;
+where p.username is not null
+order by p.xp desc, p.total_earned desc;
 
 -- Grant read access to authenticated users
 grant select on public.leaderboard to authenticated;

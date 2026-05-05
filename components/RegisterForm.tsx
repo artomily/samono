@@ -27,7 +27,7 @@ export function RegisterForm() {
       const data = await res.json() as { success?: boolean; error?: string };
 
       if (!res.ok) {
-        setError(data.error ?? "Registration failed. Please try again.");
+        setError(data.error ?? "Couldn't save your username. Please try again.");
         return;
       }
 
@@ -35,7 +35,7 @@ export function RegisterForm() {
       router.push("/dashboard");
       router.refresh();
     } catch {
-      setError("Network error. Please try again.");
+      setError("Connection error — check your internet and try again.");
     } finally {
       setLoading(false);
     }

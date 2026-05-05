@@ -212,7 +212,7 @@ export async function POST(req: NextRequest) {
       referrerId = referrer?.id ?? null;
     }
 
-    // Create profile row
+    // Create profile row (basic fields only — xp is set separately below)
     const { error: profileError } = await serviceClient.from("profiles").upsert(
       {
         id: userId,
@@ -221,14 +221,23 @@ export async function POST(req: NextRequest) {
         avatar_url: null,
         last_watch_date: null,
         referrer_id: referrerId,
-        xp: 5000,
       },
       { onConflict: "id" }
     );
 
     if (profileError) {
       console.error("Failed to create profile:", profileError);
-      // Don't fail — profile might be inserted by trigger or other process
+      // Profile may have been created by the trigger — continue anyway
+    }
+
+    // Grant 5000 XP welcome bonus (separate query so profile creation never depends on xp column)
+    const { error: xpError } = await serviceClient
+      .from("profiles")
+      .update({ xp: 5000 })
+      .eq("id", userId)
+      .eq("xp", 0);
+    if (xpError) {
+      console.warn("[Auth] Could not set welcome XP (column may not exist yet):", xpError.message);
     }
 
     // Sign in with the newly created credentials (with retry for timing issues)

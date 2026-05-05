@@ -18,7 +18,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
 
   const handleClaim = () => {
     if (!publicKey) {
-      toast.error("Connect your wallet first");
+      toast.error("Please connect your wallet to claim rewards.");
       return;
     }
     if (pendingAmount <= 0) {
@@ -36,14 +36,14 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
         const data = await res.json();
 
         if (!res.ok) {
-          toast.error(data.error || "Claim failed");
+          toast.error(data.error || "Claim failed — please try again.");
           return;
         }
 
         toast.success(`Claimed ${pendingAmount.toFixed(2)} SOL! Tx: ${data.signature?.slice(0, 8)}…`);
         onClaimed?.();
       } catch {
-        toast.error("Network error. Please try again.");
+        toast.error("Connection error — your points were not deducted. Please try again.");
       }
     });
   };

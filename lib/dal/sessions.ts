@@ -21,13 +21,12 @@ export async function createSession(
     if (existing.status === "completed") {
       throw new Error("ALREADY_COMPLETED");
     }
-    if (existing.status === "active") {
-      // Invalidate stale active session
-      await supabase
-        .from("watch_sessions")
-        .update({ status: "invalidated" })
-        .eq("id", existing.id);
-    }
+    // Delete any existing active or invalidated row so we can insert a fresh one.
+    // The table has UNIQUE (user_id, video_id) so we must remove the old row first.
+    await supabase
+      .from("watch_sessions")
+      .delete()
+      .eq("id", existing.id);
   }
 
   const { data, error } = await supabase
