@@ -122,11 +122,15 @@ export type Profile = {
   updated_at: string;
 }
 
-export type ProfileInsert = Omit<Profile, "total_earned" | "streak_count" | "xp" | "level" | "created_at" | "updated_at"> & {
+export type ProfileInsert = Omit<Profile, "total_earned" | "streak_count" | "xp" | "level" | "created_at" | "updated_at" | "avatar_url" | "wallet_address" | "last_watch_date" | "referrer_id"> & {
   total_earned?: number;
   streak_count?: number;
   xp?: number;
   level?: number;
+  avatar_url?: string | null;
+  wallet_address?: string | null;
+  last_watch_date?: string | null;
+  referrer_id?: string | null;
 };
 
 export type ProfileUpdate = Partial<Omit<Profile, "id" | "created_at">>;

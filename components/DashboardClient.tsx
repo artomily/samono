@@ -1,15 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import {
+  Zap,
+  TrendingUp,
+  Clock,
+  Flame,
+  Eye,
+  Copy,
+  Check,
+  ArrowRight,
+  PlayCircle,
+  Trophy,
+  Users,
+  ArrowLeftRight,
+} from "lucide-react";
 import { VideoCard } from "@/components/VideoCard";
-import { ActivityStream, type ActivityStreamExternalEvent } from "@/components/ActivityStream";
+import type { ActivityStreamExternalEvent } from "@/components/ActivityStream";
 import { ClaimButton } from "@/components/ClaimButton";
-
-const CYAN = "#00E5FF";
-const MAGENTA = "#FF00AA";
-const GREEN = "#00FF87";
-const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 
 interface Video {
   id: string;
@@ -33,154 +43,242 @@ interface Props {
   videos: Video[];
 }
 
-const STATS_CONFIG = [
-  { label: "TOTAL POINTS", getValue: (p: Props) => p.userPoints.toLocaleString(), color: GREEN },
-  { label: "TOTAL EARNED", getValue: (p: Props) => `${p.totalEarned.toFixed(2)} SOL`, color: CYAN },
-  { label: "PENDING", getValue: (p: Props) => `${p.pendingAmount.toFixed(2)} SOL`, color: MAGENTA },
-  { label: "DAY STREAK", getValue: (p: Props) => `${p.watchStreak}×`, color: GREEN },
-  { label: "STREAMS WATCHED", getValue: (p: Props) => `${p.videosWatched}`, color: CYAN },
-];
+const STATS = [
+  {
+    key: "userPoints",
+    label: "XP Points",
+    icon: Zap,
+    color: "text-cyan-300",
+    borderColor: "border-cyan-300/20",
+    glowColor: "rgba(0,229,255,0.08)",
+    getValue: (p: Props) => p.userPoints.toLocaleString(),
+  },
+  {
+    key: "totalEarned",
+    label: "SOL Earned",
+    icon: TrendingUp,
+    color: "text-emerald-400",
+    borderColor: "border-emerald-400/20",
+    glowColor: "rgba(0,255,135,0.06)",
+    getValue: (p: Props) => `${p.totalEarned.toFixed(2)}`,
+  },
+  {
+    key: "pendingAmount",
+    label: "Claimable",
+    icon: Clock,
+    color: "text-pink-400",
+    borderColor: "border-pink-400/20",
+    glowColor: "rgba(255,0,170,0.06)",
+    getValue: (p: Props) => `${p.pendingAmount.toFixed(2)} SOL`,
+  },
+  {
+    key: "watchStreak",
+    label: "Day Streak",
+    icon: Flame,
+    color: "text-amber-400",
+    borderColor: "border-amber-400/20",
+    glowColor: "rgba(251,191,36,0.06)",
+    getValue: (p: Props) => `${p.watchStreak}×`,
+  },
+  {
+    key: "videosWatched",
+    label: "Videos Watched",
+    icon: Eye,
+    color: "text-violet-400",
+    borderColor: "border-violet-400/20",
+    glowColor: "rgba(167,139,250,0.06)",
+    getValue: (p: Props) => `${p.videosWatched}`,
+  },
+] as const;
+
+const QUICK_LINKS = [
+  { href: "/watch",           label: "Browse Videos",  icon: PlayCircle    },
+  { href: "/leaderboard",    label: "Leaderboard",    icon: Trophy         },
+  { href: "/referral",       label: "My Referrals",   icon: Users          },
+  { href: "/dashboard/swap", label: "Swap Points",    icon: ArrowLeftRight },
+] as const;
 
 export function DashboardClient(props: Props) {
   const { username, pendingAmount, referralUsername, videos } = props;
+  const [copied, setCopied] = useState(false);
+
+  const referralUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/register?ref=${referralUsername}`
+      : `/register?ref=${referralUsername}`;
+
+  const copyReferral = () => {
+    navigator.clipboard.writeText(referralUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 pb-16 pt-8" style={{ fontFamily: MONO }}>
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen bg-black text-white px-4 sm:px-6 lg:px-8 pb-16 pt-8">
+      <div className="mx-auto max-w-7xl space-y-6">
 
-      {/* ── Header ── */}
-      <div style={{
-        borderBottom: "1px solid rgba(0,229,255,0.10)",
-        paddingBottom: "1.4rem",
-        marginBottom: "0",
-        display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem",
-      }}>
-        {/* <div>
-          <div style={{ fontSize: "0.6rem", letterSpacing: "0.22em", color: "rgba(0,229,255,0.45)", marginBottom: "0.3rem" }}>
-            ─── OPERATOR COMMAND ───
+        {/* ── Welcome bar ── */}
+        <div className="flex items-start justify-between gap-4 flex-wrap border-b border-white/8 pb-6">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.32em] text-cyan-300/45 mb-1 font-mono">
+              operator dashboard
+            </p>
+            <h1 className="text-2xl font-bold font-mono tracking-wider text-white">
+              ⊕ {username.toUpperCase()}
+            </h1>
           </div>
-          <h1 style={{ fontSize: "1.2rem", fontWeight: 700, letterSpacing: "0.06em", color: CYAN }}>
-            ⊕ {username.toUpperCase()}
-          </h1>
-        </div> */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
-          <Link
-            href="/dashboard/swap"
-            className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-            style={{
-              textDecoration: "none",
-              border: "1px solid rgba(0,229,255,0.18)",
-              color: "rgba(255,255,255,0.78)",
-              fontSize: "0.62rem",
-              letterSpacing: "0.18em",
-              padding: "0.8rem 1rem",
-              textTransform: "uppercase",
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = "rgba(0,229,255,0.6)";
-              e.currentTarget.style.color = CYAN;
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = "rgba(0,229,255,0.18)";
-              e.currentTarget.style.color = "rgba(255,255,255,0.78)";
-            }}
-          >
-            SWAP POINTS →
-          </Link>
-          {pendingAmount > 0 && (
-            <div style={{ clipPath: "polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)", boxShadow: `0 0 24px rgba(255,0,170,0.4)` }}>
+          <div className="flex items-center gap-3 flex-wrap">
+            <Link
+              href="/dashboard/swap"
+              className="border border-white/12 px-4 py-2 text-[11px] uppercase tracking-[0.2em] text-white/65 hover:border-cyan-300/40 hover:text-cyan-300 transition-colors font-mono"
+            >
+              Swap Points →
+            </Link>
+            {pendingAmount > 0 && (
               <ClaimButton pendingAmount={pendingAmount} />
-            </div>
-          )}
+            )}
           </div>
-      </div>
-
-      {/* ── Stats Row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(10rem, 1fr))", borderBottom: "1px solid rgba(0,229,255,0.08)" }}>
-        {STATS_CONFIG.map((s, i) => (
-          <motion.div key={s.label}
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.08 }}
-            style={{
-              padding: "1.6rem 1.5rem",
-              borderRight: i < STATS_CONFIG.length - 1 ? "1px solid rgba(0,229,255,0.08)" : undefined,
-            }}>
-            <div style={{ fontSize: "0.62rem", letterSpacing: "0.28em", color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem", textTransform: "uppercase" }}>{s.label}</div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 900, color: s.color, letterSpacing: "-0.01em" }}>{s.getValue(props)}</div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* ── Column Headers ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr min(22rem, 100%)", borderBottom: "1px solid rgba(0,229,255,0.08)" }}>
-        <div style={{ padding: "0.75rem 2rem", fontSize: "0.58rem", letterSpacing: "0.2em", color: "rgba(0,229,255,0.45)", borderRight: "1px solid rgba(0,229,255,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span>─── AVAILABLE STREAMS ───</span>
-          <Link href="/watch" style={{ fontSize: "0.58rem", letterSpacing: "0.16em", color: "rgba(0,229,255,0.45)", textDecoration: "none" }}
-            onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-            onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.45)}")}>
-            VIEW ALL →
-          </Link>
-        </div>
-        <div style={{ padding: "0.75rem 2rem", fontSize: "0.58rem", letterSpacing: "0.2em", color: "rgba(0,229,255,0.45)" }}>
-          {/* ─── ACTIVITY LOG ─── */}
-        </div>
-      </div>
-
-      {/* ── Main Content ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr min(22rem, 100%)", gap: "0", minHeight: "60vh" }}>
-
-        {/* Left: Videos */}
-        <div style={{ padding: "2rem", borderRight: "1px solid rgba(0,229,255,0.08)" }}>
-          {videos.length === 0 ? (
-            <div style={{ border: "1px solid rgba(0,229,255,0.15)", padding: "4rem 2rem", textAlign: "center", color: "rgba(255,255,255,0.3)" }}>
-              <div style={{ fontSize: "0.75rem", letterSpacing: "0.1em" }}>NO STREAMS AVAILABLE</div>
-              <div style={{ fontSize: "0.65rem", marginTop: "0.4rem" }}>Check back soon or contact admin</div>
-            </div>
-          ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(13rem, 1fr))", gap: "1rem" }}>
-              {videos.slice(0, 8).map((v) => (
-                <VideoCard
-                  key={v.id}
-                  id={v.id}
-                  youtubeId={v.youtubeId}
-                  title={v.title}
-                  thumbnailUrl={v.thumbnailUrl}
-                  durationSeconds={v.durationSeconds}
-                  viewCount={v.viewCount}
-                  rewardAmount={v.rewardAmount}
-                />
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* Right: Activity + Referral */}
-        <div style={{ padding: "2rem", display: "flex", flexDirection: "column", gap: "2rem" }}>
-          {/* <ActivityStream
-            maxItems={6}
-            label=""
-            disableAutoGeneration={true}
-            externalEvents={props.recentActivity}
-          />
-          {props.recentActivity.length === 0 && (
-            <div style={{ fontSize: "0.65rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.25)", textAlign: "center", padding: "1.5rem 0" }}>
-              NO RECENT ACTIVITY
-            </div>
-          )} */}
-
-          {referralUsername && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-              style={{ border: "1px solid rgba(0,229,255,0.18)", padding: "1.4rem" }}>
-              <div style={{ fontSize: "0.58rem", letterSpacing: "0.2em", color: CYAN, marginBottom: "0.8rem" }}>─── YOUR REFERRAL LINK ───</div>
-              <div style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.35)", marginBottom: "0.6rem" }}>
-                EARN +10% ON EVERY REFERRED STREAM
+        {/* ── Stats cards ── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {STATS.map((s, i) => (
+            <motion.div
+              key={s.key}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.07 }}
+              className={`border ${s.borderColor} bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors`}
+              style={{ boxShadow: `inset 0 0 40px ${s.glowColor}` }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <s.icon className={`h-3.5 w-3.5 ${s.color} shrink-0`} />
+                <span className="text-[10px] uppercase tracking-[0.22em] text-white/35 leading-none">
+                  {s.label}
+                </span>
               </div>
-              <code style={{ display: "block", fontSize: "0.65rem", color: GREEN, wordBreak: "break-all", letterSpacing: "0.04em", lineHeight: 1.6 }}>
-                {typeof window !== "undefined" ? window.location.origin : ""}/register?ref={referralUsername}
-              </code>
+              <div className={`text-2xl font-bold font-mono ${s.color} leading-none`}>
+                {s.getValue(props)}
+              </div>
             </motion.div>
-          )}
+          ))}
         </div>
-      </div>
+
+        {/* ── Content + Sidebar ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_20rem] gap-6 items-start">
+
+          {/* Videos panel */}
+          <div className="border border-white/10 bg-white/[0.03] p-5">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2">
+                <PlayCircle className="h-4 w-4 text-cyan-300/60" />
+                <span className="text-[11px] uppercase tracking-[0.26em] text-white/45 font-mono">
+                  Available Streams
+                </span>
+              </div>
+              <Link
+                href="/watch"
+                className="text-[10px] uppercase tracking-[0.18em] text-cyan-300/45 hover:text-cyan-300 transition-colors font-mono flex items-center gap-1"
+              >
+                View All <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+
+            {videos.length === 0 ? (
+              <div className="border border-white/8 py-16 text-center">
+                <PlayCircle className="h-8 w-8 text-white/15 mx-auto mb-3" />
+                <p className="text-sm text-white/30 font-mono uppercase tracking-wider">
+                  No streams available
+                </p>
+                <p className="text-xs text-white/20 mt-1">
+                  Videos will appear here once synced from YouTube
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                {videos.slice(0, 8).map((v) => (
+                  <VideoCard
+                    key={v.id}
+                    id={v.id}
+                    youtubeId={v.youtubeId}
+                    title={v.title}
+                    thumbnailUrl={v.thumbnailUrl}
+                    durationSeconds={v.durationSeconds}
+                    viewCount={v.viewCount}
+                    rewardAmount={v.rewardAmount}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="flex flex-col gap-4">
+
+            {/* Referral card */}
+            {referralUsername && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.28 }}
+                className="border border-cyan-300/15 bg-white/[0.03] p-5"
+                style={{ boxShadow: "inset 0 0 40px rgba(0,229,255,0.04)" }}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Users className="h-3.5 w-3.5 text-cyan-300/60" />
+                  <span className="text-[10px] uppercase tracking-[0.26em] text-white/40 font-mono">
+                    Referral Link
+                  </span>
+                </div>
+                <p className="text-[11px] text-white/30 mb-3 leading-relaxed">
+                  Earn +10% on every stream from users you refer.
+                </p>
+                <code className="block text-[11px] font-mono text-cyan-300/70 break-all leading-relaxed bg-white/[0.04] px-2.5 py-2 border border-white/8 mb-3">
+                  {referralUrl}
+                </code>
+                <button
+                  onClick={copyReferral}
+                  className="w-full flex items-center justify-center gap-2 border border-white/10 py-2 text-[11px] uppercase tracking-[0.2em] text-white/45 hover:border-cyan-300/30 hover:text-cyan-300/80 transition-colors font-mono"
+                >
+                  {copied ? (
+                    <><Check className="h-3 w-3 text-emerald-400" /> Copied!</>
+                  ) : (
+                    <><Copy className="h-3 w-3" /> Copy Link</>
+                  )}
+                </button>
+              </motion.div>
+            )}
+
+            {/* Quick actions card */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38 }}
+              className="border border-white/10 bg-white/[0.03] p-5"
+            >
+              <span className="text-[10px] uppercase tracking-[0.26em] text-white/35 font-mono block mb-3">
+                Quick Actions
+              </span>
+              <div className="flex flex-col">
+                {QUICK_LINKS.map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="flex items-center justify-between px-2 py-2.5 text-[12px] text-white/50 hover:bg-white/[0.05] hover:text-white/90 transition-colors group"
+                  >
+                    <span className="flex items-center gap-2.5 font-mono tracking-wide">
+                      <Icon className="h-3.5 w-3.5 text-white/30 group-hover:text-cyan-300/70 transition-colors" />
+                      {label}
+                    </span>
+                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
+                  </Link>
+                ))}
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
       </div>
     </div>
   );

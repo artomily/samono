@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Users, ArrowLeftRight, LogOut, Wallet } from "lucide-react";
+import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Users, ArrowLeftRight, LogOut, Wallet, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -34,7 +34,24 @@ export function Navbar() {
   const router = useRouter();
   const { publicKey, connected } = useWallet();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const prevConnected = useRef(false);
+
+  // Fetch the user's profile username for the dropdown link
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return;
+      supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", data.user.id)
+        .single()
+        .then(({ data: profile }) => {
+          setProfileUsername(profile?.username ?? null);
+        });
+    });
+  }, []);
 
   const truncatedAddress = publicKey
     ? `${publicKey.toBase58().slice(0, 4)}…${publicKey.toBase58().slice(-4)}`
@@ -140,6 +157,14 @@ export function Navbar() {
                     <Link href="/dashboard" className="flex w-full items-center gap-2 px-2 py-1.5 text-xs tracking-[0.12em]">
                       <LayoutDashboard className="h-3.5 w-3.5 text-cyan-300/70" />
                       Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="focus:bg-cyan-400/8 focus:text-cyan-100 cursor-pointer mx-1 rounded-none p-0">
+                    <Link
+                      href={profileUsername ? `/profile/${profileUsername}` : "/dashboard"}
+                      className="flex w-full items-center gap-2 px-2 py-1.5 text-xs tracking-[0.12em]">
+                      <User className="h-3.5 w-3.5 text-cyan-300/70" />
+                      {profileUsername ? `@${profileUsername}` : "Profile"}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="focus:bg-cyan-400/8 focus:text-cyan-100 cursor-pointer mx-1 rounded-none p-0">
