@@ -2,21 +2,11 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import { useWallet } from "@solana/wallet-adapter-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-
-import {
-  SWAP_OPTIONS,
-  type SwapOption,
-} from "@/lib/constants/swap";
+import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Zap, Wallet } from "lucide-react";
+import { SWAP_OPTIONS, type SwapOption } from "@/lib/constants/swap";
 
 interface SwapPointsClientProps {
   username: string;
@@ -24,47 +14,48 @@ interface SwapPointsClientProps {
   initialSolBalance?: number;
 }
 
+const CYAN = "#00E5FF";
+const GREEN = "#00FF87";
+const MAGENTA = "#FF00AA";
+const MONO = "var(--font-geist-mono), 'Courier New', monospace";
+
+// Color accent per tier index
+const TIER_COLORS = [CYAN, CYAN, CYAN, CYAN, MAGENTA, MAGENTA, GREEN, GREEN];
+
 export function SwapPointsClient({
   username,
   initialPointsBalance,
   initialSolBalance = 0,
 }: SwapPointsClientProps) {
-  const reduceMotion = useReducedMotion();
   const { publicKey } = useWallet();
   const walletAddress = publicKey?.toBase58() ?? null;
+
   const [pointsBalance, setPointsBalance] = useState(initialPointsBalance);
   const [solBalance, setSolBalance] = useState(initialSolBalance);
-  const [activeSwapId, setActiveSwapId] = useState<string | null>(null);
   const [pendingOption, setPendingOption] = useState<SwapOption | null>(null);
-  const [lastStatus, setLastStatus] = useState("Select a conversion rail to route points into SOL.");
-  const [lastSignature, setLastSignature] = useState<string | null>(null);
-  const [lastSwapLabel, setLastSwapLabel] = useState<string | null>(null);
-  const [successSwapId, setSuccessSwapId] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [swapping, setSwapping] = useState(false);
+  const [swapError, setSwapError] = useState<string | null>(null);
+  const [lastSuccess, setLastSuccess] = useState<{ label: string; solAmount: number } | null>(null);
 
-  // Fetch real SOL balance on mount
   useEffect(() => {
     fetch("/api/rewards/balance")
-      .then(r => r.json())
-      .then(data => { if (typeof data.balance === "number") setSolBalance(data.balance); })
+      .then((r) => r.json())
+      .then((data) => {
+        if (typeof data.balance === "number") setSolBalance(data.balance);
+      })
       .catch(() => {});
   }, []);
 
-  async function handleSwap(option: SwapOption) {
-    if (activeSwapId) return;
-    if (pointsBalance < option.pointsCost) return;
+  async function handleConfirmSwap() {
+    if (!pendingOption || swapping) return;
+    const option = pendingOption;
 
-    const previousPointsBalance = pointsBalance;
-    const previousSolBalance = solBalance;
+    setSwapping(true);
+    setSwapError(null);
 
-    setErrorMessage(null);
-    setSuccessSwapId(null);
-    setActiveSwapId(option.id);
-    setLastSignature(null);
-    setLastSwapLabel(option.label);
-    setLastStatus(`Routing ${option.pointsCost.toLocaleString("en-US")} points into settlement rail...`);
-    // Optimistic deduction
-    setPointsBalance((current) => current - option.pointsCost);
+    const prevPoints = pointsBalance;
+    const prevSol = solBalance;
+    setPointsBalance((p) => p - option.pointsCost);
 
     try {
       const res = await fetch("/api/rewards/swap", {
@@ -85,348 +76,532 @@ export function SwapPointsClient({
       };
 
       if (!res.ok || !json.success) {
-        throw new Error(json.error ?? "Swap failed — your points were not deducted. Please try again.");
+        throw new Error(json.error ?? "Swap failed. Please try again.");
       }
 
       const { data } = json;
       setPointsBalance(data!.newPointsBalance);
       setSolBalance((prev) => Number((prev + data!.solAmount).toFixed(4)));
-      setLastStatus(data!.message);
-      setLastSignature(data!.txSignature ?? null);
-      setSuccessSwapId(option.id);
-      toast.success(data!.message);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Swap failed — your points were not deducted. Please try again.";
-
-      setPointsBalance(previousPointsBalance);
-      setSolBalance(previousSolBalance);
-      setErrorMessage(message);
-      setLastStatus("Swap aborted. Points restored.");
-      toast.error(message);
+      setLastSuccess({ label: option.label, solAmount: data!.solAmount });
+      setPendingOption(null);
+      toast.success(`${data!.solAmount.toFixed(3)} SOL sent to your wallet`);
+    } catch (err) {
+      setPointsBalance(prevPoints);
+      setSolBalance(prevSol);
+      setSwapError(err instanceof Error ? err.message : "Swap failed. Please try again.");
     } finally {
-      setActiveSwapId(null);
+      setSwapping(false);
     }
   }
 
-  const currentOption = SWAP_OPTIONS.find((option) => option.id === activeSwapId) ?? null;
-
   return (
-    <>
-    <main className="min-h-screen bg-black px-4 pb-12 pt-24 text-white sm:px-6 lg:px-8">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
-        <div className="flex flex-col gap-4 border border-white/10 bg-white/3 p-5 md:flex-row md:items-end md:justify-between md:p-7">
-          <div className="space-y-3">
-            <div className="text-[10px] uppercase tracking-[0.4em] text-cyan-300/75">
-              dashboard / sol conversion
-            </div>
-            <div className="space-y-2">
-              <h1 className="font-mono text-3xl uppercase tracking-[0.18em] text-white sm:text-4xl">
-                Swap Points to SOL
-              </h1>
-              <p className="max-w-2xl text-sm leading-6 text-white/64">
-                Route engagement points into a mocked SOL settlement rail with live status,
-                wallet-balance feedback, and synchronized system activity.
-              </p>
-            </div>
-          </div>
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#000",
+        fontFamily: MONO,
+        color: "#fff",
+        padding: "6rem 1.5rem 4rem",
+      }}
+    >
+      <div style={{ maxWidth: "56rem", margin: "0 auto" }}>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="min-h-10 border border-white/12 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.28em] text-white/72 transition-colors duration-150 ease-out hover:border-cyan-300/60 hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+        {/* Header */}
+        <div style={{ marginBottom: "2.5rem" }}>
+          <Link
+            href="/dashboard"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.4rem",
+              fontSize: "0.65rem",
+              letterSpacing: "0.18em",
+              color: "rgba(0,229,255,0.5)",
+              textDecoration: "none",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <ArrowLeft style={{ width: "0.8rem", height: "0.8rem" }} />
+            DASHBOARD
+          </Link>
+
+          <h1
+            style={{
+              fontSize: "clamp(1.6rem, 4vw, 2.4rem)",
+              fontWeight: 900,
+              letterSpacing: "0.04em",
+              marginBottom: "0.5rem",
+            }}
+          >
+            SWAP POINTS
+          </h1>
+          <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", letterSpacing: "0.06em" }}>
+            Convert engagement points into real SOL. Select a tier below.
+          </p>
+        </div>
+
+        {/* Balance strip */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "1px",
+            background: "rgba(0,229,255,0.1)",
+            border: "1px solid rgba(0,229,255,0.1)",
+            marginBottom: "2.5rem",
+          }}
+        >
+          <div style={{ background: "#000", padding: "1.1rem 1.4rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                fontSize: "0.6rem",
+                letterSpacing: "0.2em",
+                color: "rgba(0,229,255,0.5)",
+                marginBottom: "0.4rem",
+              }}
             >
-              Return to Dashboard
-            </Link>
-            <div className="border border-cyan-400/20 bg-cyan-400/8 px-4 py-2 text-right">
-              <div className="text-[10px] uppercase tracking-[0.3em] text-cyan-200/70">
-                operator
-              </div>
-              <div className="font-mono text-sm uppercase tracking-[0.18em] text-cyan-100">
-                {username}
-              </div>
+              <Zap style={{ width: "0.7rem", height: "0.7rem" }} />
+              POINTS BALANCE
+            </div>
+            <div
+              style={{
+                fontSize: "1.6rem",
+                fontWeight: 900,
+                color: CYAN,
+                letterSpacing: "-0.01em",
+              }}
+            >
+              {pointsBalance.toLocaleString("en-US")}
+            </div>
+          </div>
+          <div style={{ background: "#000", padding: "1.1rem 1.4rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                fontSize: "0.6rem",
+                letterSpacing: "0.2em",
+                color: "rgba(0,255,135,0.5)",
+                marginBottom: "0.4rem",
+              }}
+            >
+              <Wallet style={{ width: "0.7rem", height: "0.7rem" }} />
+              SOL BALANCE
+            </div>
+            <div
+              style={{
+                fontSize: "1.6rem",
+                fontWeight: 900,
+                color: GREEN,
+                letterSpacing: "-0.01em",
+              }}
+            >
+              {solBalance.toFixed(4)}{" "}
+              <span style={{ fontSize: "0.9rem", color: "rgba(0,255,135,0.5)" }}>SOL</span>
             </div>
           </div>
         </div>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <StatusPanel
-            label="Points Balance"
-            value={pointsBalance.toLocaleString("en-US")}
-            caption="Spendable engagement points"
-            accent="text-cyan-200"
-          />
-          <StatusPanel
-            label="SOL Balance"
-            value={`${solBalance.toFixed(4)} SOL`}
-            caption="On-chain SOL balance"
-            accent="text-emerald-300"
-            animatedKey={solBalance}
-            reduceMotion={reduceMotion}
-          />
-          <StatusPanel
-            label="Settlement State"
-            value={currentOption ? "Processing" : successSwapId ? "Settled" : "Standby"}
-            caption={currentOption ? currentOption.etaLabel : "Awaiting next conversion rail"}
-            accent={currentOption ? "text-amber-300" : successSwapId ? "text-emerald-300" : "text-fuchsia-300"}
-          />
-        </section>
+        {/* Last success banner */}
+        <AnimatePresence>
+          {lastSuccess && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.6rem",
+                border: "1px solid rgba(0,255,135,0.25)",
+                background: "rgba(0,255,135,0.05)",
+                padding: "0.8rem 1.2rem",
+                marginBottom: "1.8rem",
+                fontSize: "0.72rem",
+                letterSpacing: "0.08em",
+                color: GREEN,
+              }}
+            >
+              <CheckCircle2 style={{ width: "1rem", height: "1rem", flexShrink: 0 }} />
+              {lastSuccess.label} swap complete — {lastSuccess.solAmount.toFixed(3)} SOL sent to your wallet
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <div className="grid gap-6 xl:grid-cols-[1.35fr_0.95fr]">
-          <section className="border border-white/10 bg-white/3 p-5 md:p-6">
-            <div className="flex flex-col gap-3 border-b border-white/10 pb-4 md:flex-row md:items-end md:justify-between">
-              <div>
-                <div className="text-[10px] uppercase tracking-[0.34em] text-white/42">
-                  swap rails
-                </div>
-                <h2 className="mt-2 font-mono text-xl uppercase tracking-[0.16em] text-white">
-                  Select Conversion Route
-                </h2>
-              </div>
-              <p className="max-w-md text-sm leading-6 text-white/54">
-                Points are burned on-chain and SOL is disbursed from the treasury wallet.
-              </p>
-            </div>
+        {/* Card grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(12rem, 1fr))",
+            gap: "1rem",
+          }}
+        >
+          {SWAP_OPTIONS.map((option, i) => {
+            const color = TIER_COLORS[i] ?? CYAN;
+            const canAfford = pointsBalance >= option.pointsCost;
 
-            <div className="mt-5 grid gap-4 lg:grid-cols-3">
-              {SWAP_OPTIONS.map((option, index) => {
-                const disabled = Boolean(activeSwapId) || pointsBalance < option.pointsCost;
-                const isLoading = activeSwapId === option.id;
-                const isSuccess = successSwapId === option.id;
-
-                return (
-                  <motion.button
-                    key={option.id}
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => setPendingOption(option)}
-                    initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-                    animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-                    transition={
-                      reduceMotion
-                        ? undefined
-                        : { duration: 0.28, ease: [0, 0, 0.2, 1], delay: index * 0.06 }
-                    }
-                    whileHover={
-                      reduceMotion || disabled ? undefined : { y: -4, borderColor: "rgba(103,232,249,0.52)" }
-                    }
-                    whileTap={reduceMotion || disabled ? undefined : { scale: 0.985 }}
-                    className="group min-h-56 border border-white/10 bg-black/50 p-5 text-left transition-colors duration-150 ease-out hover:bg-white/4 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-                    aria-busy={isLoading}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <div className="text-[10px] uppercase tracking-[0.32em] text-white/42">
-                          {option.label}
-                        </div>
-                        <div className="mt-3 font-mono text-3xl uppercase tracking-[0.14em] text-white">
-                          {option.solAmount.toFixed(2)} SOL
-                        </div>
-                      </div>
-                      <div className="border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.22em] text-cyan-200/78">
-                        {option.etaLabel}
-                      </div>
-                    </div>
-
-                    <div className="mt-8 flex items-baseline justify-between gap-4">
-                      <div>
-                        <div className="text-[10px] uppercase tracking-[0.28em] text-white/40">
-                          points required
-                        </div>
-                        <div className="mt-2 font-mono text-2xl text-cyan-100">
-                          {option.pointsCost.toLocaleString("en-US")}
-                        </div>
-                      </div>
-                      <div className="text-right text-[11px] uppercase tracking-[0.22em] text-white/48">
-                        {pointsBalance >= option.pointsCost ? "eligible" : "insufficient"}
-                      </div>
-                    </div>
-
-                    <div className="mt-8 border-t border-white/8 pt-4">
-                      <div className="text-xs uppercase tracking-[0.28em] text-white/44">
-                        {isLoading
-                          ? "Processing transaction..."
-                          : isSuccess
-                            ? `${option.solAmount.toFixed(2)} SOL sent to your wallet`
-                            : pointsBalance >= option.pointsCost
-                              ? "Click to execute swap"
-                              : "Earn more points to unlock"}
-                      </div>
-                      <div className="mt-3 flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-white/46">
-                        <span>swap rail</span>
-                        <span className="text-white/72">
-                          {isLoading ? "routing" : isSuccess ? "settled" : "idle"}
-                        </span>
-                      </div>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </div>
-          </section>
-
-          <div className="grid gap-6">
-            <section className="border border-white/10 bg-white/3 p-5 md:p-6">
-              <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
-                <div>
-                  <div className="text-[10px] uppercase tracking-[0.32em] text-white/42">
-                    transaction status
-                  </div>
-                  <h2 className="mt-2 font-mono text-lg uppercase tracking-[0.16em] text-white">
-                    Settlement Monitor
-                  </h2>
-                </div>
-                <div className="text-[10px] uppercase tracking-[0.26em] text-cyan-200/68">
-                  {activeSwapId ? "busy" : "ready"}
-                </div>
-              </div>
-
-              <div className="mt-5 space-y-4 text-sm text-white/68">
-                <div className="border border-white/8 bg-black/40 p-4">
-                  <div className="text-[10px] uppercase tracking-[0.28em] text-white/42">
-                    live status
-                  </div>
-                  <p className="mt-3 leading-6 text-white/78">{lastStatus}</p>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="border border-white/8 bg-black/40 p-4">
-                    <div className="text-[10px] uppercase tracking-[0.28em] text-white/42">
-                      last route
-                    </div>
-                    <div className="mt-3 font-mono text-sm uppercase tracking-[0.16em] text-cyan-100">
-                      {lastSwapLabel ?? "Awaiting input"}
-                    </div>
-                  </div>
-                  <div className="border border-white/8 bg-black/40 p-4">
-                    <div className="text-[10px] uppercase tracking-[0.28em] text-white/42">
-                      tx signature
-                    </div>
-                    <div className="mt-3 font-mono text-sm text-white/78">
-                      {lastSignature ? `${lastSignature.slice(0, 8)}...${lastSignature.slice(-8)}` : "Pending"}
-                    </div>
-                  </div>
-                </div>
-
-                {errorMessage ? (
-                  <div className="border border-red-400/30 bg-red-500/8 p-4 text-sm leading-6 text-red-100">
-                    {errorMessage}
-                  </div>
-                ) : null}
-              </div>
-            </section>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    {/* Swap confirmation dialog */}
-    <Dialog open={!!pendingOption} onOpenChange={(open) => { if (!open) setPendingOption(null); }}>
-      <DialogContent className="border border-white/10 bg-black text-white sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-mono text-base uppercase tracking-[0.2em] text-white">
-            Confirm Swap
-          </DialogTitle>
-          <DialogDescription className="text-sm text-white/50">
-            Review the details before executing this conversion rail.
-          </DialogDescription>
-        </DialogHeader>
-
-        {pendingOption && (
-          <div className="mt-2 space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="border border-white/8 bg-white/3 p-3">
-                <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">Spending</div>
-                <div className="mt-2 font-mono text-xl text-cyan-100">
-                  {pendingOption.pointsCost.toLocaleString("en-US")}
-                  <span className="ml-1 text-sm text-white/40">pts</span>
-                </div>
-              </div>
-              <div className="border border-white/8 bg-white/3 p-3">
-                <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">Receiving</div>
-                <div className="mt-2 font-mono text-xl text-emerald-300">
-                  {pendingOption.solAmount.toFixed(2)}
-                  <span className="ml-1 text-sm text-white/40">SOL</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-white/8 bg-white/3 p-3">
-              <div className="text-[10px] uppercase tracking-[0.3em] text-white/40 mb-2">
-                Destination Wallet
-              </div>
-              {walletAddress ? (
-                <div className="font-mono text-xs text-white/70 break-all">
-                  {walletAddress.slice(0, 16)}…{walletAddress.slice(-16)}
-                </div>
-              ) : (
-                <div className="text-xs text-amber-300/80">
-                  No wallet connected — SOL will be sent to your registered address.
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-3 pt-1">
-              <button
-                className="flex-1 border border-white/15 py-2.5 text-[11px] uppercase tracking-[0.28em] text-white/60 transition-colors hover:border-white/30 hover:text-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-                onClick={() => setPendingOption(null)}
-              >
-                Cancel
-              </button>
-              <button
-                className="flex-1 border border-cyan-300/30 bg-cyan-300/8 py-2.5 text-[11px] uppercase tracking-[0.28em] text-cyan-100 transition-colors hover:border-cyan-300/60 hover:bg-cyan-300/12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+            return (
+              <motion.button
+                key={option.id}
+                type="button"
+                disabled={!canAfford}
                 onClick={() => {
-                  const opt = pendingOption;
-                  setPendingOption(null);
-                  handleSwap(opt);
+                  setSwapError(null);
+                  setPendingOption(option);
+                }}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
+                whileHover={canAfford ? { y: -3 } : undefined}
+                whileTap={canAfford ? { scale: 0.97 } : undefined}
+                style={{
+                  background: "#000",
+                  border: `1px solid ${canAfford ? `${color}33` : "rgba(255,255,255,0.06)"}`,
+                  padding: "1.4rem 1.2rem",
+                  textAlign: "left",
+                  cursor: canAfford ? "pointer" : "not-allowed",
+                  opacity: canAfford ? 1 : 0.4,
+                  position: "relative",
+                  overflow: "hidden",
+                  fontFamily: MONO,
                 }}
               >
-                Confirm Swap
-              </button>
-            </div>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
-    </>
-  );
-}
+                {/* Top accent */}
+                {canAfford && (
+                  <div
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "2px",
+                      background: color,
+                      opacity: 0.6,
+                    }}
+                  />
+                )}
 
-interface StatusPanelProps {
-  label: string;
-  value: string;
-  caption: string;
-  accent: string;
-  animatedKey?: number;
-  reduceMotion?: boolean | null;
-}
+                <div
+                  style={{
+                    fontSize: "0.58rem",
+                    letterSpacing: "0.22em",
+                    color: canAfford ? color : "rgba(255,255,255,0.3)",
+                    marginBottom: "0.8rem",
+                  }}
+                >
+                  {option.label}
+                </div>
 
-function StatusPanel({
-  label,
-  value,
-  caption,
-  accent,
-  animatedKey,
-  reduceMotion,
-}: StatusPanelProps) {
-  return (
-    <div className="border border-white/10 bg-white/3 p-4 md:p-5">
-      <div className="text-[10px] uppercase tracking-[0.32em] text-white/42">{label}</div>
-      <div className={`mt-3 font-mono text-2xl uppercase tracking-[0.12em] ${accent}`}>
-        {animatedKey === undefined ? (
-          value
-        ) : (
-          <motion.span
-            key={animatedKey}
-            initial={reduceMotion ? false : { opacity: 0.45, y: 8 }}
-            animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-            transition={reduceMotion ? undefined : { duration: 0.24, ease: [0, 0, 0.2, 1] }}
-            className="inline-block"
-          >
-            {value}
-          </motion.span>
-        )}
+                <div
+                  style={{
+                    fontSize: "1.5rem",
+                    fontWeight: 900,
+                    color: canAfford ? "#fff" : "rgba(255,255,255,0.4)",
+                    letterSpacing: "-0.01em",
+                    marginBottom: "0.25rem",
+                  }}
+                >
+                  {option.solAmount.toFixed(3)}
+                  <span
+                    style={{
+                      fontSize: "0.75rem",
+                      fontWeight: 400,
+                      color: canAfford ? color : "rgba(255,255,255,0.25)",
+                      marginLeft: "0.3rem",
+                    }}
+                  >
+                    SOL
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "0.72rem",
+                    color: "rgba(255,255,255,0.35)",
+                    marginBottom: "1.2rem",
+                  }}
+                >
+                  {option.pointsCost.toLocaleString("en-US")}{" "}
+                  <span style={{ fontSize: "0.62rem", letterSpacing: "0.1em" }}>PTS</span>
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "0.58rem",
+                    letterSpacing: "0.14em",
+                    color: "rgba(255,255,255,0.2)",
+                    borderTop: "1px solid rgba(255,255,255,0.06)",
+                    paddingTop: "0.8rem",
+                  }}
+                >
+                  {option.etaLabel}
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Hint */}
+        <p
+          style={{
+            marginTop: "2rem",
+            fontSize: "0.65rem",
+            color: "rgba(255,255,255,0.18)",
+            letterSpacing: "0.08em",
+          }}
+        >
+          Grayed-out tiers require more points. Watch more videos or use referral bonuses to unlock them.
+        </p>
       </div>
-      <p className="mt-3 text-sm leading-6 text-white/52">{caption}</p>
-    </div>
+
+      {/* ── Review Modal ── */}
+      <AnimatePresence>
+        {pendingOption && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => { if (!swapping) setPendingOption(null); }}
+              style={{
+                position: "fixed",
+                inset: 0,
+                background: "rgba(0,0,0,0.8)",
+                backdropFilter: "blur(4px)",
+                zIndex: 100,
+              }}
+            />
+
+            {/* Dialog */}
+            <motion.div
+              key="dialog"
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 101,
+                width: "calc(100vw - 2rem)",
+                maxWidth: "26rem",
+                background: "#000",
+                border: "1px solid rgba(0,229,255,0.2)",
+                padding: "1.8rem",
+                fontFamily: MONO,
+              }}
+            >
+              {/* Top accent */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: "2px",
+                  background: CYAN,
+                  opacity: 0.6,
+                }}
+              />
+
+              <div
+                style={{
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.25em",
+                  color: "rgba(0,229,255,0.5)",
+                  marginBottom: "0.6rem",
+                }}
+              >
+                ─── REVIEW SWAP ───
+              </div>
+              <h2
+                style={{
+                  fontSize: "1.2rem",
+                  fontWeight: 900,
+                  letterSpacing: "0.04em",
+                  marginBottom: "1.6rem",
+                }}
+              >
+                {pendingOption.label} TIER
+              </h2>
+
+              {/* Details grid */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "1px",
+                  background: "rgba(255,255,255,0.06)",
+                  marginBottom: "1rem",
+                }}
+              >
+                <div style={{ background: "#000", padding: "1rem" }}>
+                  <div
+                    style={{
+                      fontSize: "0.58rem",
+                      letterSpacing: "0.2em",
+                      color: "rgba(255,255,255,0.3)",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    YOU SPEND
+                  </div>
+                  <div style={{ fontSize: "1.3rem", fontWeight: 900, color: CYAN }}>
+                    {pendingOption.pointsCost.toLocaleString("en-US")}
+                  </div>
+                  <div
+                    style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(0,229,255,0.4)" }}
+                  >
+                    POINTS
+                  </div>
+                </div>
+                <div style={{ background: "#000", padding: "1rem" }}>
+                  <div
+                    style={{
+                      fontSize: "0.58rem",
+                      letterSpacing: "0.2em",
+                      color: "rgba(255,255,255,0.3)",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    YOU RECEIVE
+                  </div>
+                  <div style={{ fontSize: "1.3rem", fontWeight: 900, color: GREEN }}>
+                    {pendingOption.solAmount.toFixed(3)}
+                  </div>
+                  <div
+                    style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(0,255,135,0.4)" }}
+                  >
+                    SOL
+                  </div>
+                </div>
+              </div>
+
+              {/* Wallet */}
+              <div
+                style={{
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  padding: "0.8rem 1rem",
+                  marginBottom: "1.2rem",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "0.58rem",
+                    letterSpacing: "0.2em",
+                    color: "rgba(255,255,255,0.3)",
+                    marginBottom: "0.4rem",
+                  }}
+                >
+                  DESTINATION
+                </div>
+                {walletAddress ? (
+                  <div
+                    style={{
+                      fontSize: "0.68rem",
+                      color: "rgba(255,255,255,0.55)",
+                      wordBreak: "break-all",
+                    }}
+                  >
+                    {walletAddress.slice(0, 20)}…{walletAddress.slice(-12)}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: "0.68rem", color: "rgba(255,180,0,0.7)" }}>
+                    No wallet connected — SOL sent to registered address
+                  </div>
+                )}
+              </div>
+
+              {/* Rate */}
+              <div
+                style={{
+                  fontSize: "0.62rem",
+                  letterSpacing: "0.1em",
+                  color: "rgba(255,255,255,0.2)",
+                  marginBottom: "1.6rem",
+                }}
+              >
+                RATE:{" "}
+                <span style={{ color: "rgba(255,255,255,0.4)" }}>
+                  {(pendingOption.solAmount / pendingOption.pointsCost * 1000).toFixed(4)} SOL per 1,000 pts
+                </span>
+              </div>
+
+              {/* Error */}
+              {swapError && (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "0.5rem",
+                    alignItems: "flex-start",
+                    border: "1px solid rgba(255,80,80,0.3)",
+                    background: "rgba(255,80,80,0.06)",
+                    padding: "0.7rem 0.9rem",
+                    marginBottom: "1.2rem",
+                    fontSize: "0.7rem",
+                    color: "#fca5a5",
+                  }}
+                >
+                  <AlertCircle style={{ width: "1rem", height: "1rem", flexShrink: 0, marginTop: "0.05rem" }} />
+                  {swapError}
+                </div>
+              )}
+
+              {/* Buttons */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: "0.7rem" }}>
+                <button
+                  disabled={swapping}
+                  onClick={() => { if (!swapping) { setPendingOption(null); setSwapError(null); } }}
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    background: "transparent",
+                    padding: "0.75rem",
+                    fontSize: "0.65rem",
+                    letterSpacing: "0.2em",
+                    color: "rgba(255,255,255,0.4)",
+                    fontFamily: MONO,
+                    cursor: swapping ? "not-allowed" : "pointer",
+                    opacity: swapping ? 0.4 : 1,
+                  }}
+                >
+                  CANCEL
+                </button>
+                <button
+                  disabled={swapping}
+                  onClick={handleConfirmSwap}
+                  style={{
+                    border: `1px solid ${CYAN}44`,
+                    background: `${CYAN}10`,
+                    padding: "0.75rem",
+                    fontSize: "0.65rem",
+                    letterSpacing: "0.2em",
+                    color: CYAN,
+                    fontFamily: MONO,
+                    cursor: swapping ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  {swapping && <Loader2 className="animate-spin" style={{ width: "0.85rem", height: "0.85rem" }} />}
+                  {swapping ? "SWAPPING…" : "CONFIRM SWAP"}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </main>
   );
 }

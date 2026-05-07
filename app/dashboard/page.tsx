@@ -1,17 +1,22 @@
 import { Metadata } from "next";
-import { requireAuth } from "@/lib/auth/session";
+import { getSession } from "@/lib/auth/session";
 import { getProfile, getUserWatchStats } from "@/lib/dal/profiles";
 import { getClaimableAmount } from "@/lib/dal/rewards";
 import { getVideos } from "@/lib/dal/videos";
 import { getRecentActivityEvents } from "@/lib/dal/activity";
 import { DashboardClient } from "@/components/DashboardClient";
+import { LoginOverlay } from "@/components/LoginOverlay";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
 export default async function DashboardPage() {
-  const user = await requireAuth();
+  const user = await getSession();
+
+  if (!user) {
+    return <LoginOverlay />;
+  }
 
   const [profile, stats, pendingAmount, videos, recentActivity] = await Promise.all([
     getProfile(user.id),

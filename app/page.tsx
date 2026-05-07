@@ -1,18 +1,12 @@
 "use client";
 
-import { type MouseEvent, useEffect, useRef } from "react";
+import { type MouseEvent, type FormEvent, useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "motion/react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import { OrbitalRing } from "@/components/nexus/OrbitalRing";
 import { StatOrb } from "@/components/nexus/StatOrb";
 import { ProximityPanel } from "@/components/nexus/ProximityPanel";
-const WalletMultiButton = dynamic(
-  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
-  { ssr: false }
-);
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -20,6 +14,9 @@ const CYAN = "#00E5FF";
 const MAGENTA = "#FF00AA";
 const GREEN = "#00FF87";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
+// Domain belum dibeli — pakai relative path untuk sekarang.
+// Setelah apps.samono.com aktif, ganti jadi "https://apps.samono.com"
+const APP_URL = "";
 
 const STATS = [
   { value: "POINTS", label: "EARN PER VIDEO" },
@@ -29,10 +26,9 @@ const STATS = [
 ];
 
 const STEPS = [
-  { n: "01", label: "SYNC", text: "Connect your Solana wallet — Phantom, Solflare, or any Wallet Standard adapter. Zero signup friction." },
-  { n: "02", label: "OBSERVE", text: "Watch curated Web3 content. Every verified minute of watch time earns engagement points toward your balance." },
-  { n: "03", label: "HARVEST", text: "Points accumulate per completed session. Watch 10 videos to unlock your first SOL swap. Streak bonuses apply." },
-  { n: "04", label: "EXTRACT", text: "Swap your points for SOL and claim directly to your wallet. Every reward is traceable on-chain." },
+  { n: "01", label: "CONNECT", text: "Link your Solana wallet — Phantom, Solflare, or any Wallet Standard adapter. No email, no password. Your key, your wallet." },
+  { n: "02", label: "WATCH", text: "Stream curated Web3 educational content. Every verified minute earns engagement points tracked in real time on your account." },
+  { n: "03", label: "EARN", text: "Swap your points for real SOL and claim directly to your wallet. Streak bonuses and referral rewards stack automatically." },
 ];
 
 const TOKEN_TIERS = [
@@ -75,6 +71,13 @@ const TREASURY_FLOW = [
   { label: "DISTRIBUTE", amount: "~41%", color: GREEN, height: 64 },
   { label: "LP", amount: "~10%", color: MAGENTA, height: 36 },
   { label: "VAULT", amount: "~7%", color: CYAN, height: 30 },
+];
+
+const WHY_US = [
+  { label: "REAL SOL REWARDS", color: CYAN, text: "Every reward converts directly to SOL — Solana's native asset. Not loyalty points, not vouchers. Tradeable, transferable, yours." },
+  { label: "ON-CHAIN VERIFICATION", color: MAGENTA, text: "All reward distributions are logged on Solana's blockchain. Every payout is publicly auditable. No black-box systems." },
+  { label: "DAILY STREAKS", color: GREEN, text: "Watch consistently and earn streak multipliers up to 2×. A grace period keeps your streak alive if you miss a day." },
+  { label: "REFERRAL NETWORK", color: CYAN, text: "Earn 10% of your referrals' rewards for life. No cap on referrals. Bring your network and multiply your income." },
 ];
 
 const FAQS = [
@@ -382,17 +385,36 @@ function TreasuryPreview() {
 
 export default function LandingPage() {
   const mouse = useMousePosition();
-  const { publicKey } = useWallet();
 
-  // Auto-save wallet to Supabase when connected (silently no-ops if not logged in)
-  useEffect(() => {
-    if (!publicKey) return;
-    fetch("/api/wallet/connect", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ walletAddress: publicKey.toBase58(), walletType: "other" }),
-    }).catch(() => {});
-  }, [publicKey]);
+  // Email waitlist state
+  const [waitlistEmail, setWaitlistEmail] = useState("");
+  const [waitlistStatus, setWaitlistStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [waitlistError, setWaitlistError] = useState("");
+
+  async function handleWaitlist(e: FormEvent) {
+    e.preventDefault();
+    setWaitlistStatus("loading");
+    setWaitlistError("");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: waitlistEmail }),
+      });
+      if (res.ok) {
+        setWaitlistStatus("success");
+      } else if (res.status === 409) {
+        setWaitlistStatus("error");
+        setWaitlistError("This email is already on the waitlist.");
+      } else {
+        setWaitlistStatus("error");
+        setWaitlistError("Something went wrong. Please try again.");
+      }
+    } catch {
+      setWaitlistStatus("error");
+      setWaitlistError("Network error. Please try again.");
+    }
+  }
 
   // Spring-based parallax for hero
   const rawX = useMotionValue(0);
@@ -412,28 +434,38 @@ export default function LandingPage() {
 
       {/* ── Nav ── */}
       <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
-        borderBottom: "1px solid rgba(0,229,255,0.10)",
-        background: "rgba(0,0,0,0.82)", backdropFilter: "blur(12px)",
+        position: "fixed", top: "0.9rem", left: "50%", zIndex: 50,
+        transform: "translateX(-50%)",
+        width: "calc(100% - 2.5rem)", maxWidth: "56rem",
+        border: "1px solid rgba(0,229,255,0.14)",
+        background: "rgba(0,0,0,0.88)", backdropFilter: "blur(14px)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 2rem", height: "3.2rem",
+        padding: "0 1.4rem", height: "3.2rem",
+        boxShadow: "0 4px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.04)",
       }}>
-        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", textShadow: `0 0 18px rgba(0,229,255,0.5)` }}>⊕ SAMONO</span>
-        <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
-          {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"], ["REFERRAL", "/referral"]].map(([label, href]) => (
+        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", textShadow: `0 0 18px rgba(0,229,255,0.5)`, flexShrink: 0 }}>⊕ SAMONO</span>
+        <div style={{ display: "flex", gap: "1.6rem", alignItems: "center" }}>
+          {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"]].map(([label, href]) => (
             <Link key={href} href={href} style={{ color: "rgba(0,229,255,0.45)", fontSize: "0.7rem", letterSpacing: "0.16em", textDecoration: "none", transition: "color 0.15s" }}
               onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.45)")}>
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.45)")}
+            >
               {label}
             </Link>
           ))}
-          <div style={{ clipPath: "polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)", display: "inline-block" }}>
-            <WalletMultiButton style={{
+          <Link
+            href="/dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              clipPath: "polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)",
               background: MAGENTA, color: "#000", fontWeight: 700, fontSize: "0.65rem",
-              letterSpacing: "0.12em", padding: "0.3rem 1rem",
-              fontFamily: MONO, borderRadius: 0, border: "none",
-            }} />
-          </div>
+              letterSpacing: "0.12em", padding: "0.4rem 1.1rem",
+              fontFamily: MONO, textDecoration: "none", display: "inline-block",
+            }}
+          >
+            LAUNCH APP
+          </Link>
         </div>
       </nav>
 
@@ -473,17 +505,15 @@ export default function LandingPage() {
 
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.35 }}
             style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
-            <div style={{ clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)", boxShadow: `0 0 32px rgba(0,229,255,0.35)`, display: "inline-block" }}>
-              <WalletMultiButton style={{
-                background: CYAN, color: "#000", fontWeight: 900,
-                fontSize: "0.75rem", letterSpacing: "0.14em",
-                padding: "0.75rem 2.2rem",
-                fontFamily: MONO,
-                borderRadius: 0, border: "none",
-                clipPath: "none",
-              }} />
-            </div>
-            <Link href="/watch" style={{
+            <Link href="/dashboard" target="_blank" rel="noopener noreferrer" style={{
+              clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
+              boxShadow: `0 0 32px rgba(0,229,255,0.35)`,
+              background: CYAN, color: "#000", fontWeight: 900,
+              fontSize: "0.75rem", letterSpacing: "0.14em",
+              padding: "0.75rem 2.2rem", textDecoration: "none", display: "inline-block",
+              fontFamily: MONO,
+            }}>START EARNING</Link>
+            <Link href={`${APP_URL}/watch`} style={{
               border: `1px solid rgba(0,229,255,0.35)`, color: CYAN, fontWeight: 700, fontSize: "0.75rem",
               letterSpacing: "0.14em", padding: "0.75rem 2.2rem", textDecoration: "none",
               clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
@@ -499,16 +529,52 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Protocol Steps ── */}
+      {/* ── Video ── */}
       <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
-            ─── PROTOCOL SEQUENCE ───
+            ─── SEE IT IN ACTION ───
+          </motion.h2>
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3rem", letterSpacing: "-0.01em" }}>
+            WATCH THE OVERVIEW
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            viewport={{ once: true, amount: 0.2 }}
+            style={{
+              position: "relative",
+              width: "100%",
+              paddingBottom: "56.25%",
+              border: "1px solid rgba(0,229,255,0.2)",
+              boxShadow: "0 0 48px rgba(0,229,255,0.08), 0 20px 48px rgba(0,0,0,0.5)",
+              background: "#000",
+            }}
+          >
+            <iframe
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+              src="https://www.youtube-nocookie.com/embed/v1ZQlVMlG2c?rel=0&modestbranding=1"
+              title="Samono — Watch to Earn Protocol Overview"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── How It Works ── */}
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
+          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+            ─── HOW IT WORKS ───
           </motion.h2>
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
             style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
-            FOUR STEPS TO EARN
+            THREE STEPS TO EARN
           </motion.p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(14rem, 1fr))", gap: "1.5rem" }}>
             {STEPS.map((s, i) => (
@@ -525,6 +591,30 @@ export default function LandingPage() {
       </section>
 
       {/* ── Activity Stream ── */}
+
+      {/* ── Why Us ── */}
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
+          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+            ─── WHY SAMONO ───
+          </motion.h2>
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
+            BUILT DIFFERENT
+          </motion.p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))", gap: "1.5rem" }}>
+            {WHY_US.map((item, i) => (
+              <motion.div key={item.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                style={{ border: `1px solid ${item.color}33`, padding: "2rem 1.6rem", position: "relative", overflow: "hidden" }}>
+                <div aria-hidden style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: item.color, opacity: 0.7 }} />
+                <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: item.color, marginBottom: "0.9rem" }}>{item.label}</div>
+                <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>{item.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── Treasury Preview ── */}
       <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
@@ -562,6 +652,64 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Early Access ── */}
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+        <div style={{ maxWidth: "36rem", margin: "0 auto", textAlign: "center" }}>
+          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            style={{ fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+            ─── EARLY ACCESS ───
+          </motion.h2>
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            style={{ fontSize: "1.8rem", fontWeight: 900, marginBottom: "1rem", letterSpacing: "-0.01em" }}>
+            JOIN THE WAITLIST
+          </motion.p>
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
+            style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", lineHeight: 1.7, marginBottom: "2.5rem" }}>
+            BE FIRST TO EARN WHEN WE LAUNCH. NO SPAM. UNSUBSCRIBE ANY TIME.
+          </motion.p>
+          {waitlistStatus === "success" ? (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+              style={{ border: `1px solid ${GREEN}44`, padding: "1.4rem 2rem", color: GREEN, fontSize: "0.8rem", letterSpacing: "0.1em" }}>
+              ◈ NODE REGISTERED — YOU ARE ON THE LIST
+            </motion.div>
+          ) : (
+            <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
+              <div style={{ display: "flex", gap: "0", border: "1px solid rgba(0,229,255,0.3)" }}>
+                <input
+                  type="email"
+                  required
+                  placeholder="YOUR@EMAIL.COM"
+                  value={waitlistEmail}
+                  onChange={e => setWaitlistEmail(e.target.value)}
+                  disabled={waitlistStatus === "loading"}
+                  style={{
+                    flex: 1, background: "rgba(0,0,0,0.6)", border: "none", outline: "none",
+                    color: "#fff", fontFamily: MONO, fontSize: "0.75rem", letterSpacing: "0.08em",
+                    padding: "0.8rem 1.2rem",
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={waitlistStatus === "loading"}
+                  style={{
+                    background: waitlistStatus === "loading" ? "rgba(0,229,255,0.6)" : CYAN,
+                    color: "#000", fontWeight: 900, fontSize: "0.7rem", letterSpacing: "0.14em",
+                    padding: "0.8rem 1.6rem", border: "none", cursor: waitlistStatus === "loading" ? "not-allowed" : "pointer",
+                    fontFamily: MONO, whiteSpace: "nowrap",
+                  }}
+                >
+                  {waitlistStatus === "loading" ? "QUEUING..." : "JOIN WAITLIST"}
+                </button>
+              </div>
+              {waitlistStatus === "error" && (
+                <p style={{ fontSize: "0.7rem", color: MAGENTA, letterSpacing: "0.08em", margin: 0 }}>{waitlistError}</p>
+              )}
+            </form>
+          )}
+        </div>
+      </section>
+
       {/* ── FAQ ── */}
       <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
@@ -585,32 +733,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section style={{ padding: "6rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)", textAlign: "center" }}>
-        <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
-          style={{ maxWidth: "38rem", margin: "0 auto" }}>
-          <div style={{ fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>─── READY TO CONNECT ───</div>
-          <h2 style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)", fontWeight: 900, marginBottom: "1.2rem", letterSpacing: "-0.01em" }}>
-            INITIALIZE YOUR NODE
-          </h2>
-          <p style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", lineHeight: 1.7, marginBottom: "2.5rem" }}>
-            FREE TO JOIN. EVERY REWARD VERIFIABLE ON-CHAIN.
-          </p>
-          <div style={{ clipPath: "polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%)", display: "inline-block", boxShadow: `0 0 48px rgba(0,229,255,0.4)` }}>
-            <WalletMultiButton style={{
-              background: CYAN, color: "#000", fontWeight: 900,
-              fontSize: "0.85rem", letterSpacing: "0.14em", padding: "0.9rem 3rem",
-              fontFamily: MONO, borderRadius: 0, border: "none",
-            }} />
-          </div>
-        </motion.div>
-      </section>
-
       {/* ── Footer ── */}
       <footer style={{ borderTop: "1px solid rgba(0,229,255,0.10)", padding: "2rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
         <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", fontSize: "0.82rem" }}>⊕ SAMONO</span>
         <div style={{ display: "flex", gap: "1.8rem" }}>
-          {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"], ["REGISTER", "/register"], ["LOGIN", "/login"]].map(([label, href]) => (
+          {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"], ["APP", "/dashboard"]].map(([label, href]) => (
             <Link key={href} href={href} style={{ color: "rgba(0,229,255,0.35)", fontSize: "0.65rem", letterSpacing: "0.16em", textDecoration: "none" }}
               onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
               onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.35)")}>

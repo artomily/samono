@@ -37,7 +37,7 @@ export default function ReferralPage() {
     try {
       const res = await fetch("/api/referral");
       if (res.status === 401) {
-        router.push("/login?next=/referral");
+        router.push("/dashboard");
         return;
       }
       if (res.ok) {
@@ -55,7 +55,7 @@ export default function ReferralPage() {
   const origin =
     typeof window !== "undefined" ? window.location.origin : "https://samono.io";
   const referralLink = stats?.referralCode
-    ? `${origin}/login?ref=${stats.referralCode}`
+    ? `${origin}/dashboard?ref=${stats.referralCode}`
     : null;
 
   const copyLink = async () => {

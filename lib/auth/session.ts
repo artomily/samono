@@ -20,12 +20,12 @@ export async function getSession() {
 }
 
 /**
- * Returns the current user or redirects to /login.
+ * Returns the current user or redirects to /dashboard (which shows the login overlay).
  * Use in protected Server Components.
  */
 export async function requireAuth() {
   const user = await getSession();
-  if (!user) redirect("/login");
+  if (!user) redirect("/dashboard");
   return user;
 }
 

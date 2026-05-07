@@ -368,3 +368,20 @@ insert into public.achievements (slug, name, description, icon, condition_json, 
   ('streak_master', 'Streak Master',  'Maintain a 7-day watch streak.',                '🔥', '{"type":"streak_days","threshold":7}',     500),
   ('focus_mode',    'Focus Mode',     'Accumulate 30 minutes of active watch time.',   '🎯', '{"type":"watch_minutes","threshold":30}',  200)
 on conflict (slug) do nothing;
+
+-- ─────────────────────────────────────────────────────────────────
+-- 9. WAITLIST_EMAILS
+-- Landing page email collection
+-- ─────────────────────────────────────────────────────────────────
+create table if not exists public.waitlist_emails (
+  id         uuid        primary key default gen_random_uuid(),
+  email      text        not null unique,
+  source     text        not null default 'landing',
+  created_at timestamptz not null default now()
+);
+
+alter table public.waitlist_emails enable row level security;
+
+-- No public read/update/delete — inserts are done via service role in the API route
+create policy "waitlist_emails: service insert" on public.waitlist_emails
+  for insert with check (true);

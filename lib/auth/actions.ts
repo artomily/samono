@@ -9,9 +9,9 @@ export async function signOut() {
   if (DUMMY_MODE) {
     const cookieStore = await cookies();
     cookieStore.delete("dummy_auth");
-    redirect("/login");
+    redirect("/");
   }
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
+  redirect("/");
 }
