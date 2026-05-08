@@ -11,10 +11,8 @@ const WalletMultiButton = dynamic(
   { ssr: false }
 );
 
-const IS_DEV = process.env.NODE_ENV !== "production";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 const CYAN = "#00E5FF";
-const GREEN = "#FF00FF";
 
 export function LoginOverlay() {
   const { publicKey, connected, signMessage } = useWallet();
@@ -23,20 +21,17 @@ export function LoginOverlay() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const handleSignIn = async (opts?: { devMode?: boolean }) => {
+  const handleSignIn = async () => {
     setError(null);
     setLoading(true);
 
     try {
       let body: Record<string, unknown>;
 
-      if (opts?.devMode) {
-        body = { devMode: true };
-      } else {
-        if (!publicKey || !signMessage) {
-          setError("Please connect your wallet first.");
-          return;
-        }
+      if (!publicKey || !signMessage) {
+        setError("Please connect your wallet first.");
+        return;
+      }
 
         const timestamp = Date.now();
         const message = new TextEncoder().encode(
@@ -47,7 +42,6 @@ export function LoginOverlay() {
         const signature = bs58.default.encode(signatureBytes);
 
         body = { publicKey: publicKey.toBase58(), signature, timestamp };
-      }
 
       const res = await fetch("/api/auth/wallet", {
         method: "POST",
@@ -111,7 +105,7 @@ export function LoginOverlay() {
           inset: 0,
           pointerEvents: "none",
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,102,0,0.05), transparent)",
+            "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(59,130,246,0.05), transparent)",
         }}
       />
 
@@ -123,7 +117,7 @@ export function LoginOverlay() {
           inset: 0,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle, rgba(255,102,0,0.08) 1px, transparent 1px)",
+            "radial-gradient(circle, rgba(59,130,246,0.08) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
           opacity: 0.5,
         }}
@@ -135,7 +129,7 @@ export function LoginOverlay() {
           style={{
             fontSize: "0.6rem",
             letterSpacing: "0.3em",
-            color: "rgba(255,102,0,0.5)",
+            color: "rgba(59,130,246,0.7)",
             marginBottom: "0.7rem",
           }}
         >
@@ -147,7 +141,7 @@ export function LoginOverlay() {
             fontWeight: 900,
             letterSpacing: "0.12em",
             color: CYAN,
-            textShadow: "0 0 32px rgba(255,102,0,0.4)",
+            textShadow: "0 0 32px rgba(59,130,246,0.4)",
           }}
         >
           ⊕ SAMONO
@@ -171,7 +165,7 @@ export function LoginOverlay() {
           zIndex: 1,
           width: "100%",
           maxWidth: "22rem",
-          border: "1px solid rgba(255,102,0,0.2)",
+          border: "1px solid rgba(59,130,246,0.2)",
           background: "rgba(255,255,255,0.02)",
           padding: "1.8rem",
           display: "flex",
@@ -191,8 +185,8 @@ export function LoginOverlay() {
               display: "flex",
               gap: "0.5rem",
               alignItems: "flex-start",
-              border: "1px solid rgba(255,80,80,0.3)",
-              background: "rgba(255,80,80,0.07)",
+              border: "1px solid rgba(239,68,68,0.3)",
+              background: "rgba(239,68,68,0.07)",
               padding: "0.6rem 0.8rem",
               fontSize: "0.72rem",
               color: "#fca5a5",
@@ -237,8 +231,8 @@ export function LoginOverlay() {
           onClick={() => handleSignIn()}
           style={{
             width: "100%",
-            border: `1px solid rgba(255,102,0,0.3)`,
-            background: "rgba(255,102,0,0.06)",
+            border: `1px solid rgba(59,130,246,0.3)`,
+            background: "rgba(59,130,246,0.06)",
             padding: "0.75rem",
             fontSize: "0.7rem",
             letterSpacing: "0.25em",
@@ -256,49 +250,6 @@ export function LoginOverlay() {
           {loading && <Loader2 className="animate-spin" style={{ width: "1rem", height: "1rem" }} />}
           {loading ? "SIGNING IN…" : "SIGN IN WITH WALLET"}
         </button>
-
-        {/* Dev mode bypass */}
-        {IS_DEV && (
-          <>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-              }}
-            >
-              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }} />
-              <span
-                style={{
-                  fontSize: "0.6rem",
-                  color: "rgba(255,255,255,0.2)",
-                  letterSpacing: "0.15em",
-                }}
-              >
-                DEV
-              </span>
-              <div style={{ flex: 1, height: "1px", background: "rgba(255,255,255,0.08)" }} />
-            </div>
-            <button
-              disabled={loading || success}
-              onClick={() => handleSignIn({ devMode: true })}
-              style={{
-                width: "100%",
-                border: "1px solid rgba(255,180,0,0.25)",
-                background: "rgba(255,180,0,0.05)",
-                padding: "0.6rem",
-                fontSize: "0.65rem",
-                letterSpacing: "0.2em",
-                color: "rgba(255,200,80,0.7)",
-                fontFamily: MONO,
-                cursor: loading || success ? "not-allowed" : "pointer",
-                opacity: loading || success ? 0.4 : 1,
-              }}
-            >
-              DEV BYPASS LOGIN
-            </button>
-          </>
-        )}
       </div>
 
       {/* Footer note */}

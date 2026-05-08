@@ -58,7 +58,7 @@ export function SessionProgress({
               className={cn(
                 "gap-1 text-xs",
                 tabDanger
-                  ? "border-red-500/50 bg-red-500/10 text-red-400"
+                  ? "border-cyan-500/50 bg-cyan-500/10 text-cyan-400"
                   : tabWarning
                   ? "border-yellow-500/50 bg-yellow-500/10 text-yellow-400"
                   : "border-border text-muted-foreground"
@@ -89,7 +89,7 @@ export function SessionProgress({
 
       {/* Warning messages */}
       {tabDanger && (
-        <p className="text-xs text-red-400 bg-red-500/10 rounded p-2">
+        <p className="text-xs text-cyan-400 bg-cyan-500/10 rounded p-2">
           Too many tab switches. This session may not qualify for rewards.
         </p>
       )}

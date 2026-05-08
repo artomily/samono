@@ -33,9 +33,9 @@ export function ProximityPanel({
       className="relative border p-6"
       style={{
         rotate: rotation,
-        borderColor: `rgba(255,102,0,${0.07 + proximity * 0.32})`,
-        boxShadow: `0 0 ${28 * proximity}px rgba(255,102,0,${0.14 * proximity}), inset 0 0 ${12 * proximity}px rgba(255,102,0,${0.04 * proximity})`,
-        background: `rgba(255,102,0,${0.015 + proximity * 0.038})`,
+        borderColor: `rgba(0,229,255,${0.07 + proximity * 0.32})`,
+        boxShadow: `0 0 ${28 * proximity}px rgba(0,229,255,${0.14 * proximity}), inset 0 0 ${12 * proximity}px rgba(0,229,255,${0.04 * proximity})`,
+        background: `rgba(0,229,255,${0.015 + proximity * 0.038})`,
         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease",
       }}
       initial={{ opacity: 0, scale: 0.94, rotate: rotation - 4 }}
@@ -45,29 +45,29 @@ export function ProximityPanel({
       <div
         className="absolute top-0 left-0 w-1.5 h-1.5 rounded-full"
         style={{
-          background: `rgba(255,102,0,${0.35 + proximity * 0.65})`,
-          boxShadow: `0 0 6px rgba(255,102,0,${0.4 + proximity * 0.6})`,
+          background: `rgba(0,229,255,${0.35 + proximity * 0.65})`,
+          boxShadow: `0 0 6px rgba(0,229,255,${0.4 + proximity * 0.6})`,
         }}
       />
       <div
         className="absolute top-0 right-0 w-1.5 h-1.5 rounded-full"
         style={{
-          background: `rgba(255,153,0,${0.35 + proximity * 0.65})`,
-          boxShadow: `0 0 6px rgba(255,153,0,${0.4 + proximity * 0.6})`,
+          background: `rgba(0,229,255,${0.35 + proximity * 0.65})`,
+          boxShadow: `0 0 6px rgba(0,229,255,${0.4 + proximity * 0.6})`,
         }}
       />
       <div
         className="absolute bottom-0 left-0 w-1.5 h-1.5 rounded-full"
         style={{
-          background: `rgba(255,153,0,${0.25 + proximity * 0.55})`,
-          boxShadow: `0 0 6px rgba(255,153,0,${0.3 + proximity * 0.5})`,
+          background: `rgba(0,229,255,${0.25 + proximity * 0.55})`,
+          boxShadow: `0 0 6px rgba(0,229,255,${0.3 + proximity * 0.5})`,
         }}
       />
       <div
         className="absolute bottom-0 right-0 w-1.5 h-1.5 rounded-full"
         style={{
-          background: `rgba(255,102,0,${0.25 + proximity * 0.55})`,
-          boxShadow: `0 0 6px rgba(255,102,0,${0.3 + proximity * 0.5})`,
+          background: `rgba(0,229,255,${0.25 + proximity * 0.55})`,
+          boxShadow: `0 0 6px rgba(0,229,255,${0.3 + proximity * 0.5})`,
         }}
       />
       {children}

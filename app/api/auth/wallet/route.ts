@@ -6,7 +6,6 @@ import { createHmac } from "crypto";
 import type { Database } from "@/types/database";
 import { DUMMY_MODE, DUMMY_WALLET } from "@/lib/dummy";
 
-const DEV_WALLET = "DevMode1111111111111111111111111111111111";
 const WALLET_AUTH_SECRET =
   process.env.WALLET_AUTH_SECRET ?? "dev-secret-change-in-prod";
 
@@ -15,7 +14,6 @@ const bodySchema = z.object({
   signature: z.string().optional(),
   timestamp: z.number().optional(),
   referralCode: z.string().optional(),
-  devMode: z.boolean().optional(),
 });
 
 function walletToEmail(publicKey: string) {
@@ -76,27 +74,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { publicKey, signature, timestamp, referralCode, devMode } = parsed.data;
+  const { publicKey, signature, timestamp, referralCode } = parsed.data;
 
-  // Dev mode — only allowed outside of production
-  const isDevMode = devMode === true;
-  if (isDevMode && process.env.NODE_ENV === "production") {
-    return NextResponse.json({ error: "Dev mode not available in production" }, { status: 403 });
-  }
-
-  // Validate publicKey is provided if not in dev mode
-  if (!isDevMode && !publicKey) {
+  // Validate publicKey is required
+  if (!publicKey) {
     return NextResponse.json(
       { error: "publicKey is required for wallet authentication" },
       { status: 400 }
     );
   }
 
-  const walletAddress = isDevMode ? DEV_WALLET : publicKey!
+  const walletAddress = publicKey
 
-  // Signature verification (skip in dev mode)
-  if (!isDevMode) {
-    if (!signature || !timestamp) {
+  // Signature verification
+  if (!signature || !timestamp) {
       return NextResponse.json({ error: "Signature and timestamp required" }, { status: 400 });
     }
     // Reject stale timestamps (5-minute window)
@@ -118,7 +109,6 @@ export async function POST(req: NextRequest) {
     } catch {
       return NextResponse.json({ error: "Signature verification failed" }, { status: 400 });
     }
-  }
 
   const email = walletToEmail(walletAddress);
   const password = walletToPassword(walletAddress);

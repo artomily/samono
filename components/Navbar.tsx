@@ -20,11 +20,11 @@ import { Menu, X, Coins, LayoutDashboard, PlayCircle, Trophy, Users, ArrowLeftRi
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/watch", label: "Watch", icon: PlayCircle },
-  { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
-  { href: "/dashboard/swap", label: "Swap Points", icon: ArrowLeftRight },
-  { href: "/referral", label: "Referral", icon: Users },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/watch", label: "Watch", icon: PlayCircle, exact: false },
+  { href: "/leaderboard", label: "Leaderboard", icon: Trophy, exact: false },
+  { href: "/dashboard/swap", label: "Swap Points", icon: ArrowLeftRight, exact: false },
+  { href: "/referral", label: "Referral", icon: Users, exact: false },
 ];
 
 const PROTECTED_PREFIXES = ["/dashboard", "/watch", "/wallet", "/leaderboard", "/referral", "/register"];
@@ -100,29 +100,30 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-4">
-          {NAV_LINKS.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "relative flex items-center gap-1.5 px-1 py-2 text-xs font-semibold tracking-[0.14em] transition-colors",
-                pathname === href || pathname.startsWith(href + "/")
-                  ? "text-cyan-300"
-                  : "text-cyan-100/40 hover:text-cyan-200"
-              )}
-              style={{ fontFamily: "var(--font-geist-mono), 'Courier New', monospace" }}
-            >
-              <Icon className="h-4 w-4" />
-              {label}
-              {(pathname === href || pathname.startsWith(href + "/")) && (
-                <span
-                  aria-hidden
-                  className="absolute -bottom-2.5 left-0 right-0 h-px"
-                  style={{ background: "#00E5FF" }}
-                />
-              )}
-            </Link>
-          ))}
+          {NAV_LINKS.map(({ href, label, icon: Icon, exact }) => {
+            const isActive = exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "relative flex items-center gap-1.5 px-1 py-2 text-xs font-semibold tracking-[0.14em] transition-colors",
+                  isActive ? "text-cyan-300" : "text-cyan-100/40 hover:text-cyan-200"
+                )}
+                style={{ fontFamily: "var(--font-geist-mono), 'Courier New', monospace" }}
+              >
+                <Icon className="h-4 w-4" />
+                {label}
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="absolute -bottom-2.5 left-0 right-0 h-px"
+                    style={{ background: "#00E5FF" }}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right section */}
@@ -225,23 +226,26 @@ export function Navbar() {
       {menuOpen && (
         <div className="md:hidden border-t border-cyan-400/15 bg-black px-4 pb-4 pt-2">
           <nav className="flex flex-col gap-1 mb-4">
-            {NAV_LINKS.map(({ href, label, icon: Icon }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                className={cn(
-                  "flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                  pathname === href || pathname.startsWith(href + "/")
-                    ? "bg-cyan-400/10 text-cyan-300"
-                    : "text-cyan-100/45 hover:bg-cyan-400/10 hover:text-cyan-200"
-                )}
-                style={{ fontFamily: "var(--font-geist-mono), 'Courier New', monospace" }}
-              >
-                <Icon className="h-4 w-4" />
-                {label}
-              </Link>
-            ))}
+            {NAV_LINKS.map(({ href, label, icon: Icon, exact }) => {
+              const isActive = exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-cyan-400/10 text-cyan-300"
+                      : "text-cyan-100/45 hover:bg-cyan-400/10 hover:text-cyan-200"
+                  )}
+                  style={{ fontFamily: "var(--font-geist-mono), 'Courier New', monospace" }}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
           <div className="flex flex-col gap-2">
             <ClientWalletButton />

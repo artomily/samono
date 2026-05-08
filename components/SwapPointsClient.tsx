@@ -15,12 +15,10 @@ interface SwapPointsClientProps {
 }
 
 const CYAN = "#00E5FF";
-const GREEN = "#00FF88";
-const MAGENTA = "#FF00FF";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 
 // Color accent per tier index
-const TIER_COLORS = [CYAN, CYAN, CYAN, CYAN, MAGENTA, MAGENTA, GREEN, GREEN];
+const TIER_COLORS = [CYAN, CYAN, CYAN, CYAN, CYAN, CYAN, CYAN, CYAN];
 
 export function SwapPointsClient({
   username,
@@ -116,7 +114,7 @@ export function SwapPointsClient({
               gap: "0.4rem",
               fontSize: "0.65rem",
               letterSpacing: "0.18em",
-              color: "rgba(255,102,0,0.5)",
+              color: "rgba(0,229,255,0.5)",
               textDecoration: "none",
               marginBottom: "1.5rem",
             }}
@@ -146,8 +144,8 @@ export function SwapPointsClient({
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "1px",
-            background: "rgba(255,102,0,0.1)",
-            border: "1px solid rgba(255,102,0,0.1)",
+            background: "rgba(0,229,255,0.05)",
+            border: "1px solid rgba(0,229,255,0.1)",
             marginBottom: "2.5rem",
           }}
         >
@@ -159,7 +157,7 @@ export function SwapPointsClient({
                 gap: "0.4rem",
                 fontSize: "0.6rem",
                 letterSpacing: "0.2em",
-                color: "rgba(255,102,0,0.5)",
+                color: "rgba(0,229,255,0.5)",
                 marginBottom: "0.4rem",
               }}
             >
@@ -185,7 +183,7 @@ export function SwapPointsClient({
                 gap: "0.4rem",
                 fontSize: "0.6rem",
                 letterSpacing: "0.2em",
-                color: "rgba(255,204,0,0.5)",
+                color: "rgba(0,229,255,0.5)",
                 marginBottom: "0.4rem",
               }}
             >
@@ -196,12 +194,12 @@ export function SwapPointsClient({
               style={{
                 fontSize: "1.6rem",
                 fontWeight: 900,
-                color: GREEN,
+                color: CYAN,
                 letterSpacing: "-0.01em",
               }}
             >
               {solBalance.toFixed(4)}{" "}
-              <span style={{ fontSize: "0.9rem", color: "rgba(255,204,0,0.5)" }}>SOL</span>
+              <span style={{ fontSize: "0.9rem", color: "rgba(0,229,255,0.5)" }}>SOL</span>
             </div>
           </div>
         </div>
@@ -217,13 +215,13 @@ export function SwapPointsClient({
                 display: "flex",
                 alignItems: "center",
                 gap: "0.6rem",
-                border: "1px solid rgba(255,204,0,0.25)",
-                background: "rgba(255,204,0,0.05)",
+                border: "1px solid rgba(0,229,255,0.25)",
+                background: "rgba(0,229,255,0.05)",
                 padding: "0.8rem 1.2rem",
                 marginBottom: "1.8rem",
                 fontSize: "0.72rem",
                 letterSpacing: "0.08em",
-                color: GREEN,
+                color: CYAN,
               }}
             >
               <CheckCircle2 style={{ width: "1rem", height: "1rem", flexShrink: 0 }} />
@@ -395,7 +393,7 @@ export function SwapPointsClient({
                 width: "calc(100vw - 2rem)",
                 maxWidth: "26rem",
                 background: "#000",
-                border: "1px solid rgba(255,102,0,0.2)",
+                border: "1px solid rgba(0,229,255,0.2)",
                 padding: "1.8rem",
                 fontFamily: MONO,
               }}
@@ -476,11 +474,11 @@ export function SwapPointsClient({
                   >
                     YOU RECEIVE
                   </div>
-                  <div style={{ fontSize: "1.3rem", fontWeight: 900, color: GREEN }}>
+                  <div style={{ fontSize: "1.3rem", fontWeight: 900, color: CYAN }}>
                     {pendingOption.solAmount.toFixed(3)}
                   </div>
                   <div
-                    style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(255,204,0,0.4)" }}
+                    style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(0,229,255,0.4)" }}
                   >
                     SOL
                   </div>

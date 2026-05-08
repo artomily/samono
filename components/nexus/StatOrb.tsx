@@ -27,7 +27,7 @@ export function StatOrb({
       whileHover={{ scale: 1.1 }}
     >
       <OrbitalRing size={148} speed={7 + index} />
-      <OrbitalRing size={118} speed={4.5 + index * 0.6} reverse color="#FF00FF" />
+      <OrbitalRing size={118} speed={4.5 + index * 0.6} reverse color="#00E5FF" />
       <div className="relative z-10 text-center">
         <div
           className="text-2xl font-bold"

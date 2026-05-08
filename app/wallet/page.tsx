@@ -28,7 +28,7 @@ const STATUS_COLORS: Record<string, string> = {
   completed: "bg-green-500/10 text-green-400 border-green-500/30",
   pending: "bg-blue-500/10 text-blue-400 border-blue-500/30",
   processing: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-  failed: "bg-red-500/10 text-red-400 border-red-500/30",
+  failed: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30",
 };
 
 export default function WalletPage() {
