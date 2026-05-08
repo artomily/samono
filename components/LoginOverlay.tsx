@@ -14,8 +14,8 @@ const WalletMultiButton = dynamic(
 
 const IS_DEV = process.env.NODE_ENV !== "production";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
-const CYAN = "#00E5FF";
-const GREEN = "#00FF87";
+const CYAN = "#FF6600";
+const GREEN = "#FFCC00";
 
 export function LoginOverlay() {
   const router = useRouter();
@@ -114,7 +114,7 @@ export function LoginOverlay() {
           inset: 0,
           pointerEvents: "none",
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0,229,255,0.05), transparent)",
+            "radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,102,0,0.05), transparent)",
         }}
       />
 
@@ -126,7 +126,7 @@ export function LoginOverlay() {
           inset: 0,
           pointerEvents: "none",
           backgroundImage:
-            "radial-gradient(circle, rgba(0,229,255,0.08) 1px, transparent 1px)",
+            "radial-gradient(circle, rgba(255,102,0,0.08) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
           opacity: 0.5,
         }}
@@ -138,7 +138,7 @@ export function LoginOverlay() {
           style={{
             fontSize: "0.6rem",
             letterSpacing: "0.3em",
-            color: "rgba(0,229,255,0.5)",
+            color: "rgba(255,102,0,0.5)",
             marginBottom: "0.7rem",
           }}
         >
@@ -150,7 +150,7 @@ export function LoginOverlay() {
             fontWeight: 900,
             letterSpacing: "0.12em",
             color: CYAN,
-            textShadow: "0 0 32px rgba(0,229,255,0.4)",
+            textShadow: "0 0 32px rgba(255,102,0,0.4)",
           }}
         >
           ⊕ SAMONO
@@ -174,7 +174,7 @@ export function LoginOverlay() {
           zIndex: 1,
           width: "100%",
           maxWidth: "22rem",
-          border: "1px solid rgba(0,229,255,0.2)",
+          border: "1px solid rgba(255,102,0,0.2)",
           background: "rgba(255,255,255,0.02)",
           padding: "1.8rem",
           display: "flex",
@@ -212,8 +212,8 @@ export function LoginOverlay() {
               display: "flex",
               gap: "0.5rem",
               alignItems: "center",
-              border: "1px solid rgba(0,255,135,0.3)",
-              background: "rgba(0,255,135,0.07)",
+              border: "1px solid rgba(255,204,0,0.3)",
+              background: "rgba(255,204,0,0.07)",
               padding: "0.6rem 0.8rem",
               fontSize: "0.72rem",
               color: "#6ee7b7",
@@ -240,8 +240,8 @@ export function LoginOverlay() {
           onClick={() => handleSignIn()}
           style={{
             width: "100%",
-            border: `1px solid rgba(0,229,255,0.3)`,
-            background: "rgba(0,229,255,0.06)",
+            border: `1px solid rgba(255,102,0,0.3)`,
+            background: "rgba(255,102,0,0.06)",
             padding: "0.75rem",
             fontSize: "0.7rem",
             letterSpacing: "0.25em",

@@ -10,9 +10,9 @@ import { ProximityPanel } from "@/components/nexus/ProximityPanel";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const CYAN = "#00E5FF";
-const MAGENTA = "#FF00AA";
-const GREEN = "#00FF87";
+const CYAN = "#FF6600";
+const MAGENTA = "#FF9900";
+const GREEN = "#FFCC00";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 // Domain belum dibeli — pakai relative path untuk sekarang.
 // Setelah apps.samono.com aktif, ganti jadi "https://apps.samono.com"
@@ -131,7 +131,7 @@ function TreasuryPreview() {
         background: "linear-gradient(180deg, rgba(30,30,30,0.96), rgba(10,10,10,0.96))",
         backdropFilter: "blur(10px)",
         overflow: "hidden",
-        boxShadow: "0 20px 64px rgba(0,0,0,0.55), 0 0 44px rgba(0,229,255,0.08)",
+        boxShadow: "0 20px 64px rgba(0,0,0,0.55), 0 0 44px rgba(255,102,0,0.08)",
       }}
     >
       <motion.div
@@ -141,7 +141,7 @@ function TreasuryPreview() {
         style={{
           position: "absolute",
           inset: 0,
-          background: "radial-gradient(circle at 20% 0%, rgba(0,229,255,0.1), transparent 34%), radial-gradient(circle at 82% 100%, rgba(255,0,170,0.1), transparent 28%)",
+          background: "radial-gradient(circle at 20% 0%, rgba(255,102,0,0.1), transparent 34%), radial-gradient(circle at 82% 100%, rgba(255,153,0,0.1), transparent 28%)",
           pointerEvents: "none",
         }}
       />
@@ -228,8 +228,8 @@ function TreasuryPreview() {
                   fontSize: "0.55rem",
                   letterSpacing: "0.16em",
                   color: tab.active ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)",
-                  border: tab.active ? "1px solid rgba(0,229,255,0.35)" : "1px solid rgba(255,255,255,0.14)",
-                  background: tab.active ? "rgba(0,229,255,0.12)" : "rgba(255,255,255,0.04)",
+                  border: tab.active ? "1px solid rgba(255,102,0,0.35)" : "1px solid rgba(255,255,255,0.14)",
+                  background: tab.active ? "rgba(255,102,0,0.12)" : "rgba(255,255,255,0.04)",
                   borderRadius: "10px 10px 0 0",
                   padding: "0.5rem 0.8rem",
                   whiteSpace: "nowrap",
@@ -254,7 +254,7 @@ function TreasuryPreview() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20rem, 1fr))", gap: "1rem" }}>
             <div style={{ display: "grid", gap: "1rem" }}>
-              <div style={{ border: "1px solid rgba(0,229,255,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem" }}>
+              <div style={{ border: "1px solid rgba(255,102,0,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: CYAN }}>
                   <span>INFLOW</span>
                   <span>ADSENSE / FIAT / EXTERNAL</span>
@@ -290,7 +290,7 @@ function TreasuryPreview() {
                 </div>
               </div>
 
-              <div style={{ border: "1px solid rgba(255,0,170,0.16)", background: "rgba(0,0,0,0.24)", padding: "1rem" }}>
+              <div style={{ border: "1px solid rgba(255,153,0,0.16)", background: "rgba(0,0,0,0.24)", padding: "1rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: MAGENTA }}>
                   <span>OUTFLOW</span>
                   <span>DISTRIBUTION / LIQUIDITY / REWARDS</span>
@@ -327,13 +327,13 @@ function TreasuryPreview() {
               </div>
             </div>
 
-            <div style={{ border: "1px solid rgba(0,229,255,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem", display: "grid", gridTemplateRows: "auto 1fr auto", minHeight: "100%" }}>
+            <div style={{ border: "1px solid rgba(255,102,0,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem", display: "grid", gridTemplateRows: "auto 1fr auto", minHeight: "100%" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: CYAN }}>
                 <span>FLOW VISUALIZATION</span>
                 <span>PREVIEW MODE</span>
               </div>
 
-              <div style={{ display: "flex", alignItems: "end", gap: "0.7rem", minHeight: "16rem", padding: "0.6rem 0.1rem 0.3rem", borderBottom: "1px solid rgba(0,229,255,0.12)", position: "relative" }}>
+              <div style={{ display: "flex", alignItems: "end", gap: "0.7rem", minHeight: "16rem", padding: "0.6rem 0.1rem 0.3rem", borderBottom: "1px solid rgba(255,102,0,0.12)", position: "relative" }}>
                 {TREASURY_FLOW.map((bar, index) => (
                   <div key={bar.label} style={{ flex: 1, display: "grid", alignItems: "end", justifyItems: "center", gap: "0.5rem" }}>
                     <motion.div
@@ -437,18 +437,18 @@ export default function LandingPage() {
         position: "fixed", top: "0.9rem", left: "50%", zIndex: 50,
         transform: "translateX(-50%)",
         width: "calc(100% - 2.5rem)", maxWidth: "56rem",
-        border: "1px solid rgba(0,229,255,0.14)",
+        border: "1px solid rgba(255,102,0,0.14)",
         background: "rgba(0,0,0,0.88)", backdropFilter: "blur(14px)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 1.4rem", height: "3.2rem",
-        boxShadow: "0 4px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.04)",
+        boxShadow: "0 4px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,102,0,0.04)",
       }}>
-        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", textShadow: `0 0 18px rgba(0,229,255,0.5)`, flexShrink: 0 }}>⊕ SAMONO</span>
+        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", textShadow: `0 0 18px rgba(255,102,0,0.5)`, flexShrink: 0 }}>⊕ SAMONO</span>
         <div style={{ display: "flex", gap: "1.6rem", alignItems: "center" }}>
           {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"]].map(([label, href]) => (
-            <Link key={href} href={href} style={{ color: "rgba(0,229,255,0.45)", fontSize: "0.7rem", letterSpacing: "0.16em", textDecoration: "none", transition: "color 0.15s" }}
+            <Link key={href} href={href} style={{ color: "rgba(255,102,0,0.45)", fontSize: "0.7rem", letterSpacing: "0.16em", textDecoration: "none", transition: "color 0.15s" }}
               onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.45)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,102,0,0.45)")}
             >
               {label}
             </Link>
@@ -475,7 +475,7 @@ export default function LandingPage() {
         <div ref={gridRef} aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0 }}>
           <motion.div style={{
             position: "absolute", inset: "-5%",
-            backgroundImage: "radial-gradient(circle, rgba(0,229,255,0.18) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(255,102,0,0.18) 1px, transparent 1px)",
             backgroundSize: "28px 28px",
             x: springX, y: springY,
           }} />
@@ -483,11 +483,11 @@ export default function LandingPage() {
         </div>
 
         {/* radial glow */}
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0,229,255,0.06), transparent)`, zIndex: 1 }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,102,0,0.06), transparent)`, zIndex: 1 }} />
 
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: "52rem", padding: "0 2rem" }}>
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            style={{ display: "inline-block", border: `1px solid rgba(0,229,255,0.3)`, padding: "0.2rem 0.9rem", marginBottom: "2.2rem", fontSize: "0.65rem", letterSpacing: "0.2em", color: CYAN }}>
+            style={{ display: "inline-block", border: `1px solid rgba(255,102,0,0.3)`, padding: "0.2rem 0.9rem", marginBottom: "2.2rem", fontSize: "0.65rem", letterSpacing: "0.2em", color: CYAN }}>
             ◈ POWERED BY SOLANA
           </motion.div>
 
@@ -495,7 +495,7 @@ export default function LandingPage() {
             style={{ fontSize: "clamp(3rem, 9vw, 7rem)", fontWeight: 900, lineHeight: 0.95, letterSpacing: "-0.02em", marginBottom: "1.6rem" }}>
             <span style={{ color: "#fff" }}>WATCH</span>
             <br />
-            <span style={{ color: CYAN, textShadow: `0 0 60px rgba(0,229,255,0.4)` }}>EARN</span>
+            <span style={{ color: CYAN, textShadow: `0 0 60px rgba(255,102,0,0.4)` }}>EARN</span>
           </motion.h1>
 
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }}
@@ -507,14 +507,14 @@ export default function LandingPage() {
             style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
             <Link href="/dashboard" target="_blank" rel="noopener noreferrer" style={{
               clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
-              boxShadow: `0 0 32px rgba(0,229,255,0.35)`,
+              boxShadow: `0 0 32px rgba(255,102,0,0.35)`,
               background: CYAN, color: "#000", fontWeight: 900,
               fontSize: "0.75rem", letterSpacing: "0.14em",
               padding: "0.75rem 2.2rem", textDecoration: "none", display: "inline-block",
               fontFamily: MONO,
             }}>START EARNING</Link>
             <Link href={`${APP_URL}/watch`} style={{
-              border: `1px solid rgba(0,229,255,0.35)`, color: CYAN, fontWeight: 700, fontSize: "0.75rem",
+              border: `1px solid rgba(255,102,0,0.35)`, color: CYAN, fontWeight: 700, fontSize: "0.75rem",
               letterSpacing: "0.14em", padding: "0.75rem 2.2rem", textDecoration: "none",
               clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
             }}>BROWSE STREAMS</Link>
@@ -523,14 +523,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── Stats ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))", gap: "2rem" }}>
           {STATS.map((s, i) => <StatOrb key={s.label} value={s.value} label={s.label} index={i} />)}
         </div>
       </section>
 
       {/* ── Video ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -549,8 +549,8 @@ export default function LandingPage() {
               position: "relative",
               width: "100%",
               paddingBottom: "56.25%",
-              border: "1px solid rgba(0,229,255,0.2)",
-              boxShadow: "0 0 48px rgba(0,229,255,0.08), 0 20px 48px rgba(0,0,0,0.5)",
+              border: "1px solid rgba(255,102,0,0.2)",
+              boxShadow: "0 0 48px rgba(255,102,0,0.08), 0 20px 48px rgba(0,0,0,0.5)",
               background: "#000",
             }}
           >
@@ -566,7 +566,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── How It Works ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -593,7 +593,7 @@ export default function LandingPage() {
       {/* ── Activity Stream ── */}
 
       {/* ── Why Us ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -617,12 +617,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── Treasury Preview ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <TreasuryPreview />
       </section>
 
       {/* ── Token Tiers ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -653,7 +653,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Early Access ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <div style={{ maxWidth: "36rem", margin: "0 auto", textAlign: "center" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -675,7 +675,7 @@ export default function LandingPage() {
             </motion.div>
           ) : (
             <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
-              <div style={{ display: "flex", gap: "0", border: "1px solid rgba(0,229,255,0.3)" }}>
+              <div style={{ display: "flex", gap: "0", border: "1px solid rgba(255,102,0,0.3)" }}>
                 <input
                   type="email"
                   required
@@ -693,7 +693,7 @@ export default function LandingPage() {
                   type="submit"
                   disabled={waitlistStatus === "loading"}
                   style={{
-                    background: waitlistStatus === "loading" ? "rgba(0,229,255,0.6)" : CYAN,
+                    background: waitlistStatus === "loading" ? "rgba(255,102,0,0.6)" : CYAN,
                     color: "#000", fontWeight: 900, fontSize: "0.7rem", letterSpacing: "0.14em",
                     padding: "0.8rem 1.6rem", border: "none", cursor: waitlistStatus === "loading" ? "not-allowed" : "pointer",
                     fontFamily: MONO, whiteSpace: "nowrap",
@@ -711,7 +711,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(0,229,255,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -724,7 +724,7 @@ export default function LandingPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(22rem, 1fr))", gap: "1rem" }}>
             {FAQS.map((f, i) => (
               <motion.div key={f.q} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.07 }}
-                style={{ border: "1px solid rgba(0,229,255,0.15)", padding: "1.4rem 1.6rem" }}>
+                style={{ border: "1px solid rgba(255,102,0,0.15)", padding: "1.4rem 1.6rem" }}>
                 <p style={{ fontSize: "0.78rem", fontWeight: 700, color: CYAN, letterSpacing: "0.04em", marginBottom: "0.5rem" }}>{f.q}</p>
                 <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.65 }}>{f.a}</p>
               </motion.div>
@@ -734,13 +734,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer style={{ borderTop: "1px solid rgba(0,229,255,0.10)", padding: "2rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+      <footer style={{ borderTop: "1px solid rgba(255,102,0,0.10)", padding: "2rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
         <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", fontSize: "0.82rem" }}>⊕ SAMONO</span>
         <div style={{ display: "flex", gap: "1.8rem" }}>
           {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"], ["APP", "/dashboard"]].map(([label, href]) => (
-            <Link key={href} href={href} style={{ color: "rgba(0,229,255,0.35)", fontSize: "0.65rem", letterSpacing: "0.16em", textDecoration: "none" }}
+            <Link key={href} href={href} style={{ color: "rgba(255,102,0,0.35)", fontSize: "0.65rem", letterSpacing: "0.16em", textDecoration: "none" }}
               onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,229,255,0.35)")}>
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,102,0,0.35)")}>
               {label}
             </Link>
           ))}

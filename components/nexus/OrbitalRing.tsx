@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 export function OrbitalRing({
   size,
   speed,
-  color = "#00E5FF",
+  color = "#FF6600",
   reverse = false,
 }: {
   size: number;
