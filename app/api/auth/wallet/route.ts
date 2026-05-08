@@ -193,7 +193,11 @@ export async function POST(req: NextRequest) {
     if (createError || !newUser.user) {
       console.error("[Auth] Failed to create user:", createError);
       return NextResponse.json(
-        { error: "Failed to create account" },
+        {
+          error: "Failed to create account",
+          detail: createError?.message ?? "No user returned",
+          code: createError?.status ?? 500,
+        },
         { status: 500 }
       );
     }
@@ -226,7 +230,7 @@ export async function POST(req: NextRequest) {
     );
 
     if (profileError) {
-      console.error("Failed to create profile:", profileError);
+      console.error("Failed to create profile:", profileError.message, profileError.code);
       // Profile may have been created by the trigger — continue anyway
     }
 
@@ -273,7 +277,11 @@ export async function POST(req: NextRequest) {
     if (!signInAfterCreate?.session) {
       console.error("[Auth] Failed to sign in after user creation:", signInAfterError);
       return NextResponse.json(
-        { error: "Failed to create session after user creation" },
+        {
+          error: "Failed to create session after user creation",
+          detail: signInAfterError?.message ?? "Unknown error",
+          code: signInAfterError?.status ?? 500,
+        },
         { status: 500 }
       );
     }
@@ -291,14 +299,18 @@ export async function POST(req: NextRequest) {
   if (signInError) {
     console.error("[Auth] Unexpected sign-in error:", signInError);
     return NextResponse.json(
-      { error: signInError.message || "Authentication failed" },
+      {
+        error: signInError.message || "Authentication failed",
+        detail: signInError.message,
+        code: signInError.status,
+      },
       { status: 401 }
     );
   }
 
   console.error("[Auth] Reached unexpected end of function");
   return NextResponse.json(
-    { error: "Authentication failed" },
+    { error: "Authentication failed", detail: "Reached unexpected end of function" },
     { status: 500 }
   );
 }
