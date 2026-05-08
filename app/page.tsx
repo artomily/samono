@@ -744,7 +744,7 @@ export default function LandingPage() {
             style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
             BUILT DIFFERENT
           </motion.p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(18rem, 1fr))", gap: "1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1.5rem" }}>
             {WHY_US.map((item, i) => (
               <motion.div key={item.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 }}
                 style={{ border: `1px solid ${item.color}33`, padding: "2rem 1.6rem", position: "relative", overflow: "hidden" }}>
@@ -806,13 +806,13 @@ export default function LandingPage() {
           </motion.p>
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
             style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", lineHeight: 1.7, marginBottom: "2.5rem" }}>
-            BE FIRST TO EARN WHEN WE LAUNCH. NO SPAM. UNSUBSCRIBE ANY TIME.
+            TESTNET & MAINNET LAUNCH. WE WILL INFORM YOU. NO SPAM. UNSUBSCRIBE ANY TIME.
           </motion.p>
           {waitlistStatus === "success" ? (
             <motion.div
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
               style={{ border: `1px solid ${GREEN}44`, padding: "1.4rem 2rem", color: GREEN, fontSize: "0.8rem", letterSpacing: "0.1em" }}>
-              ◈ NODE REGISTERED — YOU ARE ON THE LIST
+              ◈ NODE REGISTERED — WE WILL INFORM YOU AT TESTNET & MAINNET LAUNCH
             </motion.div>
           ) : (
             <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
