@@ -81,7 +81,7 @@ export async function getReferralStats(userId: string): Promise<{
 }> {
   const supabase = await createClient();
 
-  const [profileResult, referredResult, earningsResult] = await Promise.all([
+  const [profileResult, referredResult] = await Promise.all([
     supabase.from("profiles").select("username").eq("id", userId).single(),
     supabase
       .from("profiles")
@@ -89,18 +89,11 @@ export async function getReferralStats(userId: string): Promise<{
       .eq("referrer_id", userId)
       .order("created_at", { ascending: false })
       .limit(50),
-    supabase
-      .from("rewards")
-      .select("amount")
-      .eq("user_id", userId)
-      .eq("status", "completed"),
   ]);
 
   const referredUsers = referredResult.data ?? [];
-  // Referral earnings = 10% of total completed rewards (as a placeholder heuristic).
-  // Replace with a dedicated referral_rewards table for precision.
-  const totalEarned = (earningsResult.data ?? []).reduce((s, r) => s + r.amount, 0);
-  const referralEarnings = Math.round(totalEarned * 0.1 * 100) / 100;
+  // 10,000 points per successful referral
+  const referralEarnings = referredUsers.length * 10000;
 
   return {
     referralCode: profileResult.data?.username ?? null,

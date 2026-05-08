@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   Zap,
   TrendingUp,
-  Clock,
   Flame,
   Eye,
   Copy,
@@ -46,7 +45,7 @@ interface Props {
 const STATS = [
   {
     key: "userPoints",
-    label: "XP Points",
+    label: "Total Points",
     icon: Zap,
     color: "text-cyan-300",
     borderColor: "border-cyan-300/20",
@@ -60,16 +59,7 @@ const STATS = [
     color: "text-emerald-400",
     borderColor: "border-emerald-400/20",
     glowColor: "rgba(0,255,135,0.06)",
-    getValue: (p: Props) => `${p.totalEarned.toFixed(2)}`,
-  },
-  {
-    key: "pendingAmount",
-    label: "Claimable",
-    icon: Clock,
-    color: "text-pink-400",
-    borderColor: "border-pink-400/20",
-    glowColor: "rgba(255,0,170,0.06)",
-    getValue: (p: Props) => `${p.pendingAmount.toFixed(2)} SOL`,
+    getValue: (p: Props) => `${p.totalEarned.toFixed(4)} SOL`,
   },
   {
     key: "watchStreak",
@@ -142,7 +132,7 @@ export function DashboardClient(props: Props) {
         </div>
 
         {/* ── Stats cards ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {STATS.map((s, i) => (
             <motion.div
               key={s.key}

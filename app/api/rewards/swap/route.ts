@@ -81,6 +81,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Update total_earned with SOL received from this swap
+  await supabase
+    .from("profiles")
+    .update({ total_earned: (profile.total_earned ?? 0) + option.solAmount })
+    .eq("id", user.id);
+
   return NextResponse.json({
     success: true,
     data: {

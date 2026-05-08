@@ -140,11 +140,11 @@ export default function ReferralPage() {
                 <div className="text-[10px] uppercase tracking-[0.3em] text-white/35 mb-3">
                   referral earnings
                 </div>
-                <div className="font-mono text-3xl text-emerald-300">
-                  {(stats?.referralEarnings ?? 0).toFixed(2)}
-                  <span className="text-white/30 text-base ml-1">SOL</span>
+                <div className="font-mono text-3xl text-cyan-300">
+                  {(stats?.referralEarnings ?? 0).toLocaleString()}
+                  <span className="text-white/30 text-base ml-1">pts</span>
                 </div>
-                <div className="text-[11px] text-white/30 mt-1">10% of referred users&apos; rewards</div>
+                <div className="text-[11px] text-white/30 mt-1">10,000 points per referral</div>
               </div>
             </>
           )}

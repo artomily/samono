@@ -210,10 +210,20 @@ export async function POST(req: NextRequest) {
     if (referralCode) {
       const { data: referrer } = await serviceClient
         .from("profiles")
-        .select("id")
+        .select("id, xp")
         .eq("username", referralCode)
         .single();
       referrerId = referrer?.id ?? null;
+
+      // Grant referrer 10,000 bonus points
+      if (referrerId) {
+        const currentXp = referrer?.xp ?? 0;
+        await serviceClient
+          .from("profiles")
+          .update({ xp: currentXp + 10000 })
+          .eq("id", referrerId);
+        console.log(`[Auth] Granted 10,000 XP to referrer ${referrerId}`);
+      }
     }
 
     // Create profile row (basic fields only — xp is set separately below)
