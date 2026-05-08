@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import { getTopEarners } from "@/lib/dal/leaderboard";
+
+export const dynamic = "force-dynamic";
 import { getUserRank } from "@/lib/dal/leaderboard";
 import { getSession } from "@/lib/auth/session";
 import { LeaderboardTable } from "@/components/LeaderboardTable";

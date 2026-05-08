@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { getProfileByUsername } from "@/lib/dal/profiles";
 import { LevelBadge } from "@/components/LevelBadge";

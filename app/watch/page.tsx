@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Metadata } from "next";
 import { requireAuth } from "@/lib/auth/session";
 import { getVideos } from "@/lib/dal/videos";

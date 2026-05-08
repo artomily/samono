@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Metadata } from "next";
 import { getSession } from "@/lib/auth/session";
 import { getProfile, getUserWatchStats } from "@/lib/dal/profiles";

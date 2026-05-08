@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { SwapPointsClient } from "@/components/SwapPointsClient";
 import { requireAuth } from "@/lib/auth/session";
 import { getProfile } from "@/lib/dal/profiles";

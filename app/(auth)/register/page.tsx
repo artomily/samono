@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth/session";
 import { getProfile } from "@/lib/dal/profiles";
