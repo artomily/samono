@@ -10,11 +10,5 @@
       "path": "/api/cron/sync-youtube",
       "schedule": "0 0 * * *"
     }
-  ],
-  "env": {
-    "CRON_SECRET": "your-secret-key-here",
-    "YOUTUBE_API_KEY": "your-youtube-api-key",
-    "SUPABASE_URL": "https://your-project.supabase.co",
-    "SUPABASE_SERVICE_ROLE_KEY": "your-service-role-key"
-  }
+  ]
 }
