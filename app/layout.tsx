@@ -3,6 +3,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ConditionalNavbar } from "@/components/ConditionalNavbar";
+import { ConditionalFooter } from "@/components/ConditionalFooter";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
         <Providers>
           <ConditionalNavbar />
           <main className="flex-1">{children}</main>
+          <ConditionalFooter />
         </Providers>
       </body>
     </html>

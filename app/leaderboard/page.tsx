@@ -67,13 +67,13 @@ export default async function LeaderboardPage() {
               <div className="flex flex-col items-center gap-2">
                 <div className="text-3xl">🥇</div>
                 <div
-                  className="border border-amber-400/40 bg-amber-400/8 px-4 py-3 text-center min-w-28 flex flex-col justify-center"
+                  className="border border-pink-400/40 bg-pink-400/8 px-4 py-3 text-center min-w-28 flex flex-col justify-center"
                   style={{ height: "6rem" }}
                 >
                   <p className="text-[11px] font-mono uppercase tracking-wider truncate text-white">
                     {tableEntries[0].username}
                   </p>
-                  <p className="text-[11px] text-amber-300 mt-1 font-mono">
+                  <p className="text-[11px] text-pink-300 mt-1 font-mono">
                     {tableEntries[0].total_earned.toFixed(2)} SOL
                   </p>
                 </div>

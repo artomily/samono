@@ -6,17 +6,20 @@ import Link from "next/link";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import { OrbitalRing } from "@/components/nexus/OrbitalRing";
 import { StatOrb } from "@/components/nexus/StatOrb";
-import { ProximityPanel } from "@/components/nexus/ProximityPanel";
+import { Footer } from "@/components/Footer";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const CYAN = "#FF6600";
-const MAGENTA = "#FF9900";
-const GREEN = "#FFCC00";
+const CYAN = "#00E5FF";
+const PINK = "#FF00FF";
+const BLUE = "#60A5FA";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 // Domain belum dibeli — pakai relative path untuk sekarang.
 // Setelah apps.samono.com aktif, ganti jadi "https://apps.samono.com"
 const APP_URL = "";
+// Legacy aliases (backward compat)
+const MAGENTA = PINK;
+const GREEN = BLUE;
 
 const STATS = [
   { value: "POINTS", label: "EARN PER VIDEO" },
@@ -25,10 +28,18 @@ const STATS = [
   { value: "∞", label: "REFERRAL EARNINGS" },
 ];
 
-const STEPS = [
-  { n: "01", label: "CONNECT", text: "Link your Solana wallet — Phantom, Solflare, or any Wallet Standard adapter. No email, no password. Your key, your wallet." },
-  { n: "02", label: "WATCH", text: "Stream curated Web3 educational content. Every verified minute earns engagement points tracked in real time on your account." },
-  { n: "03", label: "EARN", text: "Swap your points for real SOL and claim directly to your wallet. Streak bonuses and referral rewards stack automatically." },
+const USER_FLOW = [
+  { n: "01", icon: "◈", title: "CONNECT WALLET", desc: "Phantom, Solflare, or any Wallet Standard adapter. No email, no password. Your key, your account.", color: CYAN },
+  { n: "02", icon: "▶", title: "WATCH VIDEOS", desc: "Stream curated Web3 educational content. Every verified view earns engagement points, tracked in real time.", color: BLUE },
+  { n: "03", icon: "⊕", title: "EARN POINTS", desc: "Points credit instantly after each video. Daily streak bonuses stack up to 2× multiplier automatically.", color: PINK },
+  { n: "04", icon: "◆", title: "CLAIM SOL", desc: "Swap your points for real SOL via the on-chain Anchor program. Sent directly to your connected wallet.", color: CYAN },
+];
+
+const PROTOCOL_FLOW = [
+  { title: "AD REVENUE", detail: "Main treasury inflow", color: CYAN },
+  { title: "TREASURY PDA", detail: "On-chain vault (Solana)", color: BLUE },
+  { title: "ANCHOR PROGRAM", detail: "Verified swap contract", color: PINK },
+  { title: "YOUR WALLET", detail: "Real SOL delivered", color: CYAN },
 ];
 
 const TOKEN_TIERS = [
@@ -89,6 +100,151 @@ const FAQS = [
   { q: "Can I earn on mobile?", a: "Yes — fully responsive. Connect your mobile wallet and stream on any device." },
 ];
 
+// ─── Section heading helper ───────────────────────────────────────────────────
+
+function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
+  return (
+    <div style={{ textAlign: "center", marginBottom: sub ? "2.5rem" : "3.5rem" }}>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        style={{ fontSize: "0.62rem", letterSpacing: "0.24em", color: CYAN, marginBottom: "0.6rem" }}
+      >
+        ─── {eyebrow} ───
+      </motion.div>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.08 }}
+        viewport={{ once: true }}
+        style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 900, letterSpacing: "-0.01em", margin: sub ? "0 0 0.8rem" : 0 }}
+      >
+        {title}
+      </motion.p>
+      {sub && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+          viewport={{ once: true }}
+          style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em", lineHeight: 1.65, maxWidth: "42rem", margin: "0 auto" }}
+        >
+          {sub}
+        </motion.p>
+      )}
+    </div>
+  );
+}
+
+// ─── How It Works flow diagram ────────────────────────────────────────────────
+
+function HowItWorksFlow() {
+  return (
+    <div>
+      {/* User journey – 4 connected step cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", overflowX: "auto" }}>
+        {USER_FLOW.map((step, i) => (
+          <motion.div
+            key={step.n}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: i * 0.1 }}
+            viewport={{ once: true }}
+            style={{
+              borderTop: `2px solid ${step.color}`,
+              borderLeft: i === 0 ? `1px solid ${step.color}30` : "1px solid rgba(255,255,255,0.07)",
+              borderRight: i === USER_FLOW.length - 1 ? `1px solid ${step.color}30` : "none",
+              borderBottom: "1px solid rgba(255,255,255,0.07)",
+              padding: "2rem 1.8rem 2.2rem",
+              background: `linear-gradient(160deg, ${step.color}06, transparent 60%)`,
+              position: "relative",
+              minWidth: "190px",
+            }}
+          >
+            <div style={{ fontSize: "0.54rem", letterSpacing: "0.24em", color: "rgba(255,255,255,0.22)", marginBottom: "1.2rem" }}>
+              STEP {step.n}
+            </div>
+            <div style={{ fontSize: "1.9rem", color: step.color, marginBottom: "0.9rem", filter: `drop-shadow(0 0 14px ${step.color})`, lineHeight: 1 }}>
+              {step.icon}
+            </div>
+            <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.10em", color: "#fff", marginBottom: "0.75rem" }}>
+              {step.title}
+            </div>
+            <p style={{ fontSize: "0.71rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+              {step.desc}
+            </p>
+            {i < USER_FLOW.length - 1 && (
+              <motion.div
+                animate={{ x: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut", delay: i * 0.2 }}
+                style={{
+                  position: "absolute",
+                  right: "-14px",
+                  top: "2.2rem",
+                  zIndex: 3,
+                  fontSize: "1.4rem",
+                  color: step.color,
+                  filter: `drop-shadow(0 0 6px ${step.color})`,
+                  lineHeight: 1,
+                }}
+              >›</motion.div>
+            )}
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Protocol layer label */}
+      <div style={{ textAlign: "center", padding: "1.4rem 0 0.8rem", position: "relative" }}>
+        <div aria-hidden style={{ position: "absolute", left: "4%", right: "4%", top: "50%", borderTop: "1px dashed rgba(255,255,255,0.04)" }} />
+        <span style={{ background: "#000", position: "relative", zIndex: 1, padding: "0 1.2rem", fontSize: "0.56rem", letterSpacing: "0.26em", color: "rgba(255,255,255,0.16)" }}>
+          ▼ PROTOCOL INFRASTRUCTURE
+        </span>
+      </div>
+
+      {/* Protocol layer – 4 slim cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", overflowX: "auto" }}>
+        {PROTOCOL_FLOW.map((step, i) => (
+          <motion.div
+            key={step.title}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.25 + i * 0.08 }}
+            viewport={{ once: true }}
+            style={{
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderLeft: i === 0 ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(255,255,255,0.07)",
+              borderRight: i === PROTOCOL_FLOW.length - 1 ? "1px solid rgba(255,255,255,0.10)" : "none",
+              padding: "1.1rem 1.6rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              background: "rgba(255,255,255,0.01)",
+              position: "relative",
+              minWidth: "190px",
+            }}
+          >
+            <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: step.color, boxShadow: `0 0 8px ${step.color}`, flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.14em", color: step.color }}>{step.title}</div>
+              <div style={{ fontSize: "0.58rem", color: "rgba(255,255,255,0.26)", letterSpacing: "0.07em", marginTop: "0.18rem" }}>{step.detail}</div>
+            </div>
+            {i < PROTOCOL_FLOW.length - 1 && (
+              <motion.div
+                animate={{ x: [0, 3, 0] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: i * 0.2 }}
+                style={{ position: "absolute", right: "-9px", top: "50%", transform: "translateY(-50%)", zIndex: 3, fontSize: "0.9rem", color: "rgba(255,255,255,0.22)" }}
+              >›</motion.div>
+            )}
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Treasury preview ─────────────────────────────────────────────────────────
+
 function TreasuryPreview() {
   const shellRef = useRef<HTMLDivElement>(null);
   const localX = useMotionValue(0);
@@ -131,7 +287,7 @@ function TreasuryPreview() {
         background: "linear-gradient(180deg, rgba(30,30,30,0.96), rgba(10,10,10,0.96))",
         backdropFilter: "blur(10px)",
         overflow: "hidden",
-        boxShadow: "0 20px 64px rgba(0,0,0,0.55), 0 0 44px rgba(255,102,0,0.08)",
+        boxShadow: "0 20px 64px rgba(0,0,0,0.55), 0 0 44px rgba(0,229,255,0.05)",
       }}
     >
       <motion.div
@@ -141,7 +297,7 @@ function TreasuryPreview() {
         style={{
           position: "absolute",
           inset: 0,
-          background: "radial-gradient(circle at 20% 0%, rgba(255,102,0,0.1), transparent 34%), radial-gradient(circle at 82% 100%, rgba(255,153,0,0.1), transparent 28%)",
+          background: "radial-gradient(circle at 20% 0%, rgba(0,229,255,0.08), transparent 34%), radial-gradient(circle at 82% 100%, rgba(255,0,255,0.08), transparent 28%)",
           pointerEvents: "none",
         }}
       />
@@ -228,8 +384,8 @@ function TreasuryPreview() {
                   fontSize: "0.55rem",
                   letterSpacing: "0.16em",
                   color: tab.active ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)",
-                  border: tab.active ? "1px solid rgba(255,102,0,0.35)" : "1px solid rgba(255,255,255,0.14)",
-                  background: tab.active ? "rgba(255,102,0,0.12)" : "rgba(255,255,255,0.04)",
+                  border: tab.active ? "1px solid rgba(0,229,255,0.35)" : "1px solid rgba(255,255,255,0.14)",
+                  background: tab.active ? "rgba(0,229,255,0.08)" : "rgba(255,255,255,0.04)",
                   borderRadius: "10px 10px 0 0",
                   padding: "0.5rem 0.8rem",
                   whiteSpace: "nowrap",
@@ -254,7 +410,7 @@ function TreasuryPreview() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20rem, 1fr))", gap: "1rem" }}>
             <div style={{ display: "grid", gap: "1rem" }}>
-              <div style={{ border: "1px solid rgba(255,102,0,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem" }}>
+              <div style={{ border: "1px solid rgba(0,229,255,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: CYAN }}>
                   <span>INFLOW</span>
                   <span>ADSENSE / FIAT / EXTERNAL</span>
@@ -290,7 +446,7 @@ function TreasuryPreview() {
                 </div>
               </div>
 
-              <div style={{ border: "1px solid rgba(255,153,0,0.16)", background: "rgba(0,0,0,0.24)", padding: "1rem" }}>
+              <div style={{ border: "1px solid rgba(255,0,255,0.16)", background: "rgba(0,0,0,0.24)", padding: "1rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.9rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: MAGENTA }}>
                   <span>OUTFLOW</span>
                   <span>DISTRIBUTION / LIQUIDITY / REWARDS</span>
@@ -327,13 +483,13 @@ function TreasuryPreview() {
               </div>
             </div>
 
-            <div style={{ border: "1px solid rgba(255,102,0,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem", display: "grid", gridTemplateRows: "auto 1fr auto", minHeight: "100%" }}>
+            <div style={{ border: "1px solid rgba(0,229,255,0.12)", background: "rgba(0,0,0,0.26)", padding: "1rem", display: "grid", gridTemplateRows: "auto 1fr auto", minHeight: "100%" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", fontSize: "0.6rem", letterSpacing: "0.18em", color: CYAN }}>
                 <span>FLOW VISUALIZATION</span>
                 <span>PREVIEW MODE</span>
               </div>
 
-              <div style={{ display: "flex", alignItems: "end", gap: "0.7rem", minHeight: "16rem", padding: "0.6rem 0.1rem 0.3rem", borderBottom: "1px solid rgba(255,102,0,0.12)", position: "relative" }}>
+              <div style={{ display: "flex", alignItems: "end", gap: "0.7rem", minHeight: "16rem", padding: "0.6rem 0.1rem 0.3rem", borderBottom: "1px solid rgba(0,229,255,0.10)", position: "relative" }}>
                 {TREASURY_FLOW.map((bar, index) => (
                   <div key={bar.label} style={{ flex: 1, display: "grid", alignItems: "end", justifyItems: "center", gap: "0.5rem" }}>
                     <motion.div
@@ -437,18 +593,18 @@ export default function LandingPage() {
         position: "fixed", top: "0.9rem", left: "50%", zIndex: 50,
         transform: "translateX(-50%)",
         width: "calc(100% - 2.5rem)", maxWidth: "56rem",
-        border: "1px solid rgba(255,102,0,0.14)",
+        border: "1px solid rgba(0,229,255,0.12)",
         background: "rgba(0,0,0,0.88)", backdropFilter: "blur(14px)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "0 1.4rem", height: "3.2rem",
-        boxShadow: "0 4px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,102,0,0.04)",
+        boxShadow: "0 4px 32px rgba(0,0,0,0.6)",
       }}>
-        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", textShadow: `0 0 18px rgba(255,102,0,0.5)`, flexShrink: 0 }}>⊕ SAMONO</span>
+        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", textShadow: `0 0 18px rgba(0,229,255,0.35)`, flexShrink: 0 }}>⊕ SAMONO</span>
         <div style={{ display: "flex", gap: "1.6rem", alignItems: "center" }}>
           {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"]].map(([label, href]) => (
-            <Link key={href} href={href} style={{ color: "rgba(255,102,0,0.45)", fontSize: "0.7rem", letterSpacing: "0.16em", textDecoration: "none", transition: "color 0.15s" }}
+            <Link key={href} href={href} style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.7rem", letterSpacing: "0.16em", textDecoration: "none", transition: "color 0.15s" }}
               onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,102,0,0.45)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
             >
               {label}
             </Link>
@@ -475,7 +631,7 @@ export default function LandingPage() {
         <div ref={gridRef} aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0 }}>
           <motion.div style={{
             position: "absolute", inset: "-5%",
-            backgroundImage: "radial-gradient(circle, rgba(255,102,0,0.18) 1px, transparent 1px)",
+            backgroundImage: "radial-gradient(circle, rgba(0,229,255,0.13) 1px, transparent 1px)",
             backgroundSize: "28px 28px",
             x: springX, y: springY,
           }} />
@@ -483,11 +639,11 @@ export default function LandingPage() {
         </div>
 
         {/* radial glow */}
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(255,102,0,0.06), transparent)`, zIndex: 1 }} />
+        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0,229,255,0.04), transparent)`, zIndex: 1 }} />
 
         <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: "52rem", padding: "0 2rem" }}>
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            style={{ display: "inline-block", border: `1px solid rgba(255,102,0,0.3)`, padding: "0.2rem 0.9rem", marginBottom: "2.2rem", fontSize: "0.65rem", letterSpacing: "0.2em", color: CYAN }}>
+            style={{ display: "inline-block", border: `1px solid rgba(0,229,255,0.22)`, padding: "0.2rem 0.9rem", marginBottom: "2.2rem", fontSize: "0.65rem", letterSpacing: "0.2em", color: CYAN }}>
             ◈ POWERED BY SOLANA
           </motion.div>
 
@@ -495,7 +651,7 @@ export default function LandingPage() {
             style={{ fontSize: "clamp(3rem, 9vw, 7rem)", fontWeight: 900, lineHeight: 0.95, letterSpacing: "-0.02em", marginBottom: "1.6rem" }}>
             <span style={{ color: "#fff" }}>WATCH</span>
             <br />
-            <span style={{ color: CYAN, textShadow: `0 0 60px rgba(255,102,0,0.4)` }}>EARN</span>
+            <span style={{ color: CYAN, textShadow: `0 0 60px rgba(0,229,255,0.3)` }}>EARN</span>
           </motion.h1>
 
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }}
@@ -507,14 +663,14 @@ export default function LandingPage() {
             style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
             <Link href="/dashboard" target="_blank" rel="noopener noreferrer" style={{
               clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
-              boxShadow: `0 0 32px rgba(255,102,0,0.35)`,
+              boxShadow: `0 0 32px rgba(0,229,255,0.22)`,
               background: CYAN, color: "#000", fontWeight: 900,
               fontSize: "0.75rem", letterSpacing: "0.14em",
               padding: "0.75rem 2.2rem", textDecoration: "none", display: "inline-block",
               fontFamily: MONO,
             }}>START EARNING</Link>
             <Link href={`${APP_URL}/watch`} style={{
-              border: `1px solid rgba(255,102,0,0.35)`, color: CYAN, fontWeight: 700, fontSize: "0.75rem",
+              border: `1px solid rgba(0,229,255,0.26)`, color: CYAN, fontWeight: 700, fontSize: "0.75rem",
               letterSpacing: "0.14em", padding: "0.75rem 2.2rem", textDecoration: "none",
               clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
             }}>BROWSE STREAMS</Link>
@@ -523,14 +679,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── Stats ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))", gap: "2rem" }}>
           {STATS.map((s, i) => <StatOrb key={s.label} value={s.value} label={s.label} index={i} />)}
         </div>
       </section>
 
       {/* ── Video ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -549,8 +705,8 @@ export default function LandingPage() {
               position: "relative",
               width: "100%",
               paddingBottom: "56.25%",
-              border: "1px solid rgba(255,102,0,0.2)",
-              boxShadow: "0 0 48px rgba(255,102,0,0.08), 0 20px 48px rgba(0,0,0,0.5)",
+              border: "1px solid rgba(0,229,255,0.14)",
+              boxShadow: "0 0 48px rgba(0,229,255,0.05), 0 20px 48px rgba(0,0,0,0.5)",
               background: "#000",
             }}
           >
@@ -566,34 +722,19 @@ export default function LandingPage() {
       </section>
 
       {/* ── How It Works ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
-        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
-          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
-            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
-            ─── HOW IT WORKS ───
-          </motion.h2>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
-            THREE STEPS TO EARN
-          </motion.p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(14rem, 1fr))", gap: "1.5rem" }}>
-            {STEPS.map((s, i) => (
-              <ProximityPanel key={s.n} rotation={[-2.2, 1.8, -1.2, 2.5][i]} delay={i * 0.12}>
-                <div style={{ padding: "0.2rem" }}>
-                  <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: MAGENTA, marginBottom: "0.6rem" }}>{s.n}</div>
-                  <div style={{ fontSize: "1rem", fontWeight: 700, letterSpacing: "0.1em", color: CYAN, marginBottom: "0.8rem" }}>{s.label}</div>
-                  <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.65 }}>{s.text}</p>
-                </div>
-              </ProximityPanel>
-            ))}
-          </div>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+          <SectionHead
+            eyebrow="HOW IT WORKS"
+            title="FOUR STEPS TO SOL"
+            sub="From wallet connect to real SOL in your account — powered by an on-chain Anchor program on Solana."
+          />
+          <HowItWorksFlow />
         </div>
       </section>
 
-      {/* ── Activity Stream ── */}
-
       {/* ── Why Us ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -617,12 +758,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── Treasury Preview ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <TreasuryPreview />
       </section>
 
       {/* ── Token Tiers ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -653,7 +794,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Early Access ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: "36rem", margin: "0 auto", textAlign: "center" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -675,7 +816,7 @@ export default function LandingPage() {
             </motion.div>
           ) : (
             <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
-              <div style={{ display: "flex", gap: "0", border: "1px solid rgba(255,102,0,0.3)" }}>
+              <div style={{ display: "flex", gap: "0", border: "1px solid rgba(0,229,255,0.24)" }}>
                 <input
                   type="email"
                   required
@@ -693,7 +834,7 @@ export default function LandingPage() {
                   type="submit"
                   disabled={waitlistStatus === "loading"}
                   style={{
-                    background: waitlistStatus === "loading" ? "rgba(255,102,0,0.6)" : CYAN,
+                    background: waitlistStatus === "loading" ? "rgba(0,229,255,0.5)" : CYAN,
                     color: "#000", fontWeight: 900, fontSize: "0.7rem", letterSpacing: "0.14em",
                     padding: "0.8rem 1.6rem", border: "none", cursor: waitlistStatus === "loading" ? "not-allowed" : "pointer",
                     fontFamily: MONO, whiteSpace: "nowrap",
@@ -711,7 +852,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,102,0,0.08)" }}>
+      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
         <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
@@ -724,7 +865,7 @@ export default function LandingPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(22rem, 1fr))", gap: "1rem" }}>
             {FAQS.map((f, i) => (
               <motion.div key={f.q} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.07 }}
-                style={{ border: "1px solid rgba(255,102,0,0.15)", padding: "1.4rem 1.6rem" }}>
+                style={{ border: "1px solid rgba(255,255,255,0.07)", padding: "1.4rem 1.6rem" }}>
                 <p style={{ fontSize: "0.78rem", fontWeight: 700, color: CYAN, letterSpacing: "0.04em", marginBottom: "0.5rem" }}>{f.q}</p>
                 <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.65 }}>{f.a}</p>
               </motion.div>
@@ -734,19 +875,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer style={{ borderTop: "1px solid rgba(255,102,0,0.10)", padding: "2rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
-        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", fontSize: "0.82rem" }}>⊕ SAMONO</span>
-        <div style={{ display: "flex", gap: "1.8rem" }}>
-          {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"], ["APP", "/dashboard"]].map(([label, href]) => (
-            <Link key={href} href={href} style={{ color: "rgba(255,102,0,0.35)", fontSize: "0.65rem", letterSpacing: "0.16em", textDecoration: "none" }}
-              onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,102,0,0.35)")}>
-              {label}
-            </Link>
-          ))}
-        </div>
-        <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.65rem", letterSpacing: "0.1em" }}>© {new Date().getFullYear()} SAMONO. BUILT ON SOLANA.</span>
-      </footer>
+      <Footer />
     </div>
   );
 }

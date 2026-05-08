@@ -14,9 +14,9 @@ interface SwapPointsClientProps {
   initialSolBalance?: number;
 }
 
-const CYAN = "#FF6600";
-const GREEN = "#FFCC00";
-const MAGENTA = "#FF9900";
+const CYAN = "#00E5FF";
+const GREEN = "#00FF88";
+const MAGENTA = "#FF00FF";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 
 // Color accent per tier index

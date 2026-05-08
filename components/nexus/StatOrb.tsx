@@ -27,17 +27,17 @@ export function StatOrb({
       whileHover={{ scale: 1.1 }}
     >
       <OrbitalRing size={148} speed={7 + index} />
-      <OrbitalRing size={118} speed={4.5 + index * 0.6} reverse color="#FF9900" />
+      <OrbitalRing size={118} speed={4.5 + index * 0.6} reverse color="#FF00FF" />
       <div className="relative z-10 text-center">
         <div
           className="text-2xl font-bold"
-          style={{ color: "#FF6600", textShadow: "0 0 22px rgba(255,102,0,0.55)" }}
+          style={{ color: "#00E5FF", textShadow: "0 0 22px rgba(0,229,255,0.55)" }}
         >
           {value}
         </div>
         <div
           className="text-xs mt-1 tracking-widest"
-          style={{ color: "rgba(255,102,0,0.45)" }}
+          style={{ color: "rgba(0,229,255,0.45)" }}
         >
           {label}
         </div>

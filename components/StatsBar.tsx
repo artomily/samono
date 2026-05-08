@@ -26,8 +26,8 @@ export function StatsBar({
       label: "Pending Rewards",
       value: `${pendingRewards.toFixed(2)} SOL`,
       icon: TrendingUp,
-      color: "text-orange-400",
-      bg: "bg-orange-400/10",
+      color: "text-pink-400",
+      bg: "bg-pink-400/10",
     },
     {
       label: "Watch Streak",

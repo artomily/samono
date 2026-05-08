@@ -66,7 +66,7 @@ export const LEVEL_TIERS: LevelTier[] = [
   { name: "Rookie",   color: "text-zinc-400",    bg: "bg-zinc-400/10",   border: "border-zinc-400/30",  minLevel: 0  },
   { name: "Explorer", color: "text-blue-400",    bg: "bg-blue-400/10",   border: "border-blue-400/30",  minLevel: 3  },
   { name: "Veteran",  color: "text-violet-400",  bg: "bg-violet-400/10", border: "border-violet-400/30",minLevel: 6  },
-  { name: "Champion", color: "text-orange-400",  bg: "bg-orange-400/10", border: "border-orange-400/30",minLevel: 10 },
+  { name: "Champion", color: "text-pink-400",    bg: "bg-pink-400/10",   border: "border-pink-400/30",  minLevel: 10 },
   { name: "Legend",   color: "text-primary",     bg: "bg-primary/10",    border: "border-primary/30",   minLevel: 15 },
 ];
 

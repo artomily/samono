@@ -40,7 +40,7 @@ export function SessionProgress({
               "gap-1 text-xs",
               isActive
                 ? "border-green-500/50 bg-green-500/10 text-green-400"
-                : "border-yellow-500/50 bg-yellow-500/10 text-yellow-400"
+                : "border-blue-500/50 bg-blue-500/10 text-blue-400"
             )}
           >
             {isActive ? (
@@ -94,7 +94,7 @@ export function SessionProgress({
         </p>
       )}
       {!tabDanger && tabWarning && (
-        <p className="text-xs text-yellow-400 bg-yellow-500/10 rounded p-2">
+        <p className="text-xs text-blue-400 bg-blue-500/10 rounded p-2">
           Warning: Excessive tab switching may disqualify rewards.
         </p>
       )}

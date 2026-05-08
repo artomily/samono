@@ -306,12 +306,12 @@ export function VideoPlayer({
 
       {/* Already watched banner */}
       {sessionState === "already_watched" && (
-        <Card className="border-yellow-500/30 bg-yellow-500/8">
+        <Card className="border-blue-500/30 bg-blue-500/8">
           <CardContent className="p-4 flex items-center gap-3">
-            <AlertCircle className="h-5 w-5 text-yellow-400 shrink-0" />
+            <AlertCircle className="h-5 w-5 text-blue-400 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-yellow-300">Sudah ditonton</p>
-              <p className="text-xs text-yellow-400/80 mt-0.5">
+              <p className="text-sm font-semibold text-blue-300">Sudah ditonton</p>
+              <p className="text-xs text-blue-400/80 mt-0.5">
                 Kamu sudah menyelesaikan video ini dan mendapatkan poinnya. Kamu masih bisa menontonnya, tapi tidak ada poin tambahan.
               </p>
             </div>

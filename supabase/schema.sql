@@ -303,8 +303,8 @@ from public.profiles p
 where p.username is not null
 order by p.xp desc, p.total_earned desc;
 
--- Grant read access to authenticated users
-grant select on public.leaderboard to authenticated;
+-- Grant read access: authenticated users, anon (public pages), and service_role (server-side DAL)
+grant select on public.leaderboard to authenticated, anon, service_role;
 
 -- ─────────────────────────────────────────────────────────────────
 -- 8. GAMIFICATION — XP, LEVEL, ACHIEVEMENTS

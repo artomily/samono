@@ -14,8 +14,8 @@ const WalletMultiButton = dynamic(
 
 const IS_DEV = process.env.NODE_ENV !== "production";
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
-const CYAN = "#FF6600";
-const GREEN = "#FFCC00";
+const CYAN = "#00E5FF";
+const GREEN = "#FF00FF";
 
 export function LoginOverlay() {
   const router = useRouter();

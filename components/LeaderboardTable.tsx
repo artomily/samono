@@ -42,11 +42,11 @@ export function LeaderboardTable({
           const isTop3 = entry.rank <= 3;
           const rankColor =
             entry.rank === 1
-              ? "text-amber-300"
+              ? "text-pink-300"
               : entry.rank === 2
                 ? "text-white/70"
                 : entry.rank === 3
-                  ? "text-orange-400/80"
+                  ? "text-blue-400/80"
                   : "text-white/40";
 
           return (
@@ -76,7 +76,7 @@ export function LeaderboardTable({
               </div>
 
               {/* Streak */}
-              <span className="hidden sm:block text-right font-mono text-sm text-amber-400/80">
+              <span className="hidden sm:block text-right font-mono text-sm text-blue-400/80">
                 🔥 {entry.watch_streak}
               </span>
 

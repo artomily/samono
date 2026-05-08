@@ -1,16 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { publicKey } = useWallet();
   const [username, setUsername] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Pre-fill referral code from ?ref= query param
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) setReferralCode(ref);
+  }, [searchParams]);
+
+  // Auto-suggest username from wallet address when wallet connects
+  useEffect(() => {
+    if (publicKey && !username) {
+      setUsername(`user_${publicKey.toBase58().slice(0, 8).toLowerCase()}`);
+    }
+  }, [publicKey]); // intentionally omit `username` — only fire on wallet connect
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
