@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
@@ -18,7 +17,6 @@ const CYAN = "#00E5FF";
 const GREEN = "#FF00FF";
 
 export function LoginOverlay() {
-  const router = useRouter();
   const { publicKey, connected, signMessage } = useWallet();
 
   const [loading, setLoading] = useState(false);
@@ -75,10 +73,9 @@ export function LoginOverlay() {
       setSuccess(true);
 
       if (data.isNewUser) {
-        router.push("/register");
+        window.location.href = "/register";
       } else {
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       }
     } catch (e) {
       const msg = e instanceof Error ? e.message : "";
