@@ -21,6 +21,9 @@ interface YouTubeVideoItem {
   contentDetails: {
     duration: string;
   };
+  statistics?: {
+    viewCount?: string;
+  };
 }
 
 interface VideoInsert {
@@ -30,6 +33,7 @@ interface VideoInsert {
   thumbnail_url: string | null;
   duration_seconds: number;
   published_at: string | null;
+  view_count: number;
   reward_amount: number;
   min_watch_percentage: number;
   is_active: boolean;
@@ -82,13 +86,14 @@ function itemToInsert(
     thumbnail_url: thumbnail,
     duration_seconds: parseDurationISO(item.contentDetails.duration),
     published_at: item.snippet.publishedAt ?? null,
+    view_count: Number(item.statistics?.viewCount ?? 0),
     reward_amount: rewardAmount,
     min_watch_percentage: minWatchPercentage,
     is_active: true,
   };
 }
 
-/** Fetch full video details (snippet + contentDetails) for up to 50 video IDs */
+/** Fetch full video details (snippet + contentDetails + statistics) for up to 50 video IDs */
 async function fetchVideoDetails(
   videoIds: string[],
   apiKey: string
@@ -98,7 +103,7 @@ async function fetchVideoDetails(
   const url = new URL(`${YOUTUBE_BASE}/videos`);
   url.searchParams.set("key", apiKey);
   url.searchParams.set("id", videoIds.join(","));
-  url.searchParams.set("part", "snippet,contentDetails");
+  url.searchParams.set("part", "snippet,contentDetails,statistics");
   url.searchParams.set("maxResults", "50");
 
   const res = await fetch(url.toString());

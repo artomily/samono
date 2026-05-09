@@ -52,7 +52,7 @@ export function Footer() {
                 textShadow: "0 0 18px rgba(0,229,255,0.3)",
               }}
             >
-              ⊕ SAMONO
+              SAMONO
             </div>
             <p
               style={{

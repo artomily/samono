@@ -31,16 +31,19 @@ interface YouTubeVideoItem {
   contentDetails: {
     duration: string;
   };
+  statistics?: {
+    viewCount?: string;
+  };
 }
 
-/** Fetch full video details (snippet + contentDetails) for up to 50 video IDs */
+/** Fetch full video details (snippet + contentDetails + statistics) for up to 50 video IDs */
 async function fetchVideoDetails(videoIds: string[]): Promise<YouTubeVideoItem[]> {
   if (videoIds.length === 0) return [];
 
   const url = new URL(`${YOUTUBE_BASE}/videos`);
   url.searchParams.set("key", apiKey());
   url.searchParams.set("id", videoIds.join(","));
-  url.searchParams.set("part", "snippet,contentDetails");
+  url.searchParams.set("part", "snippet,contentDetails,statistics");
   url.searchParams.set("maxResults", "50");
 
   const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
@@ -65,6 +68,7 @@ function itemToInsert(item: YouTubeVideoItem): VideoInsert {
     thumbnail_url: thumbnail,
     duration_seconds: parseDurationISO(item.contentDetails.duration),
     published_at: item.snippet.publishedAt ?? null,
+    view_count: Number(item.statistics?.viewCount ?? 0),
     reward_amount: 10, // default — admins can override in DB
     min_watch_percentage: 0.7,
     is_active: true,

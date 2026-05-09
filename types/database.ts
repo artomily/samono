@@ -146,6 +146,7 @@ export type Video = {
   thumbnail_url: string | null;
   duration_seconds: number;
   reward_amount: number;
+  reward_point: number;
   min_watch_percentage: number;
   is_active: boolean;
   view_count: number;
@@ -154,9 +155,10 @@ export type Video = {
   updated_at: string;
 }
 
-export type VideoInsert = Omit<Video, "id" | "view_count" | "created_at" | "updated_at"> & {
+export type VideoInsert = Omit<Video, "id" | "view_count" | "created_at" | "updated_at" | "reward_point"> & {
   id?: string;
   view_count?: number;
+  reward_point?: number;
 };
 
 export type VideoUpdate = Partial<Omit<Video, "id" | "created_at">>;

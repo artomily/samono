@@ -5,7 +5,7 @@ import { completeSession, getSessionById } from "@/lib/dal/sessions";
 import { getVideoById } from "@/lib/dal/videos";
 import { getProfileById } from "@/lib/dal/profiles";
 import { validateSession } from "@/services/session-validator";
-import { calculateReward, creditReferralBonus } from "@/services/reward-engine";
+import { creditReferralBonus } from "@/services/reward-engine";
 import { awardXP, WATCH_XP_PER_MINUTE, FINISH_VIDEO_XP } from "@/services/xp-engine";
 import { evaluateAchievements } from "@/services/achievement-engine";
 
@@ -89,9 +89,8 @@ export async function POST(
     return NextResponse.json({ success: false, error: "Profile not found" }, { status: 404 });
   }
 
-  // Points = video.reward_amount × streak/level multipliers (same multiplier logic)
-  const rewardAmount = calculateReward(video, profile);
-  const pointsEarned = Math.round(rewardAmount * 5); // e.g. reward_amount=10 → 50 pts base
+  // Points = video.reward_point directly from DB (admin-set per video)
+  const pointsEarned = video.reward_point ?? 0;
 
   // Award XP = pointsEarned (points IS the XP)
   const xpAmount = pointsEarned +
@@ -105,7 +104,7 @@ export async function POST(
 
   // Credit referral bonus to referrer (non-blocking)
   if (profile.referrer_id) {
-    creditReferralBonus(profile.referrer_id, sessionId, rewardAmount).catch(() => {});
+    creditReferralBonus(profile.referrer_id, sessionId, video.reward_amount).catch(() => {});
   }
 
   return NextResponse.json({

@@ -47,7 +47,7 @@ export default async function WatchIndexPage() {
                 thumbnailUrl={video.thumbnail_url ?? ""}
                 durationSeconds={video.duration_seconds}
                 viewCount={video.view_count}
-                rewardAmount={video.reward_amount}
+                rewardPoint={video.reward_point ?? 0}
               />
             ))}
           </div>

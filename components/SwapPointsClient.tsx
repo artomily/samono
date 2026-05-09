@@ -360,37 +360,35 @@ export function SwapPointsClient({
       {/* ── Review Modal ── */}
       <AnimatePresence>
         {pendingOption && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => { if (!swapping) setPendingOption(null); }}
-              style={{
-                position: "fixed",
-                inset: 0,
-                background: "rgba(0,0,0,0.8)",
-                backdropFilter: "blur(4px)",
-                zIndex: 100,
-              }}
-            />
-
+          <motion.div
+            key="backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => { if (!swapping) setPendingOption(null); }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.8)",
+              backdropFilter: "blur(4px)",
+              zIndex: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "1rem",
+            }}
+          >
             {/* Dialog */}
             <motion.div
-              key="dialog"
               initial={{ opacity: 0, scale: 0.95, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 8 }}
               transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
               style={{
-                position: "fixed",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
+                position: "relative",
                 zIndex: 101,
-                width: "calc(100vw - 2rem)",
+                width: "100%",
                 maxWidth: "26rem",
                 background: "#000",
                 border: "1px solid rgba(0,229,255,0.2)",
@@ -597,7 +595,7 @@ export function SwapPointsClient({
                 </button>
               </div>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </main>

@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getSession } from "@/lib/auth/session";
-import { getVideoById } from "@/lib/dal/videos";
 import { upsertVideos } from "@/lib/dal/videos";
-import { parseDurationISO } from "@/lib/youtube/client";
 
 const adminVideoSchema = z.object({
   secret: z.string(),

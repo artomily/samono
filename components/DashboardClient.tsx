@@ -27,7 +27,7 @@ interface Video {
   thumbnailUrl: string;
   durationSeconds: number;
   viewCount: number;
-  rewardAmount: number;
+  rewardPoint?: number;
 }
 
 interface Props {
@@ -112,10 +112,10 @@ export function DashboardClient(props: Props) {
         <div className="flex items-start justify-between gap-4 flex-wrap border-b border-white/8 pb-6">
           <div>
             <p className="text-[10px] uppercase tracking-[0.32em] text-cyan-300/45 mb-1 font-mono">
-              operator dashboard
+              welcome back,
             </p>
             <h1 className="text-2xl font-bold font-mono tracking-wider text-white">
-              ⊕ {username.toUpperCase()}
+              {username.toUpperCase()}
             </h1>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
@@ -139,7 +139,7 @@ export function DashboardClient(props: Props) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: i * 0.07 }}
-              className={`border ${s.borderColor} bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-colors`}
+              className={`border ${s.borderColor} bg-white/3 p-4 hover:bg-white/5 transition-colors`}
               style={{ boxShadow: `inset 0 0 40px ${s.glowColor}` }}
             >
               <div className="flex items-center gap-2 mb-3">
@@ -159,7 +159,7 @@ export function DashboardClient(props: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_20rem] gap-6 items-start">
 
           {/* Videos panel */}
-          <div className="border border-white/10 bg-white/[0.03] p-5">
+          <div className="border border-white/10 bg-white/3 p-5">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
                 <PlayCircle className="h-4 w-4 text-cyan-300/60" />
@@ -196,7 +196,7 @@ export function DashboardClient(props: Props) {
                     thumbnailUrl={v.thumbnailUrl}
                     durationSeconds={v.durationSeconds}
                     viewCount={v.viewCount}
-                    rewardAmount={v.rewardAmount}
+                    rewardPoint={v.rewardPoint}
                   />
                 ))}
               </div>
@@ -212,7 +212,7 @@ export function DashboardClient(props: Props) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.28 }}
-                className="border border-cyan-300/15 bg-white/[0.03] p-5"
+                className="border border-cyan-300/15 bg-white/3 p-5"
                 style={{ boxShadow: "inset 0 0 40px rgba(0,229,255,0.04)" }}
               >
                 <div className="flex items-center gap-2 mb-1.5">
@@ -224,7 +224,7 @@ export function DashboardClient(props: Props) {
                 <p className="text-[11px] text-white/30 mb-3 leading-relaxed">
                   Earn +10% on every stream from users you refer.
                 </p>
-                <code className="block text-[11px] font-mono text-cyan-300/70 break-all leading-relaxed bg-white/[0.04] px-2.5 py-2 border border-white/8 mb-3">
+                <code className="block text-[11px] font-mono text-cyan-300/70 break-all leading-relaxed bg-white/4 px-2.5 py-2 border border-white/8 mb-3">
                   {referralUrl}
                 </code>
                 <button
@@ -245,7 +245,7 @@ export function DashboardClient(props: Props) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.38 }}
-              className="border border-white/10 bg-white/[0.03] p-5"
+              className="border border-white/10 bg-white/3 p-5"
             >
               <span className="text-[10px] uppercase tracking-[0.26em] text-white/35 font-mono block mb-3">
                 Quick Actions
@@ -255,7 +255,7 @@ export function DashboardClient(props: Props) {
                   <Link
                     key={href}
                     href={href}
-                    className="flex items-center justify-between px-2 py-2.5 text-[12px] text-white/50 hover:bg-white/[0.05] hover:text-white/90 transition-colors group"
+                    className="flex items-center justify-between px-2 py-2.5 text-[12px] text-white/50 hover:bg-white/5 hover:text-white/90 transition-colors group"
                   >
                     <span className="flex items-center gap-2.5 font-mono tracking-wide">
                       <Icon className="h-3.5 w-3.5 text-white/30 group-hover:text-cyan-300/70 transition-colors" />

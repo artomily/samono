@@ -12,7 +12,7 @@ interface VideoCardProps {
   thumbnailUrl: string;
   durationSeconds: number;
   viewCount: number;
-  rewardAmount: number;
+  rewardPoint?: number;
   completed?: boolean;
 }
 
@@ -23,9 +23,11 @@ export function VideoCard({
   thumbnailUrl,
   durationSeconds,
   viewCount,
-  rewardAmount,
+  rewardPoint,
   completed = false,
 }: VideoCardProps) {
+  const displayRewardPoint = rewardPoint ?? 0;
+
   return (
     <Link href={`/watch/${id}`}>
       <Card className="group overflow-hidden border-border/50 bg-card/50 hover:border-primary/50 hover:bg-card transition-all duration-200 cursor-pointer">
@@ -64,7 +66,7 @@ export function VideoCard({
             </span>
             <span className="flex items-center gap-1 text-primary font-semibold">
               <Star className="h-3 w-3" />
-              {Math.round(rewardAmount * 5)} pts
+              {displayRewardPoint.toLocaleString()} pts
             </span>
           </div>
         </CardContent>

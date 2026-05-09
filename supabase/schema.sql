@@ -40,6 +40,19 @@ create policy "profiles: public can view for leaderboard" on public.profiles
 -- 2. VIDEOS
 -- Video metadata synced from YouTube
 -- ─────────────────────────────────────────────────────────────────
+-- Reward point formula:
+-- 500 points for videos up to 10 minutes, then +50 points per extra minute.
+create or replace function public.calculate_video_reward_point(duration_seconds int)
+returns int
+language sql
+immutable
+as $$
+  select case
+    when duration_seconds <= 600 then 500
+    else 500 + greatest(ceil(duration_seconds / 60.0)::int - 10, 0) * 50
+  end;
+$$;
+
 create table if not exists public.videos (
   id                    uuid        primary key default gen_random_uuid(),
   youtube_video_id      text        not null unique,
@@ -48,6 +61,7 @@ create table if not exists public.videos (
   thumbnail_url         text,
   duration_seconds      int         not null default 0,
   reward_amount         numeric     not null default 10,
+  reward_point          int         not null default 500,
   min_watch_percentage  numeric     not null default 0.70,
   is_active             boolean     not null default true,
   view_count            int         not null default 0,
@@ -55,6 +69,25 @@ create table if not exists public.videos (
   created_at            timestamptz not null default now(),
   updated_at            timestamptz not null default now()
 );
+
+create or replace function public.set_video_reward_point()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.reward_point := public.calculate_video_reward_point(new.duration_seconds);
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_set_video_reward_point on public.videos;
+create trigger trg_set_video_reward_point
+before insert or update of duration_seconds on public.videos
+for each row
+execute function public.set_video_reward_point();
+
+update public.videos
+set reward_point = public.calculate_video_reward_point(duration_seconds);
 
 alter table public.videos enable row level security;
 

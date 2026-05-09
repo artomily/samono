@@ -104,12 +104,13 @@ const FAQS = [
 
 function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
   return (
-    <div style={{ textAlign: "center", marginBottom: sub ? "2.5rem" : "3.5rem" }}>
+    <div className="text-center" style={{ marginBottom: sub ? "2.5rem" : "3.5rem" }}>
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        style={{ fontSize: "0.62rem", letterSpacing: "0.24em", color: CYAN, marginBottom: "0.6rem" }}
+        className="text-[0.62rem] tracking-[0.24em] mb-[0.6rem]"
+        style={{ color: CYAN }}
       >
         ─── {eyebrow} ───
       </motion.div>
@@ -118,7 +119,8 @@ function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; 
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.08 }}
         viewport={{ once: true }}
-        style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", fontWeight: 900, letterSpacing: "-0.01em", margin: sub ? "0 0 0.8rem" : 0 }}
+        className="font-black tracking-[-0.01em]"
+        style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", margin: sub ? "0 0 0.8rem" : 0 }}
       >
         {title}
       </motion.p>
@@ -128,7 +130,7 @@ function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; 
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
           viewport={{ once: true }}
-          style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", letterSpacing: "0.04em", lineHeight: 1.65, maxWidth: "42rem", margin: "0 auto" }}
+          className="text-[0.78rem] text-white/35 tracking-[0.04em] leading-[1.65] max-w-[42rem] mx-auto"
         >
           {sub}
         </motion.p>
@@ -143,7 +145,7 @@ function HowItWorksFlow() {
   return (
     <div>
       {/* User journey – 4 connected step cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", overflowX: "auto" }}>
+      <div className="grid grid-cols-4 overflow-x-auto">
         {USER_FLOW.map((step, i) => (
           <motion.div
             key={step.n}
@@ -151,43 +153,33 @@ function HowItWorksFlow() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: i * 0.1 }}
             viewport={{ once: true }}
+            className="relative min-w-[190px] p-[2rem_1.8rem_2.2rem]"
             style={{
               borderTop: `2px solid ${step.color}`,
               borderLeft: i === 0 ? `1px solid ${step.color}30` : "1px solid rgba(255,255,255,0.07)",
               borderRight: i === USER_FLOW.length - 1 ? `1px solid ${step.color}30` : "none",
               borderBottom: "1px solid rgba(255,255,255,0.07)",
-              padding: "2rem 1.8rem 2.2rem",
               background: `linear-gradient(160deg, ${step.color}06, transparent 60%)`,
-              position: "relative",
-              minWidth: "190px",
             }}
           >
-            <div style={{ fontSize: "0.54rem", letterSpacing: "0.24em", color: "rgba(255,255,255,0.22)", marginBottom: "1.2rem" }}>
+            <div className="text-[0.54rem] tracking-[0.24em] text-white/[0.22] mb-[1.2rem]">
               STEP {step.n}
             </div>
-            <div style={{ fontSize: "1.9rem", color: step.color, marginBottom: "0.9rem", filter: `drop-shadow(0 0 14px ${step.color})`, lineHeight: 1 }}>
+            <div className="text-[1.9rem] mb-[0.9rem] leading-none" style={{ color: step.color, filter: `drop-shadow(0 0 14px ${step.color})` }}>
               {step.icon}
             </div>
-            <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.10em", color: "#fff", marginBottom: "0.75rem" }}>
+            <div className="text-[0.72rem] font-bold tracking-[0.10em] text-white mb-3">
               {step.title}
             </div>
-            <p style={{ fontSize: "0.71rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.7, margin: 0 }}>
+            <p className="text-[0.71rem] text-white/40 leading-[1.7] m-0">
               {step.desc}
             </p>
             {i < USER_FLOW.length - 1 && (
               <motion.div
                 animate={{ x: [0, 5, 0] }}
                 transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut", delay: i * 0.2 }}
-                style={{
-                  position: "absolute",
-                  right: "-14px",
-                  top: "2.2rem",
-                  zIndex: 3,
-                  fontSize: "1.4rem",
-                  color: step.color,
-                  filter: `drop-shadow(0 0 6px ${step.color})`,
-                  lineHeight: 1,
-                }}
+                className="absolute z-[3] text-[1.4rem] leading-none"
+                style={{ right: "-14px", top: "2.2rem", color: step.color, filter: `drop-shadow(0 0 6px ${step.color})` }}
               >›</motion.div>
             )}
           </motion.div>
@@ -195,15 +187,15 @@ function HowItWorksFlow() {
       </div>
 
       {/* Protocol layer label */}
-      <div style={{ textAlign: "center", padding: "1.4rem 0 0.8rem", position: "relative" }}>
-        <div aria-hidden style={{ position: "absolute", left: "4%", right: "4%", top: "50%", borderTop: "1px dashed rgba(255,255,255,0.04)" }} />
-        <span style={{ background: "#000", position: "relative", zIndex: 1, padding: "0 1.2rem", fontSize: "0.56rem", letterSpacing: "0.26em", color: "rgba(255,255,255,0.16)" }}>
+      <div className="text-center relative pt-[1.4rem] pb-[0.8rem]">
+        <div aria-hidden className="absolute left-[4%] right-[4%] top-1/2 border-t border-dashed border-white/[0.04]" />
+        <span className="bg-black relative z-[1] px-[1.2rem] text-[0.56rem] tracking-[0.26em] text-white/[0.16]">
           ▼ PROTOCOL INFRASTRUCTURE
         </span>
       </div>
 
       {/* Protocol layer – 4 slim cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", overflowX: "auto" }}>
+      <div className="grid grid-cols-4 overflow-x-auto">
         {PROTOCOL_FLOW.map((step, i) => (
           <motion.div
             key={step.title}
@@ -211,29 +203,24 @@ function HowItWorksFlow() {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.25 + i * 0.08 }}
             viewport={{ once: true }}
+            className="flex items-center gap-3 relative min-w-[190px] bg-white/[0.01] p-[1.1rem_1.6rem]"
             style={{
               border: "1px solid rgba(255,255,255,0.07)",
               borderLeft: i === 0 ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(255,255,255,0.07)",
               borderRight: i === PROTOCOL_FLOW.length - 1 ? "1px solid rgba(255,255,255,0.10)" : "none",
-              padding: "1.1rem 1.6rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              background: "rgba(255,255,255,0.01)",
-              position: "relative",
-              minWidth: "190px",
             }}
           >
-            <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: step.color, boxShadow: `0 0 8px ${step.color}`, flexShrink: 0 }} />
+            <div className="w-[5px] h-[5px] rounded-full shrink-0" style={{ background: step.color, boxShadow: `0 0 8px ${step.color}` }} />
             <div>
-              <div style={{ fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.14em", color: step.color }}>{step.title}</div>
-              <div style={{ fontSize: "0.58rem", color: "rgba(255,255,255,0.26)", letterSpacing: "0.07em", marginTop: "0.18rem" }}>{step.detail}</div>
+              <div className="text-[0.6rem] font-bold tracking-[0.14em]" style={{ color: step.color }}>{step.title}</div>
+              <div className="text-[0.58rem] text-white/[0.26] tracking-[0.07em] mt-[0.18rem]">{step.detail}</div>
             </div>
             {i < PROTOCOL_FLOW.length - 1 && (
               <motion.div
                 animate={{ x: [0, 3, 0] }}
                 transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: i * 0.2 }}
-                style={{ position: "absolute", right: "-9px", top: "50%", transform: "translateY(-50%)", zIndex: 3, fontSize: "0.9rem", color: "rgba(255,255,255,0.22)" }}
+                className="absolute z-[3] text-[0.9rem] text-white/[0.22] top-1/2 -translate-y-1/2"
+                style={{ right: "-9px" }}
               >›</motion.div>
             )}
           </motion.div>
@@ -586,38 +573,33 @@ export default function LandingPage() {
   }, [mouse.nx, mouse.ny, rawX, rawY]);
 
   return (
-    <div style={{ background: "#000", fontFamily: MONO, color: "#fff", overflowX: "hidden" }}>
+    <div className="bg-black text-white overflow-x-hidden" style={{ fontFamily: MONO }}>
 
       {/* ── Nav ── */}
-      <nav style={{
-        position: "fixed", top: "0.9rem", left: "50%", zIndex: 50,
-        transform: "translateX(-50%)",
-        width: "calc(100% - 2.5rem)", maxWidth: "56rem",
-        border: "1px solid rgba(0,229,255,0.12)",
-        background: "rgba(0,0,0,0.88)", backdropFilter: "blur(14px)",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 1.4rem", height: "3.2rem",
-        boxShadow: "0 4px 32px rgba(0,0,0,0.6)",
-      }}>
-        <span style={{ color: CYAN, fontWeight: 700, letterSpacing: "0.14em", textShadow: `0 0 18px rgba(0,229,255,0.35)`, flexShrink: 0 }}>⊕ SAMONO</span>
-        <div style={{ display: "flex", gap: "1.6rem", alignItems: "center" }}>
-          {[["STREAMS", "/watch"], ["LEADERBOARD", "/leaderboard"]].map(([label, href]) => (
-            <Link key={href} href={href} style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.7rem", letterSpacing: "0.16em", textDecoration: "none", transition: "color 0.15s" }}
-              onMouseEnter={e => (e.currentTarget.style.color = CYAN)}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.35)")}
-            >
-              {label}
-            </Link>
-          ))}
+      <nav
+        className="fixed z-50 left-1/2 -translate-x-1/2 flex items-center justify-between px-[1.4rem] h-[3.2rem]"
+        style={{
+          top: "0.9rem",
+          width: "calc(100% - 2.5rem)",
+          maxWidth: "56rem",
+          border: "1px solid rgba(0,229,255,0.12)",
+          background: "rgba(0,0,0,0.88)",
+          backdropFilter: "blur(14px)",
+          boxShadow: "0 4px 32px rgba(0,0,0,0.6)",
+        }}
+      >
+        <span className="font-bold tracking-[0.14em] shrink-0" style={{ color: CYAN, textShadow: `0 0 18px rgba(0,229,255,0.35)` }}>SAMONO</span>
+        <div className="flex gap-[1.6rem] items-center">
           <Link
             href="/dashboard"
             target="_blank"
             rel="noopener noreferrer"
+            className="font-bold no-underline inline-block"
             style={{
               clipPath: "polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%)",
-              background: MAGENTA, color: "#000", fontWeight: 700, fontSize: "0.65rem",
+              background: MAGENTA, color: "#000", fontSize: "0.65rem",
               letterSpacing: "0.12em", padding: "0.4rem 1.1rem",
-              fontFamily: MONO, textDecoration: "none", display: "inline-block",
+              fontFamily: MONO,
             }}
           >
             LAUNCH APP
@@ -626,52 +608,65 @@ export default function LandingPage() {
       </nav>
 
       {/* ── Hero ── */}
-      <section style={{ position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", paddingTop: "3.2rem", overflow: "hidden" }}>
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden" style={{ paddingTop: "3.2rem" }}>
         {/* dot-grid background */}
-        <div ref={gridRef} aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-          <motion.div style={{
-            position: "absolute", inset: "-5%",
-            backgroundImage: "radial-gradient(circle, rgba(0,229,255,0.13) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-            x: springX, y: springY,
-          }} />
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 55% at 50% 50%, transparent 40%, #000 95%)" }} />
+        <div ref={gridRef} aria-hidden className="absolute inset-0 z-0">
+          <motion.div
+            className="absolute"
+            style={{
+              inset: "-5%",
+              backgroundImage: "radial-gradient(circle, rgba(0,229,255,0.13) 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+              x: springX, y: springY,
+            }}
+          />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 55% at 50% 50%, transparent 40%, #000 95%)" }} />
         </div>
 
         {/* radial glow */}
-        <div aria-hidden style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0,229,255,0.04), transparent)`, zIndex: 1 }} />
+        <div aria-hidden className="absolute inset-0 z-[1] pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0,229,255,0.04), transparent)` }} />
 
-        <div style={{ position: "relative", zIndex: 2, textAlign: "center", maxWidth: "52rem", padding: "0 2rem" }}>
-          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            style={{ display: "inline-block", border: `1px solid rgba(0,229,255,0.22)`, padding: "0.2rem 0.9rem", marginBottom: "2.2rem", fontSize: "0.65rem", letterSpacing: "0.2em", color: CYAN }}>
+        <div className="relative z-[2] text-center max-w-[52rem] px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
+            className="inline-block mb-[2.2rem] text-[0.65rem] tracking-[0.2em]"
+            style={{ border: `1px solid rgba(0,229,255,0.22)`, padding: "0.2rem 0.9rem", color: CYAN }}
+          >
             ◈ POWERED BY SOLANA
           </motion.div>
 
-          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-            style={{ fontSize: "clamp(3rem, 9vw, 7rem)", fontWeight: 900, lineHeight: 0.95, letterSpacing: "-0.02em", marginBottom: "1.6rem" }}>
-            <span style={{ color: "#fff" }}>WATCH</span>
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-black leading-[0.95] tracking-[-0.02em] mb-[1.6rem]"
+            style={{ fontSize: "clamp(3rem, 9vw, 7rem)" }}
+          >
+            <span className="text-white">WATCH</span>
             <br />
             <span style={{ color: CYAN, textShadow: `0 0 60px rgba(0,229,255,0.3)` }}>EARN</span>
           </motion.h1>
 
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }}
-            style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.88rem", letterSpacing: "0.08em", lineHeight: 1.7, maxWidth: "34rem", margin: "0 auto 2.6rem" }}>
+          <motion.p
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }}
+            className="text-white/45 text-[0.88rem] tracking-[0.08em] leading-[1.7] max-w-[34rem] mx-auto mb-[2.6rem]"
+          >
             THE FIRST WATCH-TO-EARN PROTOCOL THAT TURNS EDUCATIONAL CRYPTO CONTENT INTO REAL SOL REWARDS — FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
           </motion.p>
 
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.35 }}
-            style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
-            <Link href="/dashboard" target="_blank" rel="noopener noreferrer" style={{
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.35 }}
+            className="flex gap-4 justify-center flex-wrap items-center"
+          >
+            <Link href="/dashboard" target="_blank" rel="noopener noreferrer" className="font-black no-underline inline-block" style={{
               clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
               boxShadow: `0 0 32px rgba(0,229,255,0.22)`,
-              background: CYAN, color: "#000", fontWeight: 900,
+              background: CYAN, color: "#000",
               fontSize: "0.75rem", letterSpacing: "0.14em",
-              padding: "0.75rem 2.2rem", textDecoration: "none", display: "inline-block",
+              padding: "0.75rem 2.2rem",
               fontFamily: MONO,
             }}>START EARNING</Link>
-            <Link href={`${APP_URL}/watch`} style={{
-              border: `1px solid rgba(0,229,255,0.26)`, color: CYAN, fontWeight: 700, fontSize: "0.75rem",
-              letterSpacing: "0.14em", padding: "0.75rem 2.2rem", textDecoration: "none",
+            <Link href={`${APP_URL}/watch`} className="font-bold no-underline" style={{
+              border: `1px solid rgba(0,229,255,0.26)`, color: CYAN, fontSize: "0.75rem",
+              letterSpacing: "0.14em", padding: "0.75rem 2.2rem",
               clipPath: "polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%)",
             }}>BROWSE STREAMS</Link>
           </motion.div>
@@ -679,21 +674,26 @@ export default function LandingPage() {
       </section>
 
       {/* ── Stats ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "64rem", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))", gap: "2rem" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
+        <div className="max-w-[64rem] mx-auto grid gap-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))" }}>
           {STATS.map((s, i) => <StatOrb key={s.label} value={s.value} label={s.label} index={i} />)}
         </div>
       </section>
 
       {/* ── Video ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
-          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
-            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
+        <div className="max-w-[64rem] mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
+            style={{ color: CYAN }}
+          >
             ─── SEE IT IN ACTION ───
           </motion.h2>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3rem", letterSpacing: "-0.01em" }}>
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-center text-[1.8rem] font-black mb-12 tracking-[-0.01em]"
+          >
             WATCH THE OVERVIEW
           </motion.p>
           <motion.div
@@ -722,8 +722,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── How It Works ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "72rem", margin: "0 auto" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
+        <div className="max-w-[72rem] mx-auto">
           <SectionHead
             eyebrow="HOW IT WORKS"
             title="FOUR STEPS TO SOL"
@@ -734,23 +734,32 @@ export default function LandingPage() {
       </section>
 
       {/* ── Why Us ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
-          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
-            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
+        <div className="max-w-[64rem] mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
+            style={{ color: CYAN }}
+          >
             ─── WHY SAMONO ───
           </motion.h2>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-center text-[1.8rem] font-black mb-14 tracking-[-0.01em]"
+          >
             BUILT DIFFERENT
           </motion.p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1.5rem" }}>
+          <div className="grid grid-cols-2 gap-6">
             {WHY_US.map((item, i) => (
-              <motion.div key={item.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 }}
-                style={{ border: `1px solid ${item.color}33`, padding: "2rem 1.6rem", position: "relative", overflow: "hidden" }}>
-                <div aria-hidden style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: item.color, opacity: 0.7 }} />
-                <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: item.color, marginBottom: "0.9rem" }}>{item.label}</div>
-                <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.7 }}>{item.text}</p>
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="relative overflow-hidden p-[2rem_1.6rem]"
+                style={{ border: `1px solid ${item.color}33` }}
+              >
+                <div aria-hidden className="absolute top-0 left-0 right-0 h-[2px] opacity-70" style={{ background: item.color }} />
+                <div className="text-[0.6rem] tracking-[0.2em] mb-[0.9rem]" style={{ color: item.color }}>{item.label}</div>
+                <p className="text-[0.78rem] text-white/50 leading-[1.7]">{item.text}</p>
               </motion.div>
             ))}
           </div>
@@ -758,32 +767,41 @@ export default function LandingPage() {
       </section>
 
       {/* ── Treasury Preview ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
         <TreasuryPreview />
       </section>
 
       {/* ── Token Tiers ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
-          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
-            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
+        <div className="max-w-[64rem] mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
+            style={{ color: CYAN }}
+          >
             ─── TOKEN ECONOMICS ───
           </motion.h2>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-center text-[1.8rem] font-black mb-14 tracking-[-0.01em]"
+          >
             MAXIMIZE SOL YIELD
           </motion.p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 1fr))", gap: "1.5rem" }}>
+          <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 1fr))" }}>
             {TOKEN_TIERS.map((t, i) => (
-              <motion.div key={t.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 }}
-                style={{ border: `1px solid ${t.color}33`, padding: "2rem 1.6rem", position: "relative", overflow: "hidden" }}>
-                <div aria-hidden style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: t.color, opacity: 0.7 }} />
-                <div style={{ fontSize: "0.6rem", letterSpacing: "0.2em", color: t.color, marginBottom: "0.5rem" }}>{t.label}</div>
-                <div style={{ fontSize: "1.6rem", fontWeight: 900, color: "#fff", marginBottom: "1.4rem", letterSpacing: "-0.01em" }}>{t.rate}</div>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.55rem" }}>
+              <motion.div
+                key={t.label}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="relative overflow-hidden p-[2rem_1.6rem]"
+                style={{ border: `1px solid ${t.color}33` }}
+              >
+                <div aria-hidden className="absolute top-0 left-0 right-0 h-[2px] opacity-70" style={{ background: t.color }} />
+                <div className="text-[0.6rem] tracking-[0.2em] mb-2" style={{ color: t.color }}>{t.label}</div>
+                <div className="text-[1.6rem] font-black text-white mb-[1.4rem] tracking-[-0.01em]">{t.rate}</div>
+                <ul className="list-none p-0 m-0 flex flex-col gap-[0.55rem]">
                   {t.perks.map(p => (
-                    <li key={p} style={{ display: "flex", gap: "0.6rem", alignItems: "flex-start", fontSize: "0.75rem", color: "rgba(255,255,255,0.5)" }}>
-                      <span style={{ color: t.color, flexShrink: 0 }}>›</span>{p}
+                    <li key={p} className="flex gap-[0.6rem] items-start text-[0.75rem] text-white/50">
+                      <span className="shrink-0" style={{ color: t.color }}>&#8250;</span>{p}
                     </li>
                   ))}
                 </ul>
@@ -794,29 +812,38 @@ export default function LandingPage() {
       </section>
 
       {/* ── Early Access ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "36rem", margin: "0 auto", textAlign: "center" }}>
-          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
-            style={{ fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
+        <div className="max-w-[36rem] mx-auto text-center">
+          <motion.h2
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            className="text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
+            style={{ color: CYAN }}
+          >
             ─── EARLY ACCESS ───
           </motion.h2>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ fontSize: "1.8rem", fontWeight: 900, marginBottom: "1rem", letterSpacing: "-0.01em" }}>
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-[1.8rem] font-black mb-4 tracking-[-0.01em]"
+          >
             JOIN THE WAITLIST
           </motion.p>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
-            style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.06em", lineHeight: 1.7, marginBottom: "2.5rem" }}>
-            TESTNET & MAINNET LAUNCH. WE WILL INFORM YOU. NO SPAM. UNSUBSCRIBE ANY TIME.
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.15 }}
+            className="text-[0.8rem] text-white/40 tracking-[0.06em] leading-[1.7] mb-10"
+          >
+            TESTNET &amp; MAINNET LAUNCH. WE WILL INFORM YOU. NO SPAM. UNSUBSCRIBE ANY TIME.
           </motion.p>
           {waitlistStatus === "success" ? (
             <motion.div
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-              style={{ border: `1px solid ${GREEN}44`, padding: "1.4rem 2rem", color: GREEN, fontSize: "0.8rem", letterSpacing: "0.1em" }}>
-              ◈ NODE REGISTERED — WE WILL INFORM YOU AT TESTNET & MAINNET LAUNCH
+              className="text-[0.8rem] tracking-[0.1em] p-[1.4rem_2rem]"
+              style={{ border: `1px solid ${GREEN}44`, color: GREEN }}
+            >
+              ◈ EMAIL SENT — WE WILL INFORM YOU AT TESTNET &amp; MAINNET LAUNCH
             </motion.div>
           ) : (
-            <form onSubmit={handleWaitlist} style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
-              <div style={{ display: "flex", gap: "0", border: "1px solid rgba(0,229,255,0.24)" }}>
+            <form onSubmit={handleWaitlist} className="flex flex-col gap-[0.9rem]">
+              <div className="flex border" style={{ borderColor: "rgba(0,229,255,0.24)" }}>
                 <input
                   type="email"
                   required
@@ -824,27 +851,24 @@ export default function LandingPage() {
                   value={waitlistEmail}
                   onChange={e => setWaitlistEmail(e.target.value)}
                   disabled={waitlistStatus === "loading"}
-                  style={{
-                    flex: 1, background: "rgba(0,0,0,0.6)", border: "none", outline: "none",
-                    color: "#fff", fontFamily: MONO, fontSize: "0.75rem", letterSpacing: "0.08em",
-                    padding: "0.8rem 1.2rem",
-                  }}
+                  className="flex-1 border-none outline-none text-white text-[0.75rem] tracking-[0.08em] p-[0.8rem_1.2rem]"
+                  style={{ background: "rgba(0,0,0,0.6)", fontFamily: MONO }}
                 />
                 <button
                   type="submit"
                   disabled={waitlistStatus === "loading"}
+                  className="font-black text-black text-[0.7rem] tracking-[0.14em] p-[0.8rem_1.6rem] border-0 whitespace-nowrap"
                   style={{
                     background: waitlistStatus === "loading" ? "rgba(0,229,255,0.5)" : CYAN,
-                    color: "#000", fontWeight: 900, fontSize: "0.7rem", letterSpacing: "0.14em",
-                    padding: "0.8rem 1.6rem", border: "none", cursor: waitlistStatus === "loading" ? "not-allowed" : "pointer",
-                    fontFamily: MONO, whiteSpace: "nowrap",
+                    cursor: waitlistStatus === "loading" ? "not-allowed" : "pointer",
+                    fontFamily: MONO,
                   }}
                 >
                   {waitlistStatus === "loading" ? "QUEUING..." : "JOIN WAITLIST"}
                 </button>
               </div>
               {waitlistStatus === "error" && (
-                <p style={{ fontSize: "0.7rem", color: MAGENTA, letterSpacing: "0.08em", margin: 0 }}>{waitlistError}</p>
+                <p className="text-[0.7rem] tracking-[0.08em] m-0" style={{ color: MAGENTA }}>{waitlistError}</p>
               )}
             </form>
           )}
@@ -852,22 +876,30 @@ export default function LandingPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section style={{ padding: "5rem 2rem", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: "64rem", margin: "0 auto" }}>
-          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
-            style={{ textAlign: "center", fontSize: "0.65rem", letterSpacing: "0.22em", color: CYAN, marginBottom: "0.6rem" }}>
+      <section className="py-20 px-8 border-t border-white/[0.05]">
+        <div className="max-w-[64rem] mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
+            className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
+            style={{ color: CYAN }}
+          >
             ─── KNOWLEDGE BASE ───
           </motion.h2>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ textAlign: "center", fontSize: "1.8rem", fontWeight: 900, marginBottom: "3.5rem", letterSpacing: "-0.01em" }}>
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-center text-[1.8rem] font-black mb-14 tracking-[-0.01em]"
+          >
             INTERROGATE THE SYSTEM
           </motion.p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(22rem, 1fr))", gap: "1rem" }}>
+          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(22rem, 1fr))" }}>
             {FAQS.map((f, i) => (
-              <motion.div key={f.q} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.07 }}
-                style={{ border: "1px solid rgba(255,255,255,0.07)", padding: "1.4rem 1.6rem" }}>
-                <p style={{ fontSize: "0.78rem", fontWeight: 700, color: CYAN, letterSpacing: "0.04em", marginBottom: "0.5rem" }}>{f.q}</p>
-                <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.65 }}>{f.a}</p>
+              <motion.div
+                key={f.q}
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: i * 0.07 }}
+                className="border border-white/[0.07] p-[1.4rem_1.6rem]"
+              >
+                <p className="text-[0.78rem] font-bold tracking-[0.04em] mb-2" style={{ color: CYAN }}>{f.q}</p>
+                <p className="text-[0.75rem] text-white/45 leading-[1.65]">{f.a}</p>
               </motion.div>
             ))}
           </div>
