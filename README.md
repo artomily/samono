@@ -32,7 +32,7 @@ Samono flips that model:
 - App subdomain: https://apps.samono.com
 - YouTube channel (configured default source): https://www.youtube.com/channel/UCd_2mFYfC0V4tPjI2EKCxKw
 - Featured video used in landing preview: https://www.youtube.com/watch?v=v1ZQlVMlG2c
-- X (Twitter): https://x.com/rakaalts
+- X (Twitter): https://x.com/samonoonchain
 
 ## Product Preview And Flow
 
@@ -174,57 +174,72 @@ Session validation includes checks for:
 - `/profile/[username]` public profile
 - `/(auth)/login` and `/(auth)/register`
 
-## API Routes
+## API Surface (Sanitized)
 
-- `GET/POST /api/videos`
-- `POST /api/videos/sync`
-- `POST /api/sessions/start`
-- `POST /api/sessions/[sessionId]/heartbeat`
-- `POST /api/sessions/[sessionId]/complete`
-- `GET /api/rewards/balance`
-- `POST /api/rewards/claim`
-- `POST /api/rewards/swap`
-- `GET /api/leaderboard`
-- `GET /api/referral`
-- `POST /api/wallet/connect`
-- `POST /api/auth/wallet`
-- `POST /api/auth/complete-registration`
-- `POST /api/waitlist`
-- `GET /api/cron/sync-youtube`
-- Admin: `/api/admin/videos`, `/api/admin/videos/sync`, `/api/admin/debug-env`
+For security reasons, this README documents API capabilities at a high level without exposing operational secrets or internal privileged logic.
 
-## Data Model (Supabase)
+- Auth and wallet:
+	- wallet sign-in / linking
+	- registration completion
+- Video and ingestion:
+	- read video catalog
+	- manual/admin sync from YouTube source
+	- scheduled sync endpoint for cron
+- Sessions:
+	- start watch session
+	- heartbeat telemetry updates
+	- complete session and trigger validation
+- Rewards:
+	- check pending/claimable balance
+	- claim rewards to connected wallet
+	- points/swap-related reward action
+- Growth:
+	- referral stats and attribution
+	- leaderboard query
+	- waitlist capture endpoint
 
-Main tables:
+## Database Model (Sanitized)
 
-- `profiles`
-- `videos`
-- `watch_sessions`
-- `rewards`
-- `wallet_connections`
-- `achievements`
-- `user_achievements`
+Core entities used by the app:
 
-Notable DB behavior:
+- Profiles: identity, username, wallet, progression, earnings
+- Videos: YouTube metadata and reward config
+- Watch sessions: anti-abuse telemetry + session state
+- Rewards: pending/processing/completed claim records
+- Wallet connections: linked wallet history per user
+- Achievements and user achievements: gamification rules and unlock records
 
-- Auto profile creation on auth signup
-- Automatic streak updates from completed sessions
-- Automatic `total_earned` update when rewards complete
-- Video reward points auto-derived from video duration
+Security and integrity controls:
 
-## Environment Variables
+- Row Level Security (RLS) for user-scoped data access
+- Trigger-based consistency updates for totals/streak/profiles
+- Unique constraints to prevent duplicate reward claims
 
-Use `.env.example` as baseline.
+## Environment And Secret Policy
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `SOLANA_RPC_URL`
-- `SMT_MINT_ADDRESS`
-- `TREASURY_WALLET_PATH`
-- `YOUTUBE_API_KEY`
-- `NEXT_PUBLIC_YOUTUBE_CHANNEL_ID`
-- `YOUTUBE_PLAYLIST_ID`
+This repository uses env placeholders only. Real values are never committed.
+
+Environment groups:
+
+- Public client config (frontend + API):
+	- Supabase URL
+	- Supabase anon key
+- Server secrets (API routes, server-side logic):
+	- Supabase service role key
+	- YouTube API key
+	- Solana treasury and RPC settings
+
+Operational policy:
+
+- Secrets are injected through deployment/runtime environment
+- Private keys and service-role credentials are excluded from version control
+- Public docs intentionally redact sensitive infrastructure details
+
+## Security Disclosure Note
+
+Some endpoint, infrastructure, and environment details are intentionally summarized (not fully enumerated) to balance technical transparency with production security.
+
+This is deliberate and part of Samono's secure-by-default documentation standard.
 
 ## Local Development
 
@@ -242,12 +257,6 @@ Useful scripts:
 - `npm run start` run production server
 - `npm run lint` lint project
 - `npm run deploy:token` run SPL token deploy script
-
-## Authentication Model
-
-- Supabase Auth for account/session management
-- Middleware route guards for app pages
-- Wallet connection is required for claiming rewards
 
 ## Current Status
 
