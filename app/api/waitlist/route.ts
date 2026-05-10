@@ -1,5 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
+
+function getAuthRedirectUrl(request: NextRequest) {
+  const configuredBaseUrl =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_VERCEL_URL;
+
+  const baseUrl = configuredBaseUrl
+    ? configuredBaseUrl.startsWith("http")
+      ? configuredBaseUrl
+      : `https://${configuredBaseUrl}`
+    : request.nextUrl.origin;
+
+  return new URL("/register?source=waitlist", baseUrl).toString();
+}
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -35,6 +50,23 @@ export async function POST(request: NextRequest) {
     }
     console.error("[waitlist] insert error:", error.message);
     return NextResponse.json({ error: "Failed to add to waitlist" }, { status: 500 });
+  }
+
+  // Fire and forget: if email fails, we still keep successful waitlist registration.
+  try {
+    const service = createServiceClient();
+    const { error: inviteError } = await service.auth.admin.inviteUserByEmail(email, {
+      redirectTo: getAuthRedirectUrl(request),
+      data: {
+        source: "waitlist",
+      },
+    });
+
+    if (inviteError) {
+      console.error("[waitlist] invite email error:", inviteError.message);
+    }
+  } catch (inviteException) {
+    console.error("[waitlist] invite email exception:", inviteException);
   }
 
   return NextResponse.json({ success: true }, { status: 200 });
