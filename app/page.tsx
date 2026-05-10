@@ -130,7 +130,7 @@ function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; 
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.15 }}
           viewport={{ once: true }}
-          className="text-[0.78rem] text-white/35 tracking-[0.04em] leading-[1.65] max-w-[42rem] mx-auto"
+          className="text-[0.78rem] text-white/35 tracking-[0.04em] leading-[1.65] max-w-2xl mx-auto"
         >
           {sub}
         </motion.p>
@@ -153,7 +153,7 @@ function HowItWorksFlow() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: i * 0.1 }}
             viewport={{ once: true }}
-            className="relative min-w-[190px] p-[2rem_1.8rem_2.2rem]"
+            className="relative min-w-47.5 p-[2rem_1.8rem_2.2rem]"
             style={{
               borderTop: `2px solid ${step.color}`,
               borderLeft: i === 0 ? `1px solid ${step.color}30` : "1px solid rgba(255,255,255,0.07)",
@@ -162,13 +162,13 @@ function HowItWorksFlow() {
               background: `linear-gradient(160deg, ${step.color}06, transparent 60%)`,
             }}
           >
-            <div className="text-[0.54rem] tracking-[0.24em] text-white/[0.22] mb-[1.2rem]">
+            <div className="text-[0.54rem] tracking-[0.24em] text-white/22 mb-[1.2rem]">
               STEP {step.n}
             </div>
             <div className="text-[1.9rem] mb-[0.9rem] leading-none" style={{ color: step.color, filter: `drop-shadow(0 0 14px ${step.color})` }}>
               {step.icon}
             </div>
-            <div className="text-[0.72rem] font-bold tracking-[0.10em] text-white mb-3">
+            <div className="text-[0.72rem] font-bold tracking-widest text-white mb-3">
               {step.title}
             </div>
             <p className="text-[0.71rem] text-white/40 leading-[1.7] m-0">
@@ -178,7 +178,7 @@ function HowItWorksFlow() {
               <motion.div
                 animate={{ x: [0, 5, 0] }}
                 transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut", delay: i * 0.2 }}
-                className="absolute z-[3] text-[1.4rem] leading-none"
+                className="absolute z-3 text-[1.4rem] leading-none"
                 style={{ right: "-14px", top: "2.2rem", color: step.color, filter: `drop-shadow(0 0 6px ${step.color})` }}
               >›</motion.div>
             )}
@@ -188,8 +188,8 @@ function HowItWorksFlow() {
 
       {/* Protocol layer label */}
       <div className="text-center relative pt-[1.4rem] pb-[0.8rem]">
-        <div aria-hidden className="absolute left-[4%] right-[4%] top-1/2 border-t border-dashed border-white/[0.04]" />
-        <span className="bg-black relative z-[1] px-[1.2rem] text-[0.56rem] tracking-[0.26em] text-white/[0.16]">
+        <div aria-hidden className="absolute left-[4%] right-[4%] top-1/2 border-t border-dashed border-white/4" />
+        <span className="bg-black relative z-1 px-[1.2rem] text-[0.56rem] tracking-[0.26em] text-white/16">
           ▼ PROTOCOL INFRASTRUCTURE
         </span>
       </div>
@@ -203,23 +203,23 @@ function HowItWorksFlow() {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.25 + i * 0.08 }}
             viewport={{ once: true }}
-            className="flex items-center gap-3 relative min-w-[190px] bg-white/[0.01] p-[1.1rem_1.6rem]"
+            className="flex items-center gap-3 relative min-w-47.5 bg-white/1 p-[1.1rem_1.6rem]"
             style={{
               border: "1px solid rgba(255,255,255,0.07)",
               borderLeft: i === 0 ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(255,255,255,0.07)",
               borderRight: i === PROTOCOL_FLOW.length - 1 ? "1px solid rgba(255,255,255,0.10)" : "none",
             }}
           >
-            <div className="w-[5px] h-[5px] rounded-full shrink-0" style={{ background: step.color, boxShadow: `0 0 8px ${step.color}` }} />
+            <div className="w-1.25 h-1.25 rounded-full shrink-0" style={{ background: step.color, boxShadow: `0 0 8px ${step.color}` }} />
             <div>
               <div className="text-[0.6rem] font-bold tracking-[0.14em]" style={{ color: step.color }}>{step.title}</div>
-              <div className="text-[0.58rem] text-white/[0.26] tracking-[0.07em] mt-[0.18rem]">{step.detail}</div>
+              <div className="text-[0.58rem] text-white/26 tracking-[0.07em] mt-[0.18rem]">{step.detail}</div>
             </div>
             {i < PROTOCOL_FLOW.length - 1 && (
               <motion.div
                 animate={{ x: [0, 3, 0] }}
                 transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", delay: i * 0.2 }}
-                className="absolute z-[3] text-[0.9rem] text-white/[0.22] top-1/2 -translate-y-1/2"
+                className="absolute z-3 text-[0.9rem] text-white/22 top-1/2 -translate-y-1/2"
                 style={{ right: "-9px" }}
               >›</motion.div>
             )}
@@ -624,17 +624,9 @@ export default function LandingPage() {
         </div>
 
         {/* radial glow */}
-        <div aria-hidden className="absolute inset-0 z-[1] pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0,229,255,0.04), transparent)` }} />
+        <div aria-hidden className="absolute inset-0 z-1 pointer-events-none" style={{ background: `radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0,229,255,0.04), transparent)` }} />
 
-        <div className="relative z-[2] text-center max-w-[52rem] px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-            className="inline-block mb-[2.2rem] text-[0.65rem] tracking-[0.2em]"
-            style={{ border: `1px solid rgba(0,229,255,0.22)`, padding: "0.2rem 0.9rem", color: CYAN }}
-          >
-            ◈ POWERED BY SOLANA
-          </motion.div>
-
+        <div className="relative z-2 text-center max-w-208 px-8">
           <motion.h1
             initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
             className="font-black leading-[0.95] tracking-[-0.02em] mb-[1.6rem]"
@@ -647,7 +639,7 @@ export default function LandingPage() {
 
           <motion.p
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }}
-            className="text-white/45 text-[0.88rem] tracking-[0.08em] leading-[1.7] max-w-[34rem] mx-auto mb-[2.6rem]"
+            className="text-white/45 text-[0.88rem] tracking-[0.08em] leading-[1.7] max-w-136 mx-auto mb-[2.6rem]"
           >
             THE FIRST WATCH-TO-EARN PROTOCOL THAT TURNS EDUCATIONAL CRYPTO CONTENT INTO REAL SOL REWARDS — FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
           </motion.p>
@@ -674,15 +666,15 @@ export default function LandingPage() {
       </section>
 
       {/* ── Stats ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
-        <div className="max-w-[64rem] mx-auto grid gap-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))" }}>
+      <section className="py-20 px-8 border-t border-white/5">
+        <div className="max-w-5xl mx-auto grid gap-8" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(12rem, 1fr))" }}>
           {STATS.map((s, i) => <StatOrb key={s.label} value={s.value} label={s.label} index={i} />)}
         </div>
       </section>
 
       {/* ── Video ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
-        <div className="max-w-[64rem] mx-auto">
+      <section className="py-20 px-8 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
@@ -722,8 +714,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
-        <div className="max-w-[72rem] mx-auto">
+      <section className="py-20 px-8 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
           <SectionHead
             eyebrow="HOW IT WORKS"
             title="FOUR STEPS TO SOL"
@@ -734,8 +726,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── Why Us ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
-        <div className="max-w-[64rem] mx-auto">
+      <section className="py-20 px-8 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
@@ -757,7 +749,7 @@ export default function LandingPage() {
                 className="relative overflow-hidden p-[2rem_1.6rem]"
                 style={{ border: `1px solid ${item.color}33` }}
               >
-                <div aria-hidden className="absolute top-0 left-0 right-0 h-[2px] opacity-70" style={{ background: item.color }} />
+                <div aria-hidden className="absolute top-0 left-0 right-0 h-0.5 opacity-70" style={{ background: item.color }} />
                 <div className="text-[0.6rem] tracking-[0.2em] mb-[0.9rem]" style={{ color: item.color }}>{item.label}</div>
                 <p className="text-[0.78rem] text-white/50 leading-[1.7]">{item.text}</p>
               </motion.div>
@@ -767,13 +759,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── Treasury Preview ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
+      <section className="py-20 px-8 border-t border-white/5">
         <TreasuryPreview />
       </section>
 
       {/* ── Token Tiers ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
-        <div className="max-w-[64rem] mx-auto">
+      <section className="py-20 px-8 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
@@ -795,7 +787,7 @@ export default function LandingPage() {
                 className="relative overflow-hidden p-[2rem_1.6rem]"
                 style={{ border: `1px solid ${t.color}33` }}
               >
-                <div aria-hidden className="absolute top-0 left-0 right-0 h-[2px] opacity-70" style={{ background: t.color }} />
+                <div aria-hidden className="absolute top-0 left-0 right-0 h-0.5 opacity-70" style={{ background: t.color }} />
                 <div className="text-[0.6rem] tracking-[0.2em] mb-2" style={{ color: t.color }}>{t.label}</div>
                 <div className="text-[1.6rem] font-black text-white mb-[1.4rem] tracking-[-0.01em]">{t.rate}</div>
                 <ul className="list-none p-0 m-0 flex flex-col gap-[0.55rem]">
@@ -812,8 +804,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── Early Access ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
-        <div className="max-w-[36rem] mx-auto text-center">
+      <section className="py-20 px-8 border-t border-white/5">
+        <div className="max-w-xl mx-auto text-center">
           <motion.h2
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             className="text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
@@ -836,7 +828,7 @@ export default function LandingPage() {
           {waitlistStatus === "success" ? (
             <motion.div
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-              className="text-[0.8rem] tracking-[0.1em] p-[1.4rem_2rem]"
+              className="text-[0.8rem] tracking-widest p-[1.4rem_2rem]"
               style={{ border: `1px solid ${GREEN}44`, color: GREEN }}
             >
               ◈ EMAIL SENT — WE WILL INFORM YOU AT TESTNET &amp; MAINNET LAUNCH
@@ -876,8 +868,8 @@ export default function LandingPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-20 px-8 border-t border-white/[0.05]">
-        <div className="max-w-[64rem] mx-auto">
+      <section className="py-20 px-8 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
           <motion.h2
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }}
             className="text-center text-[0.65rem] tracking-[0.22em] mb-[0.6rem]"
