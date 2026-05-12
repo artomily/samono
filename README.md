@@ -38,11 +38,6 @@ Samono flips that model:
 
 ### Treasury & Swap Program (Solana)
 
-**Program ID:** `8L2w36BLr8NdPaEkXTRiUaM9jXM7nSQYdM8EDKhoPAFh`
-
-- **Devnet:** [View on Solana Explorer (Devnet)](https://explorer.solana.com/address/8L2w36BLr8NdPaEkXTRiUaM9jXM7nSQYdM8EDKhoPAFh?cluster=devnet)
-- **Mainnet:** Will be published upon mainnet deployment
-
 **Treasury PDA** (Derived from seed `"treasury"` + Program ID):
 - **Address:** `EXJUqE9J7e3RfBcFbQ8N7c3fXrXvF2jhC5MvNzcG2rQ8` (on Devnet)
 - **Devnet:** [View on Solana Explorer (Devnet)](https://explorer.solana.com/address/EXJUqE9J7e3RfBcFbQ8N7c3fXrXvF2jhC5MvNzcG2rQ8?cluster=devnet)
