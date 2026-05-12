@@ -34,6 +34,23 @@ Samono flips that model:
 - Featured video used in landing preview: https://www.youtube.com/watch?v=v1ZQlVMlG2c
 - X (Twitter): https://x.com/samonoonchain
 
+## On-Chain Contracts
+
+### Treasury & Swap Program (Solana)
+
+**Program ID:** `8L2w36BLr8NdPaEkXTRiUaM9jXM7nSQYdM8EDKhoPAFh`
+
+- **Devnet:** [View on Solana Explorer (Devnet)](https://explorer.solana.com/address/8L2w36BLr8NdPaEkXTRiUaM9jXM7nSQYdM8EDKhoPAFh?cluster=devnet)
+- **Mainnet:** Will be published upon mainnet deployment
+
+**Treasury PDA** (Derived from seed `"treasury"` + Program ID):
+- **Address:** `EXJUqE9J7e3RfBcFbQ8N7c3fXrXvF2jhC5MvNzcG2rQ8` (on Devnet)
+- **Devnet:** [View on Solana Explorer (Devnet)](https://explorer.solana.com/address/EXJUqE9J7e3RfBcFbQ8N7c3fXrXvF2jhC5MvNzcG2rQ8?cluster=devnet)
+- **Holds:** SOL rewards for user claims, funded via the admin keypair
+
+**Token (SMT):**
+- Program address will be published upon mainnet deployment, currently using a devnet $SOL test token for development and testing purposes.
+
 ## Product Preview And Flow
 
 ```mermaid

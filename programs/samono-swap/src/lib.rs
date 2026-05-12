@@ -3,7 +3,7 @@ use anchor_lang::system_program;
 
 // After deploying with `anchor deploy`, replace this with the real program ID
 // printed by `anchor build` / `anchor keys list`
-declare_id!("SaMoXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+declare_id!("8L2w36BLr8NdPaEkXTRiUaM9jXM7nSQYdM8EDKhoPAFh");
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
