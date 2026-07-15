@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback, useTransition } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { WalletButton } from "@/components/WalletButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +32,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function WalletPage() {
-  const { publicKey, connected } = useWallet();
+  const { address, connected } = useStellarWallet();
   const [data, setData] = useState<BalanceData | null>(null);
   const [loading, setLoading] = useState(false);
   const [isSavingWallet, startSavingWallet] = useTransition();
@@ -51,21 +51,21 @@ export default function WalletPage() {
 
   // Save wallet address to profile when connected
   useEffect(() => {
-    if (!publicKey) return;
+    if (!address) return;
     startSavingWallet(async () => {
       await fetch("/api/wallet/connect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress: publicKey.toBase58(), walletType: "other" }),
+        body: JSON.stringify({ walletAddress: address, walletType: "other" }),
       }).catch(() => {});
     });
-  }, [publicKey]);
+  }, [address]);
 
   useEffect(() => {
     fetchBalance();
   }, [fetchBalance]);
 
-  const walletAddress = publicKey?.toBase58();
+  const walletAddress = address;
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
@@ -76,7 +76,7 @@ export default function WalletPage() {
           My Wallet
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Manage your SOL rewards and wallet connection
+          Manage your SMT rewards and wallet connection
         </p>
       </div>
 
@@ -101,9 +101,9 @@ export default function WalletPage() {
           ) : (
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Connect your Solana wallet to claim rewards
+                Connect your Stellar wallet to claim rewards
               </p>
-              <WalletMultiButton />
+              <WalletButton />
             </div>
           )}
         </CardContent>
@@ -119,7 +119,7 @@ export default function WalletPage() {
             ) : (
               <p className="text-2xl font-bold text-primary">
                 {(data?.pending_amount ?? 0).toFixed(2)}{" "}
-                <span className="text-sm font-normal text-muted-foreground">SOL</span>
+                <span className="text-sm font-normal text-muted-foreground">SMT</span>
               </p>
             )}
           </CardContent>
@@ -135,7 +135,7 @@ export default function WalletPage() {
                 {data?.on_chain_balance != null
                   ? data.on_chain_balance.toFixed(2)
                   : "—"}{" "}
-                <span className="text-sm font-normal text-muted-foreground">SOL</span>
+                <span className="text-sm font-normal text-muted-foreground">SMT</span>
               </p>
             )}
           </CardContent>
@@ -185,7 +185,7 @@ export default function WalletPage() {
                   <div className="flex items-center gap-3">
                     <Coins className="h-4 w-4 text-primary shrink-0" />
                     <div>
-                      <p className="text-sm font-medium">+{tx.amount.toFixed(2)} SOL</p>
+                      <p className="text-sm font-medium">+{tx.amount.toFixed(2)} SMT</p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(tx.created_at).toLocaleDateString()}
                       </p>
@@ -200,11 +200,11 @@ export default function WalletPage() {
                     </Badge>
                     {tx.tx_signature && (
                       <a
-                        href={`https://solscan.io/tx/${tx.tx_signature}?cluster=devnet`}
+                        href={`https://stellar.expert/explorer/testnet/tx/${tx.tx_signature}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-primary transition-colors"
-                        aria-label="View on Solscan"
+                        aria-label="View on Stellar Expert"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                       </a>

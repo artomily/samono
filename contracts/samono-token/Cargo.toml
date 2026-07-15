@@ -1,0 +1,15 @@
+[package]
+name = "samono-token"
+version = "0.1.0"
+description = "Samono Token (SMT) — SEP-41 fungible token on Soroban with admin-controlled mint"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "samono_token"
+
+[dependencies]
+soroban-sdk = "27.0.0"
+
+[dev-dependencies]
+soroban-sdk = { version = "27.0.0", features = ["testutils"] }

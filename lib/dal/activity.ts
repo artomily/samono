@@ -63,7 +63,7 @@ export async function getRecentActivityEvents(
     const sig = reward.tx_signature ? ` · sig ${reward.tx_signature.slice(0, 8)}` : "";
     events.push({
       kind: "reward",
-      message: `${label} · ${reward.amount} SOL${sig}`,
+      message: `${label} · ${reward.amount} SMT${sig}`,
       ts: new Date(reward.created_at).getTime(),
     });
   }

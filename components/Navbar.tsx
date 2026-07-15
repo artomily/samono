@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useStellarWallet } from "@/components/StellarWalletProvider";
 import { ClientWalletButton } from "@/components/ClientWalletButton";
 import { ActivityStream } from "@/components/ActivityStream";
 import { createClient } from "@/lib/supabase/client";
@@ -32,7 +32,7 @@ const PROTECTED_PREFIXES = ["/dashboard", "/watch", "/wallet", "/leaderboard", "
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { publicKey, connected } = useWallet();
+  const { address, connected } = useStellarWallet();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const prevConnected = useRef(false);
@@ -53,8 +53,8 @@ export function Navbar() {
     });
   }, []);
 
-  const truncatedAddress = publicKey
-    ? `${publicKey.toBase58().slice(0, 4)}…${publicKey.toBase58().slice(-4)}`
+  const truncatedAddress = address
+    ? `${address.slice(0, 4)}…${address.slice(-4)}`
     : null;
 
   const clientSignOut = useCallback(async () => {

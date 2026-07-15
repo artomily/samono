@@ -1,20 +1,24 @@
-// Solana-related types for the Samono platform
+// Stellar / Soroban-related types for the Samono platform
 
-export interface SolanaTokenBalance {
-  mint: string;
+export interface StellarTokenBalance {
+  /** Token contract id, or "SMT" for the Samono Token. */
+  contract: string;
   owner: string;
+  /** Balance in base units (i128). */
   amount: bigint;
   decimals: number;
+  /** Human-readable balance. */
   uiAmount: number;
 }
 
 export interface TransferResult {
   success: boolean;
-  signature?: string;
+  /** Stellar transaction hash. */
+  hash?: string;
   error?: string;
 }
 
-export type SolanaNetwork = "devnet" | "testnet" | "mainnet-beta";
+export type StellarNetwork = "testnet" | "public" | "futurenet";
 
 export interface WatchSessionHeartbeat {
   sessionId: string;

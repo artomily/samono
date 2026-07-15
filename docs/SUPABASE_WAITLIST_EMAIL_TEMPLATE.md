@@ -48,7 +48,7 @@ Samono waitlist confirmation
             <tr>
               <td style="padding:18px 28px 28px 28px; border-top:1px solid #17233a; font-size:12px; color:#7f93b2;">
                 <p style="margin:0 0 6px 0;">Samono</p>
-                <p style="margin:0;">Watch-to-earn on Solana</p>
+                <p style="margin:0;">Watch-to-earn on Stellar</p>
               </td>
             </tr>
           </table>

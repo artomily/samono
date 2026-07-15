@@ -337,7 +337,7 @@ export function VideoPlayer({
               </div>
             </div>
             <Button render={<Link href="/dashboard/swap" />} size="sm">
-              Swap to SOL
+              Swap to SMT
             </Button>
           </CardContent>
         </Card>

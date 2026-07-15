@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useStellarWallet } from "@/components/StellarWalletProvider";
 
 export function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { publicKey } = useWallet();
+  const { address } = useStellarWallet();
   const [username, setUsername] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,10 +23,11 @@ export function RegisterForm() {
 
   // Auto-suggest username from wallet address when wallet connects
   useEffect(() => {
-    if (publicKey && !username) {
-      setUsername(`user_${publicKey.toBase58().slice(0, 8).toLowerCase()}`);
+    if (address && !username) {
+      // Skip the leading "G" of the Stellar address for a nicer handle.
+      setUsername(`user_${address.slice(1, 9).toLowerCase()}`);
     }
-  }, [publicKey]); // intentionally omit `username` — only fire on wallet connect
+  }, [address]); // intentionally omit `username` — only fire on wallet connect
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,7 +145,7 @@ export function RegisterForm() {
             welcome bonus
           </div>
           <p className="text-xs text-white/50">
-            Your account starts with <span className="text-emerald-300 font-mono">5,000 pts</span> — enough to swap for SOL on testnet.
+            Your account starts with <span className="text-emerald-300 font-mono">5,000 pts</span> — enough to swap for SMT on testnet.
           </p>
         </div>
       </div>

@@ -42,3 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .treasury-keypair.json
+
+# rust / soroban (Cargo.lock is committed to pin the ed25519-dalek resolution)
+/target

@@ -1,4 +1,4 @@
-import { transferSOL } from "@/lib/solana/token";
+import { transferReward } from "@/lib/stellar/token";
 import {
   getPendingRewards,
   markRewardsProcessing,
@@ -16,7 +16,7 @@ const LEVEL_BONUS_PER_LEVEL  = 0.05; // +5% per level
 const REFERRAL_BONUS         = 0.10; // +10% for having a referrer
 
 /**
- * Calculate the SOL reward for a completed session.
+ * Calculate the SMT reward for a completed session.
  * Applies streak multiplier, level bonus, and referral bonus.
  */
 export function calculateReward(video: Video, profile: Profile): number {
@@ -116,8 +116,8 @@ export async function createPendingReward(
 
 /**
  * Process manual claim for a user.
- * Transfers all pending SOL to the provided wallet address.
- * Returns array of results.
+ * Mints all pending SMT to the provided wallet address.
+ * Returns array of results (tx hashes).
  */
 export async function processClaimRequest(
   userId: string,
@@ -139,14 +139,14 @@ export async function processClaimRequest(
   let totalClaimed = 0;
   const signatures: string[] = [];
 
-  // Transfer each reward individually (for granular retry + audit trail)
+  // Mint each reward individually (for granular retry + audit trail)
   for (const reward of pending) {
-    const result = await transferSOL(walletAddress, reward.amount);
+    const result = await transferReward(walletAddress, reward.amount);
 
-    if (result.success && result.signature) {
-      await markRewardCompleted(reward.id, result.signature, walletAddress);
+    if (result.success && result.hash) {
+      await markRewardCompleted(reward.id, result.hash, walletAddress);
       totalClaimed += reward.amount;
-      signatures.push(result.signature);
+      signatures.push(result.hash);
     } else {
       await markRewardFailed(reward.id, result.error ?? "Transfer failed");
     }

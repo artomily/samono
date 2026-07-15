@@ -46,7 +46,7 @@ export default async function RewardsPage() {
           </div>
           <h1 style={{ fontSize: "1.4rem", fontWeight: 900, letterSpacing: "0.04em" }}>REWARDS</h1>
           <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", marginTop: "0.3rem", letterSpacing: "0.06em" }}>
-            Pending SOL from completed watch sessions
+            Pending SMT from completed watch sessions
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export default async function RewardsPage() {
               CLAIMABLE BALANCE
             </div>
             <div style={{ fontSize: "2.2rem", fontWeight: 900, color: CYAN, letterSpacing: "-0.02em" }}>
-              {claimable.toFixed(4)} <span style={{ fontSize: "1rem", opacity: 0.7 }}>SOL</span>
+              {claimable.toFixed(4)} <span style={{ fontSize: "1rem", opacity: 0.7 }}>SMT</span>
             </div>
           </div>
 
@@ -76,7 +76,7 @@ export default async function RewardsPage() {
             </div>
           ) : (
             <div style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em" }}>
-              WATCH VIDEOS TO EARN SOL →
+              WATCH VIDEOS TO EARN SMT →
             </div>
           )}
         </div>
@@ -132,7 +132,7 @@ export default async function RewardsPage() {
                     {formatDate(r.created_at)}
                   </span>
                   <span style={{ color: CYAN, fontWeight: 700 }}>
-                    {r.amount.toFixed(4)} SOL
+                    {r.amount.toFixed(4)} SMT
                   </span>
                   <span style={{
                     color: STATUS_COLOR[r.status] ?? "#fff",
@@ -145,7 +145,7 @@ export default async function RewardsPage() {
                   <span>
                     {r.tx_signature ? (
                       <a
-                        href={`https://solscan.io/tx/${r.tx_signature}`}
+                        href={`https://stellar.expert/explorer/testnet/tx/${r.tx_signature}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{

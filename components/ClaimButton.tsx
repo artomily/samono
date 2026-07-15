@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useTransition } from "react";
+import { useStellarWallet } from "@/components/StellarWalletProvider";
 import { Button } from "@/components/ui/button";
 import { Coins, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -13,11 +13,11 @@ interface ClaimButtonProps {
 }
 
 export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonProps) {
-  const { publicKey } = useWallet();
+  const { address } = useStellarWallet();
   const [isPending, startTransition] = useTransition();
 
   const handleClaim = () => {
-    if (!publicKey) {
+    if (!address) {
       toast.error("Please connect your wallet to claim rewards.");
       return;
     }
@@ -31,7 +31,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
         const res = await fetch("/api/rewards/claim", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet_address: publicKey.toBase58() }),
+          body: JSON.stringify({ walletAddress: address }),
         });
         const data = await res.json();
 
@@ -40,7 +40,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
           return;
         }
 
-        toast.success(`Claimed ${pendingAmount.toFixed(2)} SOL! Tx: ${data.signature?.slice(0, 8)}…`);
+        toast.success(`Claimed ${pendingAmount.toFixed(2)} SMT!`);
         onClaimed?.();
       } catch {
         toast.error("Connection error — your points were not deducted. Please try again.");
@@ -48,7 +48,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
     });
   };
 
-  const isDisabled = disabled || isPending || !publicKey || pendingAmount <= 0;
+  const isDisabled = disabled || isPending || !address || pendingAmount <= 0;
 
   return (
     <Button
@@ -61,7 +61,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
       ) : (
         <Coins className="h-4 w-4" />
       )}
-      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} SOL`}
+      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} SMT`}
     </Button>
   );
 }

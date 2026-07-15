@@ -1,21 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import dynamic from "next/dynamic";
+import { useStellarWallet } from "@/components/StellarWalletProvider";
 import { createClient } from "@/lib/supabase/client";
 import { Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
-
-const WalletMultiButton = dynamic(
-  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
-  { ssr: false }
-);
 
 const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 const CYAN = "#00E5FF";
 
 export function LoginOverlay() {
-  const { publicKey, connected, signMessage } = useWallet();
+  const { address, connected, connect, signMessage } = useStellarWallet();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,22 +20,16 @@ export function LoginOverlay() {
     setLoading(true);
 
     try {
-      let body: Record<string, unknown>;
-
-      if (!publicKey || !signMessage) {
+      if (!address) {
         setError("Please connect your wallet first.");
         return;
       }
 
-        const timestamp = Date.now();
-        const message = new TextEncoder().encode(
-          `Samono Login\n\nWallet: ${publicKey.toBase58()}\nTimestamp: ${timestamp}`
-        );
-        const signatureBytes = await signMessage(message);
-        const bs58 = await import("bs58");
-        const signature = bs58.default.encode(signatureBytes);
+      const timestamp = Date.now();
+      const message = `Samono Login\n\nWallet: ${address}\nTimestamp: ${timestamp}`;
+      const signature = await signMessage(message);
 
-        body = { publicKey: publicKey.toBase58(), signature, timestamp };
+      const body = { publicKey: address, signature, timestamp };
 
       const res = await fetch("/api/auth/wallet", {
         method: "POST",
@@ -154,7 +142,7 @@ export function LoginOverlay() {
             letterSpacing: "0.06em",
           }}
         >
-          Connect your Solana wallet to start earning SOL
+          Connect your Stellar wallet to start earning SMT
         </p>
       </div>
 
@@ -217,10 +205,26 @@ export function LoginOverlay() {
 
         {/* Wallet connect */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}>
-          <WalletMultiButton style={{ width: "100%" }} />
-          {connected && publicKey && (
+          <button
+            type="button"
+            onClick={() => connect()}
+            style={{
+              width: "100%",
+              border: "1px solid rgba(59,130,246,0.35)",
+              background: "rgba(59,130,246,0.08)",
+              padding: "0.75rem",
+              fontSize: "0.7rem",
+              letterSpacing: "0.2em",
+              color: "#e0f7ff",
+              fontFamily: MONO,
+              cursor: "pointer",
+            }}
+          >
+            {connected && address ? "WALLET CONNECTED" : "CONNECT WALLET"}
+          </button>
+          {connected && address && (
             <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.3)", fontFamily: MONO }}>
-              {publicKey.toBase58().slice(0, 8)}…{publicKey.toBase58().slice(-8)}
+              {address.slice(0, 8)}…{address.slice(-8)}
             </p>
           )}
         </div>
@@ -263,7 +267,7 @@ export function LoginOverlay() {
           zIndex: 1,
         }}
       >
-        © {new Date().getFullYear()} SAMONO. BUILT ON SOLANA.
+        © {new Date().getFullYear()} SAMONO. BUILT ON STELLAR.
       </p>
     </div>
   );

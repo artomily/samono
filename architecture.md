@@ -5,9 +5,9 @@
 | Layer | Technology |
 |-------|-----------|
 | Frontend | Next.js 16 (App Router), React 19, Tailwind CSS 4, shadcn/ui |
-| Wallet | @solana/wallet-adapter (Phantom + Solflare) |
+| Wallet | Stellar Wallets Kit (Freighter, Albedo, xBull, Lobstr) |
 | Backend | Next.js API routes, Supabase (Postgres + Auth) |
-| Blockchain | Solana (devnet → mainnet), SPL Token (SMT) |
+| Blockchain | Stellar / Soroban (testnet → mainnet), SEP-41 Token (SMT) |
 | Data Access | Server-side DAL layer (`lib/dal/`) with Supabase service client |
 | AI Tooling | Claude Code (development), session transcript exported as JSONL |
 
@@ -30,7 +30,7 @@
           ┌───────────┼───────────┐
           ▼           ▼           ▼
    ┌────────────┐ ┌────────┐ ┌──────────┐
-   │  Supabase  │ │ Solana │ │ YouTube  │
+   │  Supabase  │ │ Stellar│ │ YouTube  │
    │  (Postgres)│ │ RPC    │ │ Data API │
    └────────────┘ └────────┘ └──────────┘
 ```
@@ -71,9 +71,10 @@ samono/
 │   │   ├── sessions.ts
 │   │   ├── videos.ts
 │   │   └── leaderboard.ts
-│   ├── solana/                 # Solana integration
-│   │   ├── connection.ts       # RPC connection setup
-│   │   ├── token.ts            # SPL token transfers
+│   ├── stellar/                # Stellar / Soroban integration
+│   │   ├── server.ts           # Soroban RPC client
+│   │   ├── config.ts           # Network + contract config
+│   │   ├── token.ts            # SMT mint + balance (Soroban)
 │   │   └── treasury.ts         # Treasury keypair management
 │   ├── supabase/               # Supabase clients
 │   │   ├── client.ts           # Browser client
@@ -82,7 +83,7 @@ samono/
 │   ├── auth/                   # Auth actions + session helpers
 │   └── youtube/                # YouTube metadata sync
 ├── scripts/
-│   └── deploy-token.ts         # SMT token deployment (SPL)
+│   └── setup-stellar.ts        # Treasury/admin setup (Friendbot)
 ├── hooks/
 │   └── useMousePosition.ts     # Orbital UI interaction
 ├── supabase/
@@ -149,7 +150,7 @@ User clicks Claim
 processClaimRequest()
  ├─ Fetch pending rewards
  ├─ Mark as processing (race condition guard)
- ├─ transferSOL() via SPL token
+ ├─ transferReward() mints SMT via Soroban
  ├─ Mark completed with tx_signature
  └─ Return claimed total + signatures
 ```
@@ -176,7 +177,7 @@ processClaimRequest()
 
 - Supabase Auth (email + password)
 - Middleware guards protected routes: `/dashboard`, `/watch`, `/wallet`, `/leaderboard`, `/referral`
-- Wallet connects separately via `@solana/wallet-adapter` (not tied to auth)
+- Wallet connects separately via Stellar Wallets Kit (not tied to auth)
 - Profile auto-created on signup via Postgres trigger
 
 ## Environment variables
@@ -185,7 +186,7 @@ processClaimRequest()
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-SOLANA_RPC_URL=
+SOROBAN_RPC_URL=
 SMT_MINT_ADDRESS=
-TREASURY_WALLET_PATH=.treasury-keypair.json
+TREASURY_SECRET_KEY=S...   # SMT contract admin
 ```

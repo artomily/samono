@@ -71,7 +71,7 @@ export default function ReferralPage() {
     if (navigator.share) {
       await navigator.share({
         title: "Join Samono — Earn tokens by watching videos",
-        text: "Sign up with my referral and we both earn bonus SOL rewards!",
+        text: "Sign up with my referral and we both earn bonus SMT rewards!",
         url: referralLink,
       });
     } else {
@@ -244,7 +244,7 @@ export default function ReferralPage() {
                     </span>
                     {user.wallet_address && (
                       <a
-                        href={`https://explorer.solana.com/address/${user.wallet_address}?cluster=devnet`}
+                        href={`https://stellar.expert/explorer/testnet/account/${user.wallet_address}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-white/25 hover:text-cyan-300/60 transition-colors"

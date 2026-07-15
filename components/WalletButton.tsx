@@ -1,37 +1,33 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { useTransition } from "react";
+import { useStellarWallet } from "@/components/StellarWalletProvider";
 import { Button } from "@/components/ui/button";
 import { Wallet, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface WalletButtonProps {
-  onConnected?: (address: string) => void;
   className?: string;
   size?: "default" | "sm" | "lg" | "icon";
 }
 
-export function WalletButton({ onConnected, className, size = "default" }: WalletButtonProps) {
-  const { publicKey, connected, disconnect } = useWallet();
-  const { setVisible } = useWalletModal();
+export function WalletButton({ className, size = "default" }: WalletButtonProps) {
+  const { address, connected, connecting, connect, disconnect } = useStellarWallet();
   const [isPending, startTransition] = useTransition();
 
   const handleClick = () => {
-    if (connected && publicKey) {
+    if (connected && address) {
       startTransition(async () => {
         await disconnect();
         toast.info("Wallet disconnected");
       });
     } else {
-      setVisible(true);
+      connect().catch(() => toast.error("Could not connect wallet"));
     }
   };
 
-  const truncated = publicKey
-    ? `${publicKey.toBase58().slice(0, 4)}…${publicKey.toBase58().slice(-4)}`
-    : null;
+  const truncated = address ? `${address.slice(0, 4)}…${address.slice(-4)}` : null;
+  const busy = isPending || connecting;
 
   return (
     <Button
@@ -39,9 +35,9 @@ export function WalletButton({ onConnected, className, size = "default" }: Walle
       size={size}
       className={className}
       onClick={handleClick}
-      disabled={isPending}
+      disabled={busy}
     >
-      {isPending ? (
+      {busy ? (
         <Loader2 className="h-4 w-4 animate-spin" />
       ) : (
         <Wallet className="h-4 w-4" />

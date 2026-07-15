@@ -181,7 +181,7 @@ create table if not exists public.wallet_connections (
   id              uuid        primary key default gen_random_uuid(),
   user_id         uuid        not null references public.profiles(id) on delete cascade,
   wallet_address  text        not null,
-  wallet_type     text        not null check (wallet_type in ('phantom', 'solflare', 'other')),
+  wallet_type     text        not null check (wallet_type in ('freighter', 'albedo', 'xbull', 'lobstr', 'other')),
   is_primary      boolean     not null default false,
   connected_at    timestamptz not null default now(),
   unique (user_id, wallet_address)
@@ -212,11 +212,11 @@ begin
   insert into public.profiles (id, username, avatar_url)
   values (
     new.id,
-    -- Wallet-based accounts (email ends in @wallet.sol) start with null username
+    -- Wallet-based accounts (email ends in @wallet.xlm) start with null username
     -- so the user is routed to the /register page after first login.
     -- Regular email/oauth accounts can use the username from metadata.
     case
-      when new.email like '%@wallet.sol' then null
+      when new.email like '%@wallet.xlm' then null
       else coalesce(new.raw_user_meta_data->>'username', null)
     end,
     new.raw_user_meta_data->>'avatar_url'

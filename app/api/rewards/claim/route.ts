@@ -3,12 +3,12 @@ import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
 import { processClaimRequest } from "@/services/reward-engine";
 import { getPendingRewards } from "@/lib/dal/rewards";
+import { EXPLORER_TX_BASE } from "@/lib/stellar/config";
 
 const bodySchema = z.object({
   walletAddress: z
     .string()
-    .min(32, "Invalid wallet address")
-    .max(44, "Invalid wallet address"),
+    .regex(/^G[A-Z2-7]{55}$/, "Invalid Stellar wallet address"),
 });
 
 export async function POST(req: NextRequest) {
@@ -46,10 +46,7 @@ export async function POST(req: NextRequest) {
         claimed: result.claimed,
         total: result.total,
         signatures: result.signatures,
-        explorerLinks: result.signatures.map(
-          (sig) =>
-            `https://solscan.io/tx/${sig}?cluster=${process.env.NEXT_PUBLIC_SOLANA_NETWORK ?? "devnet"}`
-        ),
+        explorerLinks: result.signatures.map((hash) => `${EXPLORER_TX_BASE}/${hash}`),
       },
     });
   } catch (err) {

@@ -33,7 +33,7 @@ export function LeaderboardTable({
         <span className="text-[10px] uppercase tracking-[0.28em] text-white/35">user</span>
         <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right hidden sm:block">streak</span>
         <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right">xp</span>
-        <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right">sol</span>
+        <span className="text-[10px] uppercase tracking-[0.28em] text-white/35 text-right">smt</span>
       </div>
 
       {/* Rows */}
@@ -85,7 +85,7 @@ export function LeaderboardTable({
                 {entry.xp.toLocaleString()}
               </span>
 
-              {/* SOL earned */}
+              {/* SMT earned */}
               <span className="text-right font-mono text-sm text-emerald-300 whitespace-nowrap">
                 {entry.total_earned.toFixed(2)}
               </span>

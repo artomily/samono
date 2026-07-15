@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
 import { getProfileById } from "@/lib/dal/profiles";
 import { createServiceClient } from "@/lib/supabase/server";
-import { transferSOL } from "@/lib/solana/token";
+import { transferReward } from "@/lib/stellar/token";
 import { SWAP_OPTIONS } from "@/lib/constants/swap";
 
 const bodySchema = z.object({
@@ -66,8 +66,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: "Failed to deduct points — balance may have changed" }, { status: 409 });
   }
 
-  // Transfer SOL from treasury to user's wallet
-  const transfer = await transferSOL(profile.wallet_address, option.solAmount);
+  // Mint SMT from the treasury to the user's wallet
+  const transfer = await transferReward(profile.wallet_address, option.smtAmount);
 
   if (!transfer.success) {
     // Rollback points deduction
@@ -76,26 +76,26 @@ export async function POST(req: NextRequest) {
       .update({ xp: profile.xp ?? 0 })
       .eq("id", user.id);
     return NextResponse.json(
-      { success: false, error: `SOL transfer failed: ${transfer.error}` },
+      { success: false, error: `SMT transfer failed: ${transfer.error}` },
       { status: 502 }
     );
   }
 
-  // Update total_earned with SOL received from this swap
+  // Update total_earned with SMT received from this swap
   await supabase
     .from("profiles")
-    .update({ total_earned: (profile.total_earned ?? 0) + option.solAmount })
+    .update({ total_earned: (profile.total_earned ?? 0) + option.smtAmount })
     .eq("id", user.id);
 
   return NextResponse.json({
     success: true,
     data: {
       pointsDeducted: option.pointsCost,
-      solAmount: option.solAmount,
+      smtAmount: option.smtAmount,
       newPointsBalance: (profile.xp ?? 0) - option.pointsCost,
-      txSignature: transfer.signature,
+      txHash: transfer.hash,
       walletAddress: profile.wallet_address,
-      message: `${option.solAmount} SOL sent to your wallet!`,
+      message: `${option.smtAmount} SMT sent to your wallet!`,
     },
   });
 }

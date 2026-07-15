@@ -162,24 +162,6 @@
   --smt-glow: oklch(0.88 0.20 96 / 0.20);
 }
 
-/* Wallet adapter dark theme override */
-.wallet-adapter-modal-wrapper {
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-}
-.wallet-adapter-button {
-  background: var(--secondary) !important;
-  border: 1px solid var(--border) !important;
-  color: var(--foreground) !important;
-}
-.wallet-adapter-button:hover {
-  background: var(--primary) !important;
-  color: var(--primary-foreground) !important;
-}
-.wallet-adapter-modal-title {
-  color: var(--foreground) !important;
-}
-
 /* Glow utilities */
 .glow-green {
   box-shadow: 0 0 20px var(--smt-glow);

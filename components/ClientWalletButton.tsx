@@ -1,18 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Play, Clock, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// Dynamically import WalletMultiButton with no SSR to avoid hydration mismatch
-const DynamicWalletButton = dynamic(
-  async () => (await import("@solana/wallet-adapter-react-ui")).WalletMultiButton,
-  { ssr: false, loading: () => <div className="h-10 w-32 bg-muted rounded-md" /> }
-);
+import { WalletButton } from "@/components/WalletButton";
 
 export function ClientWalletButton() {
-  return <DynamicWalletButton />;
+  return <WalletButton />;
 }
 
 // ---------------------------------------------------------------------------
@@ -25,7 +19,7 @@ const SHOWCASE_VIDEOS = [
     title: "DeFi Explained: Yield Farming Strategies",
     category: "DeFi",
     duration: "18:34",
-    reward: "45 SOL",
+    reward: "45 SMT",
     rating: 4.9,
     thumbnail: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=480&h=270&fit=crop",
   },
@@ -34,7 +28,7 @@ const SHOWCASE_VIDEOS = [
     title: "Solana NFT Masterclass for Creators",
     category: "NFTs",
     duration: "24:11",
-    reward: "60 SOL",
+    reward: "60 SMT",
     rating: 4.8,
     thumbnail: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=480&h=270&fit=crop",
   },
@@ -43,7 +37,7 @@ const SHOWCASE_VIDEOS = [
     title: "Web3 Security: Protecting Your Assets",
     category: "Security",
     duration: "31:02",
-    reward: "75 SOL",
+    reward: "75 SMT",
     rating: 5.0,
     thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=480&h=270&fit=crop",
   },
@@ -52,7 +46,7 @@ const SHOWCASE_VIDEOS = [
     title: "Smart Contract Auditing 101",
     category: "Dev",
     duration: "42:18",
-    reward: "90 SOL",
+    reward: "90 SMT",
     rating: 4.7,
     thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=480&h=270&fit=crop",
   },
@@ -61,7 +55,7 @@ const SHOWCASE_VIDEOS = [
     title: "Crypto Trading Psychology & Risk Mgmt",
     category: "Trading",
     duration: "27:55",
-    reward: "55 SOL",
+    reward: "55 SMT",
     rating: 4.8,
     thumbnail: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=480&h=270&fit=crop",
   },

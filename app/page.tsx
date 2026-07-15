@@ -23,23 +23,23 @@ const GREEN = BLUE;
 
 const STATS = [
   { value: "POINTS", label: "EARN PER VIDEO" },
-  { value: "SOL", label: "REWARDS ASSET" },
+  { value: "SMT", label: "REWARDS ASSET" },
   { value: "10×", label: "VIDEOS TO FIRST SWAP" },
   { value: "∞", label: "REFERRAL EARNINGS" },
 ];
 
 const USER_FLOW = [
-  { n: "01", icon: "◈", title: "CONNECT WALLET", desc: "Phantom, Solflare, or any Wallet Standard adapter. No email, no password. Your key, your account.", color: CYAN },
+  { n: "01", icon: "◈", title: "CONNECT WALLET", desc: "Freighter, Albedo, xBull, or any Stellar wallet. No email, no password. Your key, your account.", color: CYAN },
   { n: "02", icon: "▶", title: "WATCH VIDEOS", desc: "Stream curated Web3 educational content. Every verified view earns engagement points, tracked in real time.", color: BLUE },
   { n: "03", icon: "⊕", title: "EARN POINTS", desc: "Points credit instantly after each video. Daily streak bonuses stack up to 2× multiplier automatically.", color: PINK },
-  { n: "04", icon: "◆", title: "CLAIM SOL", desc: "Swap your points for real SOL via the on-chain Anchor program. Sent directly to your connected wallet.", color: CYAN },
+  { n: "04", icon: "◆", title: "CLAIM SMT", desc: "Swap your points for SMT via the on-chain Soroban contract. Sent directly to your connected wallet.", color: CYAN },
 ];
 
 const PROTOCOL_FLOW = [
   { title: "AD REVENUE", detail: "Main treasury inflow", color: CYAN },
-  { title: "TREASURY PDA", detail: "On-chain vault (Solana)", color: BLUE },
-  { title: "ANCHOR PROGRAM", detail: "Verified swap contract", color: PINK },
-  { title: "YOUR WALLET", detail: "Real SOL delivered", color: CYAN },
+  { title: "TOKEN TREASURY", detail: "On-chain token vault (Stellar)", color: BLUE },
+  { title: "SOROBAN CONTRACT", detail: "SEP-41 token contract", color: PINK },
+  { title: "YOUR WALLET", detail: "Real SMT delivered", color: CYAN },
 ];
 
 const TOKEN_TIERS = [
@@ -70,7 +70,7 @@ const TREASURY_INFLOW = [
 ];
 
 const TREASURY_OUTFLOW = [
-  { label: "SOLANA DISTRIBUTION", value: "41%", width: 41, color: CYAN },
+  { label: "STELLAR DISTRIBUTION", value: "41%", width: 41, color: CYAN },
   { label: "LIQUIDITY", value: "27%", width: 27, color: MAGENTA },
   { label: "REWARDS BUFFER", value: "18%", width: 18, color: GREEN },
   { label: "OPS RESERVE", value: "14%", width: 14, color: "rgba(255,255,255,0.75)" },
@@ -85,18 +85,18 @@ const TREASURY_FLOW = [
 ];
 
 const WHY_US = [
-  { label: "REAL SOL REWARDS", color: CYAN, text: "Every reward converts directly to SOL — Solana's native asset. Not loyalty points, not vouchers. Tradeable, transferable, yours." },
-  { label: "ON-CHAIN VERIFICATION", color: MAGENTA, text: "All reward distributions are logged on Solana's blockchain. Every payout is publicly auditable. No black-box systems." },
+  { label: "REAL SMT REWARDS", color: CYAN, text: "Every reward is minted as SMT — a real token on Stellar. Not loyalty points, not vouchers. Tradeable, transferable, yours." },
+  { label: "ON-CHAIN VERIFICATION", color: MAGENTA, text: "All reward distributions are logged on Stellar's blockchain. Every payout is publicly auditable. No black-box systems." },
   { label: "DAILY STREAKS", color: GREEN, text: "Watch consistently and earn streak multipliers up to 2×. A grace period keeps your streak alive if you miss a day." },
   { label: "REFERRAL NETWORK", color: CYAN, text: "Earn 10% of your referrals' rewards for life. No cap on referrals. Bring your network and multiply your income." },
 ];
 
 const FAQS = [
-  { q: "Is Samono free to use?", a: "Yes, completely free. You just need a Solana wallet and an account to start earning." },
-  { q: "Which wallets are supported?", a: "Any Solana wallet — Phantom, Solflare, Backpack, Ledger, and more via Wallet Standard." },
-  { q: "When do I receive my SOL rewards?", a: "Rewards queue immediately after a video completes. Claim to your wallet any time." },
+  { q: "Is Samono free to use?", a: "Yes, completely free. You just need a Stellar wallet and an account to start earning." },
+  { q: "Which wallets are supported?", a: "Any Stellar wallet — Freighter, Albedo, xBull, Lobstr, and more." },
+  { q: "When do I receive my SMT rewards?", a: "Rewards queue immediately after a video completes. Claim to your wallet any time." },
   { q: "How does the anti-cheat system work?", a: "We monitor tab visibility, playback speed, and interaction patterns. Suspicious activity voids rewards for that session." },
-  { q: "What is SOL and where can I use it?", a: "SOL is Solana's native asset. Once claimed, it can be held, transferred, or used anywhere supported in the Solana ecosystem." },
+  { q: "What is SMT and where can I use it?", a: "SMT (Samono Token) is a Soroban token on Stellar. Once claimed, it can be held, transferred, or used anywhere in the Stellar ecosystem." },
   { q: "Can I earn on mobile?", a: "Yes — fully responsive. Connect your mobile wallet and stream on any device." },
 ];
 
@@ -514,7 +514,7 @@ function TreasuryPreview() {
 
               <div style={{ paddingTop: "0.8rem", display: "grid", gap: "0.35rem", fontSize: "0.62rem", letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)" }}>
                 <div>LEDGER STATE: <span style={{ color: CYAN }}>PENDING MIRROR</span></div>
-                <div>SETTLEMENT TARGET: <span style={{ color: GREEN }}>SOLANA MAINNET</span></div>
+                <div>SETTLEMENT TARGET: <span style={{ color: GREEN }}>STELLAR MAINNET</span></div>
               </div>
             </div>
           </div>
@@ -641,7 +641,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.25 }}
             className="text-white/45 text-[0.88rem] tracking-[0.08em] leading-[1.7] max-w-136 mx-auto mb-[2.6rem]"
           >
-            THE FIRST WATCH-TO-EARN PROTOCOL THAT TURNS EDUCATIONAL CRYPTO CONTENT INTO REAL SOL REWARDS — FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
+            THE FIRST WATCH-TO-EARN PROTOCOL THAT TURNS EDUCATIONAL CRYPTO CONTENT INTO REAL SMT REWARDS — FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
           </motion.p>
 
           <motion.div
@@ -718,8 +718,8 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto">
           <SectionHead
             eyebrow="HOW IT WORKS"
-            title="FOUR STEPS TO SOL"
-            sub="From wallet connect to real SOL in your account — powered by an on-chain Anchor program on Solana."
+            title="FOUR STEPS TO SMT"
+            sub="From wallet connect to real SMT in your account — powered by an on-chain Soroban contract on Stellar."
           />
           <HowItWorksFlow />
         </div>
@@ -777,7 +777,7 @@ export default function LandingPage() {
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.1 }}
             className="text-center text-[1.8rem] font-black mb-14 tracking-[-0.01em]"
           >
-            MAXIMIZE SOL YIELD
+            MAXIMIZE SMT YIELD
           </motion.p>
           <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 1fr))" }}>
             {TOKEN_TIERS.map((t, i) => (

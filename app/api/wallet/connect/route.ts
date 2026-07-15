@@ -5,8 +5,10 @@ import { saveWalletAddress } from "@/lib/dal/profiles";
 import { createServiceClient } from "@/lib/supabase/server";
 
 const bodySchema = z.object({
-  walletAddress: z.string().min(32).max(44),
-  walletType: z.enum(["phantom", "solflare", "other"]).default("other"),
+  walletAddress: z.string().regex(/^G[A-Z2-7]{55}$/, "Invalid Stellar wallet address"),
+  walletType: z
+    .enum(["freighter", "albedo", "xbull", "lobstr", "other"])
+    .default("other"),
 });
 
 export async function POST(req: NextRequest) {

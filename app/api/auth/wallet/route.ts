@@ -3,6 +3,7 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import { createHmac } from "crypto";
+import { Keypair, StrKey } from "@stellar/stellar-sdk";
 import type { Database } from "@/types/database";
 import { DUMMY_MODE, DUMMY_WALLET } from "@/lib/dummy";
 
@@ -10,14 +11,14 @@ const WALLET_AUTH_SECRET =
   process.env.WALLET_AUTH_SECRET ?? "dev-secret-change-in-prod";
 
 const bodySchema = z.object({
-  publicKey: z.string().min(32).max(88).optional(),
+  publicKey: z.string().regex(/^G[A-Z2-7]{55}$/).optional(),
   signature: z.string().optional(),
   timestamp: z.number().optional(),
   referralCode: z.string().optional(),
 });
 
 function walletToEmail(publicKey: string) {
-  return `${publicKey.toLowerCase()}@wallet.sol`;
+  return `${publicKey.toLowerCase()}@wallet.xlm`;
 }
 
 function walletToPassword(publicKey: string) {
@@ -26,19 +27,33 @@ function walletToPassword(publicKey: string) {
     .digest("hex");
 }
 
-/** Verify an ed25519 signature using Node.js built-in crypto (no extra deps). */
-function verifyEd25519(
-  messageBytes: Uint8Array,
-  signatureBytes: Uint8Array,
-  publicKeyBytes: Uint8Array
+/**
+ * Verify a Stellar wallet signature over the login message.
+ *
+ * Stellar accounts are ed25519 keys, so we verify the raw signature against the
+ * UTF-8 message bytes using the account's public key. Stellar Wallets Kit's
+ * `signMessage` returns a signature whose encoding is wallet-dependent
+ * (Freighter/Albedo use base64); we try base64 first, then hex, then base64url.
+ */
+function verifyStellarSignature(
+  address: string,
+  message: string,
+  signature: string
 ): boolean {
   try {
-    const { createPublicKey, verify } = require("crypto") as typeof import("crypto");
-    // Wrap raw 32-byte key in SubjectPublicKeyInfo DER envelope
-    const prefix = Buffer.from("302a300506032b6570032100", "hex");
-    const derKey = Buffer.concat([prefix, Buffer.from(publicKeyBytes)]);
-    const keyObject = createPublicKey({ key: derKey, format: "der", type: "spki" });
-    return verify(null, Buffer.from(messageBytes), keyObject, Buffer.from(signatureBytes));
+    if (!StrKey.isValidEd25519PublicKey(address)) return false;
+    const kp = Keypair.fromPublicKey(address);
+    const msgBuf = Buffer.from(message, "utf8");
+
+    const candidates: Buffer[] = [];
+    for (const enc of ["base64", "hex", "base64url"] as const) {
+      try {
+        candidates.push(Buffer.from(signature, enc));
+      } catch {
+        /* skip invalid encoding */
+      }
+    }
+    return candidates.some((sig) => sig.length === 64 && kp.verify(msgBuf, sig));
   } catch {
     return false;
   }
@@ -96,13 +111,8 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const bs58 = await import("bs58");
-      const message = new TextEncoder().encode(
-        `Samono Login\n\nWallet: ${walletAddress}\nTimestamp: ${timestamp}`
-      );
-      const sigBytes = bs58.default.decode(signature);
-      const keyBytes = bs58.default.decode(walletAddress);
-      const valid = verifyEd25519(message, sigBytes, keyBytes);
+      const message = `Samono Login\n\nWallet: ${walletAddress}\nTimestamp: ${timestamp}`;
+      const valid = verifyStellarSignature(walletAddress, message, signature);
       if (!valid) {
         return NextResponse.json({ error: "Invalid wallet signature" }, { status: 401 });
       }
