@@ -145,7 +145,7 @@ export function RegisterForm() {
             welcome bonus
           </div>
           <p className="text-xs text-white/50">
-            Your account starts with <span className="text-emerald-300 font-mono">5,000 pts</span> — enough to swap for SMT on testnet.
+            Your account starts with <span className="text-emerald-300 font-mono">5,000 pts</span> — enough to swap for XLM on testnet.
           </p>
         </div>
       </div>

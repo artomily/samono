@@ -71,7 +71,7 @@ export default function ReferralPage() {
     if (navigator.share) {
       await navigator.share({
         title: "Join Samono — Earn tokens by watching videos",
-        text: "Sign up with my referral and we both earn bonus SMT rewards!",
+        text: "Sign up with my referral and we both earn bonus XLM rewards!",
         url: referralLink,
       });
     } else {

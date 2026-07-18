@@ -25,7 +25,7 @@ export default async function WatchIndexPage() {
             Watch &amp; Earn
           </h1>
           <p className="mt-2 text-sm leading-6 text-white/55">
-            Watch videos to completion and earn SMT rewards directly to your wallet
+            Watch videos to completion and earn XLM rewards directly to your wallet
           </p>
         </div>
 

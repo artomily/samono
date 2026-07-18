@@ -113,7 +113,7 @@ export async function POST(
       eligible: true,
       pointsEarned: xpAmount,
       rewardAmount: xpAmount, // kept for backwards compat with VideoPlayer
-      message: `You earned ${xpAmount} points! Go to Swap to convert to SMT.`,
+      message: `You earned ${xpAmount} points! Go to Swap to convert to XLM.`,
       xpGained: xpAmount,
       leveledUp: xpResult.leveledUp,
       newLevel: xpResult.newLevel,

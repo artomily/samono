@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Stellar wallet context — wraps Stellar Wallets Kit (Freighter / Albedo /
- * xBull / Lobstr) behind a small React hook so components can stay declarative.
+ * Stellar wallet context — wraps Stellar Wallets Kit, pinned to Freighter,
+ * behind a small React hook so components can stay declarative.
  *
  * Replaces the old @solana/wallet-adapter provider tree. The Kit is imperative
  * and browser-only, so it is instantiated lazily on the client.
@@ -20,10 +20,7 @@ import {
   StellarWalletsKit,
   WalletNetwork,
   FreighterModule,
-  AlbedoModule,
-  xBullModule,
-  LobstrModule,
-  type ISupportedWallet,
+  FREIGHTER_ID,
 } from "@creit.tech/stellar-wallets-kit";
 
 const STORAGE_KEY = "samono:wallet-id";
@@ -44,12 +41,7 @@ function getKit(): StellarWalletsKit {
   if (!_kit) {
     _kit = new StellarWalletsKit({
       network: NETWORK,
-      modules: [
-        new FreighterModule(),
-        new AlbedoModule(),
-        new xBullModule(),
-        new LobstrModule(),
-      ],
+      modules: [new FreighterModule()],
     });
   }
   return _kit;
@@ -94,15 +86,11 @@ export function StellarWalletProvider({ children }: { children: ReactNode }) {
     const kit = getKit();
     setConnecting(true);
     try {
-      await kit.openModal({
-        onWalletSelected: async (option: ISupportedWallet) => {
-          kit.setWallet(option.id);
-          const { address } = await kit.getAddress();
-          window.localStorage.setItem(STORAGE_KEY, option.id);
-          setWalletType(option.id);
-          setAddress(address);
-        },
-      });
+      kit.setWallet(FREIGHTER_ID);
+      const { address } = await kit.getAddress();
+      window.localStorage.setItem(STORAGE_KEY, FREIGHTER_ID);
+      setWalletType(FREIGHTER_ID);
+      setAddress(address);
     } finally {
       setConnecting(false);
     }

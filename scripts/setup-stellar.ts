@@ -1,20 +1,14 @@
 #!/usr/bin/env node
 /**
- * Stellar Treasury / Admin Setup
+ * Stellar Treasury Setup
  *
- * Generates (or reuses) the treasury keypair that acts as the SMT token
- * contract's `admin`, funds it on testnet via Friendbot, and prints the env
- * vars to add to your .env.local.
+ * Generates (or reuses) the treasury keypair that funds every reward payout,
+ * funds it on testnet via Friendbot, and prints the env vars to add to your
+ * .env.local. Rewards are paid as native XLM — the treasury just needs a real
+ * XLM balance, no contract deploy required.
  *
  * Usage:
  *   npm run setup:stellar
- *
- * After this, deploy the contract with the Stellar CLI and set SMT_CONTRACT_ID:
- *   stellar contract build
- *   stellar contract deploy \
- *     --wasm target/wasm32v1-none/release/samono_token.wasm \
- *     --source <this-account> --network testnet \
- *     -- --admin <ADMIN_G_ADDRESS> --decimal 7 --name "Samono Token" --symbol SMT
  */
 
 import { Keypair } from "@stellar/stellar-sdk";
@@ -27,7 +21,7 @@ const FRIENDBOT_URL =
 const KEYPAIR_PATH = path.join(process.cwd(), ".treasury-keypair.json");
 
 async function main() {
-  console.log("🚀 Stellar Treasury / Admin Setup");
+  console.log("🚀 Stellar Treasury Setup");
   console.log(`🌐 Network: ${NETWORK}\n`);
 
   // ── Load or generate the treasury keypair ────────────────────
@@ -46,7 +40,7 @@ async function main() {
     );
     console.log("✅ Treasury keypair saved to .treasury-keypair.json");
   }
-  console.log(`💼 Treasury / admin address: ${treasury.publicKey()}`);
+  console.log(`💼 Treasury address: ${treasury.publicKey()}`);
 
   // ── Fund via Friendbot (testnet / futurenet only) ────────────
   if (NETWORK !== "public") {
@@ -63,6 +57,8 @@ async function main() {
     } catch (err) {
       console.error("⚠️  Friendbot request failed:", err);
     }
+  } else {
+    console.log("\n⚠️  Public network — fund the treasury with real XLM before going live.");
   }
 
   // ── Output ────────────────────────────────────────────────────
@@ -72,16 +68,12 @@ async function main() {
   console.log("\n📋 Add these to your .env.local:\n");
   console.log(`TREASURY_SECRET_KEY=${treasury.secret()}`);
   console.log(`NEXT_PUBLIC_STELLAR_NETWORK=${NETWORK}`);
-  console.log(`SOROBAN_RPC_URL=https://soroban-testnet.stellar.org`);
-  console.log(`NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org`);
   console.log(`HORIZON_URL=https://horizon-testnet.stellar.org`);
   console.log(`NETWORK_PASSPHRASE=Test SDF Network ; September 2015`);
-  console.log(`# Set after deploying the contract:`);
-  console.log(`# SMT_CONTRACT_ID=C...`);
-  console.log(`# NEXT_PUBLIC_SMT_CONTRACT_ID=C...`);
   console.log("\n⚠️  IMPORTANT:");
   console.log("   - Keep .treasury-keypair.json and TREASURY_SECRET_KEY SECRET.");
   console.log("   - .treasury-keypair.json is gitignored.");
+  console.log("   - Reward payouts are limited by the treasury's real XLM balance.");
   console.log(`   - View treasury on Stellar Expert:`);
   console.log(`     https://stellar.expert/explorer/${NETWORK}/account/${treasury.publicKey()}`);
   console.log("═".repeat(60) + "\n");

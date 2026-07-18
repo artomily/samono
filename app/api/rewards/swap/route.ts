@@ -66,8 +66,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: "Failed to deduct points — balance may have changed" }, { status: 409 });
   }
 
-  // Mint SMT from the treasury to the user's wallet
-  const transfer = await transferReward(profile.wallet_address, option.smtAmount);
+  // Pay native XLM from the treasury to the user's wallet
+  const transfer = await transferReward(profile.wallet_address, option.xlmAmount);
 
   if (!transfer.success) {
     // Rollback points deduction
@@ -76,26 +76,26 @@ export async function POST(req: NextRequest) {
       .update({ xp: profile.xp ?? 0 })
       .eq("id", user.id);
     return NextResponse.json(
-      { success: false, error: `SMT transfer failed: ${transfer.error}` },
+      { success: false, error: `XLM transfer failed: ${transfer.error}` },
       { status: 502 }
     );
   }
 
-  // Update total_earned with SMT received from this swap
+  // Update total_earned with XLM received from this swap
   await supabase
     .from("profiles")
-    .update({ total_earned: (profile.total_earned ?? 0) + option.smtAmount })
+    .update({ total_earned: (profile.total_earned ?? 0) + option.xlmAmount })
     .eq("id", user.id);
 
   return NextResponse.json({
     success: true,
     data: {
       pointsDeducted: option.pointsCost,
-      smtAmount: option.smtAmount,
+      xlmAmount: option.xlmAmount,
       newPointsBalance: (profile.xp ?? 0) - option.pointsCost,
       txHash: transfer.hash,
       walletAddress: profile.wallet_address,
-      message: `${option.smtAmount} SMT sent to your wallet!`,
+      message: `${option.xlmAmount} XLM sent to your wallet!`,
     },
   });
 }

@@ -54,12 +54,12 @@ const STATS = [
   },
   {
     key: "totalEarned",
-    label: "SMT Earned",
+    label: "XLM Earned",
     icon: TrendingUp,
     color: "text-emerald-400",
     borderColor: "border-emerald-400/20",
     glowColor: "rgba(0,255,135,0.06)",
-    getValue: (p: Props) => `${p.totalEarned.toFixed(4)} SMT`,
+    getValue: (p: Props) => `${p.totalEarned.toFixed(4)} XLM`,
   },
   {
     key: "watchStreak",

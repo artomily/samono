@@ -142,7 +142,7 @@ export function LoginOverlay() {
             letterSpacing: "0.06em",
           }}
         >
-          Connect your Stellar wallet to start earning SMT
+          Connect your Stellar wallet to start earning XLM
         </p>
       </div>
 

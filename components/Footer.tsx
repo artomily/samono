@@ -62,7 +62,7 @@ export function Footer() {
                 lineHeight: 1.65,
               }}
             >
-              WATCH-TO-EARN PROTOCOL ON STELLAR. TURN KNOWLEDGE INTO REAL SMT
+              WATCH-TO-EARN PROTOCOL ON STELLAR. TURN KNOWLEDGE INTO REAL XLM
               REWARDS. FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
             </p>
           </div>

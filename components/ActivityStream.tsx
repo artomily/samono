@@ -71,10 +71,10 @@ const TEMPLATES: {
     prefix: "[+]",
     accent: "#00FF87",
     messages: [
-      "{n} SMT distributed · wallet 0x{addr}",
-      "Reward batch settled on-chain · {n} SMT",
+      "{n} XLM distributed · wallet 0x{addr}",
+      "Reward batch settled on-chain · {n} XLM",
       "Streak multiplier activated · {n}× applied",
-      "Claimable balance updated · +{n} SMT",
+      "Claimable balance updated · +{n} XLM",
     ],
   },
   {
@@ -126,10 +126,10 @@ const TEMPLATES: {
     prefix: "[$]",
     accent: "#FF00AA",
     messages: [
-      "Swap executed — {amount} SMT",
+      "Swap executed — {amount} XLM",
       "User converted {points} points",
-      "Conversion queue settled — {amount} SMT",
-      "Swap rail confirmed · {points} pts → {amount} SMT",
+      "Conversion queue settled — {amount} XLM",
+      "Swap rail confirmed · {points} pts → {amount} XLM",
     ],
   },
 ];

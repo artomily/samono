@@ -85,7 +85,7 @@ export function LeaderboardTable({
                 {entry.xp.toLocaleString()}
               </span>
 
-              {/* SMT earned */}
+              {/* XLM earned */}
               <span className="text-right font-mono text-sm text-emerald-300 whitespace-nowrap">
                 {entry.total_earned.toFixed(2)}
               </span>

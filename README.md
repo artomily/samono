@@ -1,7 +1,7 @@
 # Samono
 
-Samono is a watch-to-earn protocol on Stellar (Soroban).
-Users watch curated videos, complete validated watch sessions, earn points/XP, and claim SMT (Samono Token) rewards.
+Samono is a watch-to-earn protocol on Stellar.
+Users watch curated videos, complete validated watch sessions, earn points/XP, and claim native XLM rewards.
 
 ## Who We Are
 
@@ -19,11 +19,11 @@ Samono flips that model:
 
 ## What The App Does
 
-- Wallet-based onboarding (Freighter, Albedo, xBull, Lobstr)
+- Wallet-based onboarding (Freighter)
 - YouTube video ingestion (channel + playlist sync)
 - Session tracking with anti-cheat validation
 - Reward calculation with streak/level/referral multipliers
-- Claim pipeline to mint SMT to user wallets
+- Claim pipeline that pays native XLM to user wallets
 - XP, levels, achievements, referrals, leaderboard
 
 ## Social Links
@@ -34,22 +34,22 @@ Samono flips that model:
 - Featured video used in landing preview: https://www.youtube.com/watch?v=v1ZQlVMlG2c
 - X (Twitter): https://x.com/samonoonchain
 
-## On-Chain Contracts
+## On-Chain Payouts
 
-### Samono Token — SMT (Stellar / Soroban)
+### Native XLM (Stellar)
 
-**SMT** is a SEP-41 fungible token deployed as a Soroban smart contract. The backend
-holds the contract **admin** key and mints SMT to users when they swap points or claim
-rewards (admin-gated, custodial distribution — points/XP live off-chain in Supabase).
+Rewards are paid as **native XLM** via a classic Stellar Payment operation — no
+smart contract involved. The backend holds a treasury keypair that signs and
+funds every payout (custodial distribution — points/XP live off-chain in Supabase).
 
-- **Contract:** `contracts/samono-token` (SEP-41 token, admin-controlled `mint`)
+- **Asset:** native XLM (7 decimals / stroops)
 - **Network:** Stellar testnet
-- **Decimals:** 7
 - **Explorer:** view any tx at `https://stellar.expert/explorer/testnet/tx/<hash>`
 
-> Recipients must be funded testnet accounts (Friendbot) for their `G…` address to
-> hold a contract balance. Set `SMT_CONTRACT_ID` and `TREASURY_SECRET_KEY` in `.env`
-> after deploying (see below).
+> Recipients must already be funded Stellar accounts (Friendbot on testnet) — a
+> plain Payment can't create a brand-new account, and reward amounts are typically
+> below the ~1 XLM account-creation reserve. Set `TREASURY_SECRET_KEY` in `.env`
+> (see below).
 
 ## Product Preview And Flow
 
@@ -60,7 +60,7 @@ flowchart LR
 	C --> D[Session Validation]
 	D --> E[Reward + XP Engine]
 	E --> F[Dashboard]
-	F --> G[Claim SMT]
+	F --> G[Claim XLM]
 	F --> H[Leaderboard]
 	F --> I[Referral]
 	F --> J[Wallet History]
@@ -85,7 +85,7 @@ flowchart TD
 	R --> REF[Credit Referrer Bonus]
 
 	U --> CL[Claim Rewards]
-	CL --> TX[On-chain SMT Mint]
+	CL --> TX[On-chain XLM Payment]
 	TX --> DONE[Mark Reward Completed]
 ```
 
@@ -115,9 +115,9 @@ flowchart TB
 		AU[Auth]
 	end
 
-	subgraph Chain[Stellar / Soroban]
-		RPC[Soroban RPC]
-		TOK[SMT Token Contract]
+	subgraph Chain[Stellar]
+		HZ[Horizon]
+		TR[Treasury Account]
 	end
 
 	YT[YouTube Data API]
@@ -145,7 +145,7 @@ sequenceDiagram
 	API->>DB: Validate anti-cheat + create pending reward
 	API->>DB: Update XP/level/achievements
 	User->>API: POST /api/rewards/claim
-	API->>Chain: Mint SMT
+	API->>Chain: Pay native XLM
 	API->>DB: Mark reward completed + save tx hash
 	API-->>User: Claim success + updated balance
 ```
@@ -175,8 +175,8 @@ Session validation includes checks for:
 
 - Frontend: Next.js 16, React 19, Tailwind CSS 4, shadcn/ui
 - Auth + DB: Supabase Auth + Postgres + RLS
-- Blockchain: Stellar + Soroban smart contracts (soroban-sdk, @stellar/stellar-sdk)
-- Wallets: Stellar Wallets Kit (Freighter, Albedo, xBull, Lobstr)
+- Blockchain: Stellar native payments (@stellar/stellar-sdk, Horizon)
+- Wallets: Stellar Wallets Kit, pinned to Freighter
 - Video source: YouTube Data API
 
 ## App Routes (Pages)
@@ -244,7 +244,7 @@ Environment groups:
 - Server secrets (API routes, server-side logic):
 	- Supabase service role key
 	- YouTube API key
-	- Stellar treasury secret and Soroban RPC settings
+	- Stellar treasury secret and Horizon settings
 
 Operational policy:
 
@@ -273,18 +273,7 @@ Useful scripts:
 - `npm run build` production build
 - `npm run start` run production server
 - `npm run lint` lint project
-- `npm run setup:stellar` generate + fund the treasury/admin account (Friendbot)
-
-### Deploying the SMT contract
-
-```bash
-stellar contract build
-stellar contract deploy \
-  --wasm target/wasm32v1-none/release/samono_token.wasm \
-  --source <admin-identity> --network testnet \
-  -- --admin <ADMIN_G_ADDRESS> --decimal 7 --name "Samono Token" --symbol SMT
-# then set SMT_CONTRACT_ID / NEXT_PUBLIC_SMT_CONTRACT_ID in .env
-```
+- `npm run setup:stellar` generate + fund the treasury account (Friendbot)
 
 ## Current Status
 

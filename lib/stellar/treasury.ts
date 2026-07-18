@@ -1,9 +1,9 @@
 /**
- * Treasury / admin keypair loader — SERVER ONLY.
+ * Treasury keypair loader — SERVER ONLY.
  * Never import this in client components.
  *
- * This account is the SMT contract's `admin`; it signs (and is the source of)
- * every `mint` transaction. On testnet it is funded via Friendbot.
+ * This account funds every reward payout; it signs (and is the source of)
+ * every native XLM Payment transaction. On testnet it is funded via Friendbot.
  */
 
 import { Keypair } from "@stellar/stellar-sdk";

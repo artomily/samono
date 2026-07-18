@@ -40,7 +40,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
           return;
         }
 
-        toast.success(`Claimed ${pendingAmount.toFixed(2)} SMT!`);
+        toast.success(`Claimed ${pendingAmount.toFixed(2)} XLM!`);
         onClaimed?.();
       } catch {
         toast.error("Connection error — your points were not deducted. Please try again.");
@@ -61,7 +61,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
       ) : (
         <Coins className="h-4 w-4" />
       )}
-      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} SMT`}
+      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} XLM`}
     </Button>
   );
 }

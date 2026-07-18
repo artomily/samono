@@ -1,7 +1,7 @@
 // Stellar / Soroban-related types for the Samono platform
 
 export interface StellarTokenBalance {
-  /** Token contract id, or "SMT" for the Samono Token. */
+  /** Asset identifier — "native" for XLM. */
   contract: string;
   owner: string;
   /** Balance in base units (i128). */

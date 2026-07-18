@@ -22,11 +22,11 @@ export const metadata: Metadata = {
     template: "%s | Samono",
   },
   description:
-    "Watch videos from our channel and earn SMT rewards on Stellar. Real rewards, real blockchain.",
-  keywords: ["watch to earn", "stellar", "soroban", "SMT rewards", "web3", "crypto rewards"],
+    "Watch videos from our channel and earn XLM rewards on Stellar. Real rewards, real blockchain.",
+  keywords: ["watch to earn", "stellar", "XLM rewards", "web3", "crypto rewards"],
   openGraph: {
     title: "Samono — Watch to Earn",
-    description: "Watch videos and earn SMT rewards on Stellar.",
+    description: "Watch videos and earn XLM rewards on Stellar.",
     type: "website",
   },
 };

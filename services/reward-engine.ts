@@ -16,7 +16,7 @@ const LEVEL_BONUS_PER_LEVEL  = 0.05; // +5% per level
 const REFERRAL_BONUS         = 0.10; // +10% for having a referrer
 
 /**
- * Calculate the SMT reward for a completed session.
+ * Calculate the XLM reward for a completed session.
  * Applies streak multiplier, level bonus, and referral bonus.
  */
 export function calculateReward(video: Video, profile: Profile): number {
@@ -116,7 +116,7 @@ export async function createPendingReward(
 
 /**
  * Process manual claim for a user.
- * Mints all pending SMT to the provided wallet address.
+ * Sends all pending XLM to the provided wallet address.
  * Returns array of results (tx hashes).
  */
 export async function processClaimRequest(
@@ -139,7 +139,7 @@ export async function processClaimRequest(
   let totalClaimed = 0;
   const signatures: string[] = [];
 
-  // Mint each reward individually (for granular retry + audit trail)
+  // Send each reward individually (for granular retry + audit trail)
   for (const reward of pending) {
     const result = await transferReward(walletAddress, reward.amount);
 

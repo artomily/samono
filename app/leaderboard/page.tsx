@@ -61,7 +61,7 @@ export default async function LeaderboardPage() {
                     {tableEntries[1].username}
                   </p>
                   <p className="text-[11px] text-cyan-300/70 mt-1 font-mono">
-                    {tableEntries[1].total_earned.toFixed(2)} SMT
+                    {tableEntries[1].total_earned.toFixed(2)} XLM
                   </p>
                 </div>
               </div>
@@ -76,7 +76,7 @@ export default async function LeaderboardPage() {
                     {tableEntries[0].username}
                   </p>
                   <p className="text-[11px] text-pink-300 mt-1 font-mono">
-                    {tableEntries[0].total_earned.toFixed(2)} SMT
+                    {tableEntries[0].total_earned.toFixed(2)} XLM
                   </p>
                 </div>
               </div>
@@ -91,7 +91,7 @@ export default async function LeaderboardPage() {
                     {tableEntries[2].username}
                   </p>
                   <p className="text-[11px] text-cyan-300/70 mt-1 font-mono">
-                    {tableEntries[2].total_earned.toFixed(2)} SMT
+                    {tableEntries[2].total_earned.toFixed(2)} XLM
                   </p>
                 </div>
               </div>
@@ -111,7 +111,7 @@ export default async function LeaderboardPage() {
             <div className="text-[10px] uppercase tracking-[0.3em] text-white/30 mb-3">
               no rankings yet
             </div>
-            <p className="text-sm text-white/25">Be the first to earn SMT rewards!</p>
+            <p className="text-sm text-white/25">Be the first to earn XLM rewards!</p>
           </div>
         )}
       </div>
