@@ -18,7 +18,7 @@ import {
   type ReactNode,
 } from "react";
 import { getAddress, toHex } from "viem";
-import { CHAIN, EXPLORER_BASE } from "@/lib/bnb/config";
+import { CHAIN, EXPLORER_BASE, RPC_URL } from "@/lib/bnb/config";
 
 const STORAGE_KEY = "samono:wallet-id";
 
@@ -66,7 +66,7 @@ async function ensureChain(p: Eip1193Provider) {
           chainId: chainIdHex,
           chainName: CHAIN.name,
           nativeCurrency: CHAIN.nativeCurrency,
-          rpcUrls: CHAIN.rpcUrls.default.http,
+          rpcUrls: [RPC_URL],
           blockExplorerUrls: [EXPLORER_BASE],
         },
       ],

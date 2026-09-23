@@ -13,9 +13,19 @@ export const NETWORK = (process.env.NEXT_PUBLIC_BNB_NETWORK ??
 
 export const CHAIN = NETWORK === "mainnet" ? bsc : bscTestnet;
 
-/** JSON-RPC endpoint used by the server for balances + payouts. */
-export const RPC_URL =
-  process.env.BNB_RPC_URL ?? CHAIN.rpcUrls.default.http[0];
+/**
+ * JSON-RPC endpoint used by the server for balances + payouts.
+ *
+ * Defaults to the publicnode endpoints because they serve plain HTTPS on :443 —
+ * the official `data-seed-*.bnbchain.org:8545` hosts are unreachable from
+ * networks that block non-standard ports.
+ */
+export const DEFAULT_RPC_URL =
+  NETWORK === "mainnet"
+    ? "https://bsc-rpc.publicnode.com"
+    : "https://bsc-testnet-rpc.publicnode.com";
+
+export const RPC_URL = process.env.BNB_RPC_URL ?? DEFAULT_RPC_URL;
 
 /** Native BNB uses 18 decimals (1 BNB = 10^18 wei). */
 export const BNB_DECIMALS = 18;

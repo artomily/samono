@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: https://img.youtube.com https://i.ytimg.com https://i3.ytimg.com https://lh3.googleusercontent.com https://images.unsplash.com",
               "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
-              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.bnbchain.org https://*.binance.org https://*.defibit.io https://*.ninicoin.io",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.bnbchain.org https://*.binance.org https://*.publicnode.com https://*.defibit.io https://*.ninicoin.io",
               "font-src 'self' data: https://fonts.gstatic.com",
               "media-src 'self'",
             ].join("; "),
