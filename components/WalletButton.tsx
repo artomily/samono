@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { useBnbWallet } from "@/components/BnbWalletProvider";
 import { Button } from "@/components/ui/button";
 import { Wallet, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ interface WalletButtonProps {
 }
 
 export function WalletButton({ className, size = "default" }: WalletButtonProps) {
-  const { address, connected, connecting, connect, disconnect } = useStellarWallet();
+  const { address, connected, connecting, connect, disconnect } = useBnbWallet();
   const [isPending, startTransition] = useTransition();
 
   const handleClick = () => {

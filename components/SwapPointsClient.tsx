@@ -4,14 +4,14 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
-import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { useBnbWallet } from "@/components/BnbWalletProvider";
 import { ArrowLeft, CheckCircle2, AlertCircle, Loader2, Zap, Wallet } from "lucide-react";
 import { SWAP_OPTIONS, type SwapOption } from "@/lib/constants/swap";
 
 interface SwapPointsClientProps {
   username: string;
   initialPointsBalance: number;
-  initialXlmBalance?: number;
+  initialBnbBalance?: number;
 }
 
 const CYAN = "#00E5FF";
@@ -23,23 +23,23 @@ const TIER_COLORS = [CYAN, CYAN, CYAN, CYAN, CYAN, CYAN, CYAN, CYAN];
 export function SwapPointsClient({
   username,
   initialPointsBalance,
-  initialXlmBalance = 0,
+  initialBnbBalance = 0,
 }: SwapPointsClientProps) {
-  const { address } = useStellarWallet();
+  const { address } = useBnbWallet();
   const walletAddress = address ?? null;
 
   const [pointsBalance, setPointsBalance] = useState(initialPointsBalance);
-  const [xlmBalance, setSolBalance] = useState(initialXlmBalance);
+  const [bnbBalance, setBnbBalance] = useState(initialBnbBalance);
   const [pendingOption, setPendingOption] = useState<SwapOption | null>(null);
   const [swapping, setSwapping] = useState(false);
   const [swapError, setSwapError] = useState<string | null>(null);
-  const [lastSuccess, setLastSuccess] = useState<{ label: string; xlmAmount: number } | null>(null);
+  const [lastSuccess, setLastSuccess] = useState<{ label: string; bnbAmount: number } | null>(null);
 
   useEffect(() => {
     fetch("/api/rewards/balance")
       .then((r) => r.json())
       .then((data) => {
-        if (typeof data.balance === "number") setSolBalance(data.balance);
+        if (typeof data.balance === "number") setBnbBalance(data.balance);
       })
       .catch(() => {});
   }, []);
@@ -52,7 +52,7 @@ export function SwapPointsClient({
     setSwapError(null);
 
     const prevPoints = pointsBalance;
-    const prevXlm = xlmBalance;
+    const prevBnb = bnbBalance;
     setPointsBalance((p) => p - option.pointsCost);
 
     try {
@@ -67,7 +67,7 @@ export function SwapPointsClient({
         error?: string;
         data?: {
           newPointsBalance: number;
-          xlmAmount: number;
+          bnbAmount: number;
           txSignature?: string;
           message: string;
         };
@@ -79,13 +79,13 @@ export function SwapPointsClient({
 
       const { data } = json;
       setPointsBalance(data!.newPointsBalance);
-      setSolBalance((prev) => Number((prev + data!.xlmAmount).toFixed(4)));
-      setLastSuccess({ label: option.label, xlmAmount: data!.xlmAmount });
+      setBnbBalance((prev) => Number((prev + data!.bnbAmount).toFixed(4)));
+      setLastSuccess({ label: option.label, bnbAmount: data!.bnbAmount });
       setPendingOption(null);
-      toast.success(`${data!.xlmAmount.toFixed(3)} XLM sent to your wallet`);
+      toast.success(`${data!.bnbAmount.toFixed(3)} BNB sent to your wallet`);
     } catch (err) {
       setPointsBalance(prevPoints);
-      setSolBalance(prevXlm);
+      setBnbBalance(prevBnb);
       setSwapError(err instanceof Error ? err.message : "Swap failed. Please try again.");
     } finally {
       setSwapping(false);
@@ -134,7 +134,7 @@ export function SwapPointsClient({
             SWAP POINTS
           </h1>
           <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.35)", letterSpacing: "0.06em" }}>
-            Convert engagement points into real XLM. Select a tier below.
+            Convert engagement points into real BNB. Select a tier below.
           </p>
         </div>
 
@@ -188,7 +188,7 @@ export function SwapPointsClient({
               }}
             >
               <Wallet style={{ width: "0.7rem", height: "0.7rem" }} />
-              XLM BALANCE
+              BNB BALANCE
             </div>
             <div
               style={{
@@ -198,8 +198,8 @@ export function SwapPointsClient({
                 letterSpacing: "-0.01em",
               }}
             >
-              {xlmBalance.toFixed(4)}{" "}
-              <span style={{ fontSize: "0.9rem", color: "rgba(0,229,255,0.5)" }}>XLM</span>
+              {bnbBalance.toFixed(4)}{" "}
+              <span style={{ fontSize: "0.9rem", color: "rgba(0,229,255,0.5)" }}>BNB</span>
             </div>
           </div>
         </div>
@@ -225,7 +225,7 @@ export function SwapPointsClient({
               }}
             >
               <CheckCircle2 style={{ width: "1rem", height: "1rem", flexShrink: 0 }} />
-              {lastSuccess.label} swap complete — {lastSuccess.xlmAmount.toFixed(3)} XLM sent to your wallet
+              {lastSuccess.label} swap complete — {lastSuccess.bnbAmount.toFixed(3)} BNB sent to your wallet
             </motion.div>
           )}
         </AnimatePresence>
@@ -304,7 +304,7 @@ export function SwapPointsClient({
                     marginBottom: "0.25rem",
                   }}
                 >
-                  {option.xlmAmount.toFixed(3)}
+                  {option.bnbAmount.toFixed(3)}
                   <span
                     style={{
                       fontSize: "0.75rem",
@@ -313,7 +313,7 @@ export function SwapPointsClient({
                       marginLeft: "0.3rem",
                     }}
                   >
-                    XLM
+                    BNB
                   </span>
                 </div>
 
@@ -473,12 +473,12 @@ export function SwapPointsClient({
                     YOU RECEIVE
                   </div>
                   <div style={{ fontSize: "1.3rem", fontWeight: 900, color: CYAN }}>
-                    {pendingOption.xlmAmount.toFixed(3)}
+                    {pendingOption.bnbAmount.toFixed(3)}
                   </div>
                   <div
                     style={{ fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(0,229,255,0.4)" }}
                   >
-                    XLM
+                    BNB
                   </div>
                 </div>
               </div>
@@ -513,7 +513,7 @@ export function SwapPointsClient({
                   </div>
                 ) : (
                   <div style={{ fontSize: "0.68rem", color: "rgba(255,180,0,0.7)" }}>
-                    No wallet connected — XLM sent to registered address
+                    No wallet connected — BNB sent to registered address
                   </div>
                 )}
               </div>
@@ -529,7 +529,7 @@ export function SwapPointsClient({
               >
                 RATE:{" "}
                 <span style={{ color: "rgba(255,255,255,0.4)" }}>
-                  {(pendingOption.xlmAmount / pendingOption.pointsCost * 1000).toFixed(4)} XLM per 1,000 pts
+                  {(pendingOption.bnbAmount / pendingOption.pointsCost * 1000).toFixed(4)} BNB per 1,000 pts
                 </span>
               </div>
 

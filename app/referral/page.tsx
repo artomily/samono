@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Copy, CheckCheck, Share2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { truncateAddress } from "@/lib/utils";
+import { EXPLORER_ADDRESS_BASE } from "@/lib/bnb/config";
 
 interface ReferralStats {
   referralCode: string | null;
@@ -71,7 +72,7 @@ export default function ReferralPage() {
     if (navigator.share) {
       await navigator.share({
         title: "Join Samono — Earn tokens by watching videos",
-        text: "Sign up with my referral and we both earn bonus XLM rewards!",
+        text: "Sign up with my referral and we both earn bonus BNB rewards!",
         url: referralLink,
       });
     } else {
@@ -244,7 +245,7 @@ export default function ReferralPage() {
                     </span>
                     {user.wallet_address && (
                       <a
-                        href={`https://stellar.expert/explorer/testnet/account/${user.wallet_address}`}
+                        href={`${EXPLORER_ADDRESS_BASE}/${user.wallet_address}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-white/25 hover:text-cyan-300/60 transition-colors"

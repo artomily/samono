@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
 import { getProfileById } from "@/lib/dal/profiles";
 import { createServiceClient } from "@/lib/supabase/server";
-import { transferReward } from "@/lib/stellar/token";
+import { transferReward } from "@/lib/bnb/token";
 import { SWAP_OPTIONS } from "@/lib/constants/swap";
 
 const bodySchema = z.object({
@@ -66,8 +66,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: "Failed to deduct points — balance may have changed" }, { status: 409 });
   }
 
-  // Pay native XLM from the treasury to the user's wallet
-  const transfer = await transferReward(profile.wallet_address, option.xlmAmount);
+  // Pay native BNB from the treasury to the user's wallet
+  const transfer = await transferReward(profile.wallet_address, option.bnbAmount);
 
   if (!transfer.success) {
     // Rollback points deduction
@@ -76,26 +76,26 @@ export async function POST(req: NextRequest) {
       .update({ xp: profile.xp ?? 0 })
       .eq("id", user.id);
     return NextResponse.json(
-      { success: false, error: `XLM transfer failed: ${transfer.error}` },
+      { success: false, error: `BNB transfer failed: ${transfer.error}` },
       { status: 502 }
     );
   }
 
-  // Update total_earned with XLM received from this swap
+  // Update total_earned with BNB received from this swap
   await supabase
     .from("profiles")
-    .update({ total_earned: (profile.total_earned ?? 0) + option.xlmAmount })
+    .update({ total_earned: (profile.total_earned ?? 0) + option.bnbAmount })
     .eq("id", user.id);
 
   return NextResponse.json({
     success: true,
     data: {
       pointsDeducted: option.pointsCost,
-      xlmAmount: option.xlmAmount,
+      bnbAmount: option.bnbAmount,
       newPointsBalance: (profile.xp ?? 0) - option.pointsCost,
       txHash: transfer.hash,
       walletAddress: profile.wallet_address,
-      message: `${option.xlmAmount} XLM sent to your wallet!`,
+      message: `${option.bnbAmount} BNB sent to your wallet!`,
     },
   });
 }

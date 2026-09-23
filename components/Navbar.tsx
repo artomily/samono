@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { useBnbWallet } from "@/components/BnbWalletProvider";
 import { ClientWalletButton } from "@/components/ClientWalletButton";
 import { ActivityStream } from "@/components/ActivityStream";
 import { createClient } from "@/lib/supabase/client";
@@ -32,7 +32,7 @@ const PROTECTED_PREFIXES = ["/dashboard", "/watch", "/wallet", "/leaderboard", "
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { address, connected } = useStellarWallet();
+  const { address, connected } = useBnbWallet();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const prevConnected = useRef(false);

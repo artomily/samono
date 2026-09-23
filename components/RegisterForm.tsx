@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { useBnbWallet } from "@/components/BnbWalletProvider";
 
 export function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { address } = useStellarWallet();
+  const { address } = useBnbWallet();
   const [username, setUsername] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,8 +24,8 @@ export function RegisterForm() {
   // Auto-suggest username from wallet address when wallet connects
   useEffect(() => {
     if (address && !username) {
-      // Skip the leading "G" of the Stellar address for a nicer handle.
-      setUsername(`user_${address.slice(1, 9).toLowerCase()}`);
+      // Skip the leading "0x" of the EVM address for a nicer handle.
+      setUsername(`user_${address.slice(2, 10).toLowerCase()}`);
     }
   }, [address]); // intentionally omit `username` — only fire on wallet connect
 
@@ -145,7 +145,7 @@ export function RegisterForm() {
             welcome bonus
           </div>
           <p className="text-xs text-white/50">
-            Your account starts with <span className="text-emerald-300 font-mono">5,000 pts</span> — enough to swap for XLM on testnet.
+            Your account starts with <span className="text-emerald-300 font-mono">5,000 pts</span> — enough to swap for BNB on testnet.
           </p>
         </div>
       </div>

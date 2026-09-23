@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useTransition } from "react";
-import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { useBnbWallet } from "@/components/BnbWalletProvider";
 import { WalletButton } from "@/components/WalletButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -11,6 +11,7 @@ import { Coins, ExternalLink, RefreshCw, Wallet } from "lucide-react";
 import { ClaimButton } from "@/components/ClaimButton";
 import { toast } from "sonner";
 import { truncateAddress, formatDuration } from "@/lib/utils";
+import { EXPLORER_TX_BASE } from "@/lib/bnb/config";
 
 interface BalanceData {
   pending_amount: number;
@@ -32,7 +33,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function WalletPage() {
-  const { address, connected } = useStellarWallet();
+  const { address, connected } = useBnbWallet();
   const [data, setData] = useState<BalanceData | null>(null);
   const [loading, setLoading] = useState(false);
   const [isSavingWallet, startSavingWallet] = useTransition();
@@ -76,7 +77,7 @@ export default function WalletPage() {
           My Wallet
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Manage your XLM rewards and wallet connection
+          Manage your BNB rewards and wallet connection
         </p>
       </div>
 
@@ -101,7 +102,7 @@ export default function WalletPage() {
           ) : (
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
-                Connect your Stellar wallet to claim rewards
+                Connect your BNB Chain wallet to claim rewards
               </p>
               <WalletButton />
             </div>
@@ -119,7 +120,7 @@ export default function WalletPage() {
             ) : (
               <p className="text-2xl font-bold text-primary">
                 {(data?.pending_amount ?? 0).toFixed(2)}{" "}
-                <span className="text-sm font-normal text-muted-foreground">XLM</span>
+                <span className="text-sm font-normal text-muted-foreground">BNB</span>
               </p>
             )}
           </CardContent>
@@ -135,7 +136,7 @@ export default function WalletPage() {
                 {data?.on_chain_balance != null
                   ? data.on_chain_balance.toFixed(2)
                   : "—"}{" "}
-                <span className="text-sm font-normal text-muted-foreground">XLM</span>
+                <span className="text-sm font-normal text-muted-foreground">BNB</span>
               </p>
             )}
           </CardContent>
@@ -185,7 +186,7 @@ export default function WalletPage() {
                   <div className="flex items-center gap-3">
                     <Coins className="h-4 w-4 text-primary shrink-0" />
                     <div>
-                      <p className="text-sm font-medium">+{tx.amount.toFixed(2)} XLM</p>
+                      <p className="text-sm font-medium">+{tx.amount.toFixed(2)} BNB</p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(tx.created_at).toLocaleDateString()}
                       </p>
@@ -200,11 +201,11 @@ export default function WalletPage() {
                     </Badge>
                     {tx.tx_signature && (
                       <a
-                        href={`https://stellar.expert/explorer/testnet/tx/${tx.tx_signature}`}
+                        href={`${EXPLORER_TX_BASE}/${tx.tx_signature}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-primary transition-colors"
-                        aria-label="View on Stellar Expert"
+                        aria-label="View on BNB Chain Expert"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                       </a>

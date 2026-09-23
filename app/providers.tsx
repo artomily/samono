@@ -3,13 +3,13 @@
 import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import {
-  StellarWalletProvider,
-  useStellarWallet,
-} from "@/components/StellarWalletProvider";
+  BnbWalletProvider,
+  useBnbWallet,
+} from "@/components/BnbWalletProvider";
 
 /** Saves the wallet address to the user profile whenever a wallet connects. */
 function WalletAutoSave() {
-  const { address, walletType } = useStellarWallet();
+  const { address, walletType } = useBnbWallet();
   useEffect(() => {
     if (!address) return;
     fetch("/api/wallet/connect", {
@@ -23,10 +23,10 @@ function WalletAutoSave() {
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <StellarWalletProvider>
+    <BnbWalletProvider>
       <WalletAutoSave />
       {children}
       <Toaster position="bottom-right" theme="dark" richColors />
-    </StellarWalletProvider>
+    </BnbWalletProvider>
   );
 }

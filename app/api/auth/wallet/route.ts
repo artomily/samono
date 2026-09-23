@@ -3,7 +3,8 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createServiceClient } from "@/lib/supabase/server";
 import { z } from "zod";
 import { createHmac } from "crypto";
-import { Keypair, StrKey } from "@stellar/stellar-sdk";
+import { getAddress, isAddress, verifyMessage } from "viem";
+import { EVM_ADDRESS_REGEX } from "@/lib/bnb/config";
 import type { Database } from "@/types/database";
 import { DUMMY_MODE, DUMMY_WALLET } from "@/lib/dummy";
 
@@ -11,14 +12,14 @@ const WALLET_AUTH_SECRET =
   process.env.WALLET_AUTH_SECRET ?? "dev-secret-change-in-prod";
 
 const bodySchema = z.object({
-  publicKey: z.string().regex(/^G[A-Z2-7]{55}$/).optional(),
+  publicKey: z.string().regex(EVM_ADDRESS_REGEX).optional(),
   signature: z.string().optional(),
   timestamp: z.number().optional(),
   referralCode: z.string().optional(),
 });
 
 function walletToEmail(publicKey: string) {
-  return `${publicKey.toLowerCase()}@wallet.xlm`;
+  return `${publicKey.toLowerCase()}@wallet.bnb`;
 }
 
 function walletToPassword(publicKey: string) {
@@ -28,32 +29,20 @@ function walletToPassword(publicKey: string) {
 }
 
 /**
- * Verify a Stellar wallet signature over the login message.
- *
- * Stellar accounts are ed25519 keys, so we verify the raw signature against the
- * UTF-8 message bytes using the account's public key. Stellar Wallets Kit's
- * `signMessage` returns a signature whose encoding is wallet-dependent
- * (Freighter/Albedo use base64); we try base64 first, then hex, then base64url.
+ * Verify an EVM `personal_sign` signature over the login message (EIP-191).
  */
-function verifyStellarSignature(
+async function verifyEvmSignature(
   address: string,
   message: string,
   signature: string
-): boolean {
+): Promise<boolean> {
   try {
-    if (!StrKey.isValidEd25519PublicKey(address)) return false;
-    const kp = Keypair.fromPublicKey(address);
-    const msgBuf = Buffer.from(message, "utf8");
-
-    const candidates: Buffer[] = [];
-    for (const enc of ["base64", "hex", "base64url"] as const) {
-      try {
-        candidates.push(Buffer.from(signature, enc));
-      } catch {
-        /* skip invalid encoding */
-      }
-    }
-    return candidates.some((sig) => sig.length === 64 && kp.verify(msgBuf, sig));
+    if (!isAddress(address) || !/^0x[0-9a-fA-F]+$/.test(signature)) return false;
+    return await verifyMessage({
+      address: getAddress(address),
+      message,
+      signature: signature as `0x${string}`,
+    });
   } catch {
     return false;
   }
@@ -99,7 +88,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const walletAddress = publicKey
+  // Checksummed so the same wallet always maps to the same account.
+  const walletAddress = getAddress(publicKey);
 
   // Signature verification
   if (!signature || !timestamp) {
@@ -112,7 +102,7 @@ export async function POST(req: NextRequest) {
 
     try {
       const message = `Samono Login\n\nWallet: ${walletAddress}\nTimestamp: ${timestamp}`;
-      const valid = verifyStellarSignature(walletAddress, message, signature);
+      const valid = await verifyEvmSignature(walletAddress, message, signature);
       if (!valid) {
         return NextResponse.json({ error: "Invalid wallet signature" }, { status: 401 });
       }

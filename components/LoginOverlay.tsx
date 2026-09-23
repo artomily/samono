@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { useBnbWallet } from "@/components/BnbWalletProvider";
 import { createClient } from "@/lib/supabase/client";
 import { Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 
@@ -9,7 +9,7 @@ const MONO = "var(--font-geist-mono), 'Courier New', monospace";
 const CYAN = "#00E5FF";
 
 export function LoginOverlay() {
-  const { address, connected, connect, signMessage } = useStellarWallet();
+  const { address, connected, connect, signMessage } = useBnbWallet();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -142,7 +142,7 @@ export function LoginOverlay() {
             letterSpacing: "0.06em",
           }}
         >
-          Connect your Stellar wallet to start earning XLM
+          Connect your BNB Chain wallet to start earning BNB
         </p>
       </div>
 
@@ -267,7 +267,7 @@ export function LoginOverlay() {
           zIndex: 1,
         }}
       >
-        © {new Date().getFullYear()} SAMONO. BUILT ON STELLAR.
+        © {new Date().getFullYear()} SAMONO. BUILT ON BNB CHAIN.
       </p>
     </div>
   );

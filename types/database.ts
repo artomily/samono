@@ -226,7 +226,7 @@ export type RewardUpdate = Partial<Omit<Reward, "id" | "created_at">>;
 // ─────────────────────────────────────────────────────────────────
 // Wallet Connections
 // ─────────────────────────────────────────────────────────────────
-export type WalletType = "freighter" | "albedo" | "xbull" | "lobstr" | "other";
+export type WalletType = "metamask" | "binance" | "trust" | "okx" | "other";
 
 export type WalletConnection = {
   id: string;

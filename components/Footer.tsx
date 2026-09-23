@@ -62,7 +62,7 @@ export function Footer() {
                 lineHeight: 1.65,
               }}
             >
-              WATCH-TO-EARN PROTOCOL ON STELLAR. TURN KNOWLEDGE INTO REAL XLM
+              WATCH-TO-EARN PROTOCOL ON BNB CHAIN. TURN KNOWLEDGE INTO REAL BNB
               REWARDS. FRAUD-PROOF, ON-CHAIN, VERIFIABLE.
             </p>
           </div>
@@ -184,7 +184,7 @@ export function Footer() {
                 letterSpacing: "0.14em",
               }}
             >
-              BUILT ON STELLAR
+              BUILT ON BNB CHAIN
             </span>
           </div>
         </div>

@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { getAddress } from "viem";
+import { EVM_ADDRESS_REGEX } from "@/lib/bnb/config";
 import { getSession } from "@/lib/auth/session";
 import { saveWalletAddress } from "@/lib/dal/profiles";
 import { createServiceClient } from "@/lib/supabase/server";
 
 const bodySchema = z.object({
-  walletAddress: z.string().regex(/^G[A-Z2-7]{55}$/, "Invalid Stellar wallet address"),
+  walletAddress: z.string().regex(EVM_ADDRESS_REGEX, "Invalid BNB Chain wallet address").transform((a) => getAddress(a)),
   walletType: z
-    .enum(["freighter", "albedo", "xbull", "lobstr", "other"])
+    .enum(["metamask", "binance", "trust", "okx", "other"])
     .default("other"),
 });
 

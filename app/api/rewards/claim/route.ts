@@ -3,12 +3,14 @@ import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
 import { processClaimRequest } from "@/services/reward-engine";
 import { getPendingRewards } from "@/lib/dal/rewards";
-import { EXPLORER_TX_BASE } from "@/lib/stellar/config";
+import { getAddress } from "viem";
+import { EXPLORER_TX_BASE, EVM_ADDRESS_REGEX } from "@/lib/bnb/config";
 
 const bodySchema = z.object({
   walletAddress: z
     .string()
-    .regex(/^G[A-Z2-7]{55}$/, "Invalid Stellar wallet address"),
+    .regex(EVM_ADDRESS_REGEX, "Invalid BNB Chain wallet address")
+    .transform((a) => getAddress(a)),
 });
 
 export async function POST(req: NextRequest) {

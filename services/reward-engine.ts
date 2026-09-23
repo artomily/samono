@@ -1,4 +1,4 @@
-import { transferReward } from "@/lib/stellar/token";
+import { transferReward } from "@/lib/bnb/token";
 import {
   getPendingRewards,
   markRewardsProcessing,
@@ -16,7 +16,7 @@ const LEVEL_BONUS_PER_LEVEL  = 0.05; // +5% per level
 const REFERRAL_BONUS         = 0.10; // +10% for having a referrer
 
 /**
- * Calculate the XLM reward for a completed session.
+ * Calculate the BNB reward for a completed session.
  * Applies streak multiplier, level bonus, and referral bonus.
  */
 export function calculateReward(video: Video, profile: Profile): number {
@@ -116,7 +116,7 @@ export async function createPendingReward(
 
 /**
  * Process manual claim for a user.
- * Sends all pending XLM to the provided wallet address.
+ * Sends all pending BNB to the provided wallet address.
  * Returns array of results (tx hashes).
  */
 export async function processClaimRequest(

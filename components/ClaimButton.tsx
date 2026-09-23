@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { useStellarWallet } from "@/components/StellarWalletProvider";
+import { useBnbWallet } from "@/components/BnbWalletProvider";
 import { Button } from "@/components/ui/button";
 import { Coins, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ interface ClaimButtonProps {
 }
 
 export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonProps) {
-  const { address } = useStellarWallet();
+  const { address } = useBnbWallet();
   const [isPending, startTransition] = useTransition();
 
   const handleClaim = () => {
@@ -40,7 +40,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
           return;
         }
 
-        toast.success(`Claimed ${pendingAmount.toFixed(2)} XLM!`);
+        toast.success(`Claimed ${pendingAmount.toFixed(2)} BNB!`);
         onClaimed?.();
       } catch {
         toast.error("Connection error — your points were not deducted. Please try again.");
@@ -61,7 +61,7 @@ export function ClaimButton({ pendingAmount, onClaimed, disabled }: ClaimButtonP
       ) : (
         <Coins className="h-4 w-4" />
       )}
-      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} XLM`}
+      {isPending ? "Claiming…" : `Claim ${pendingAmount.toFixed(2)} BNB`}
     </Button>
   );
 }

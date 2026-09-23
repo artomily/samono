@@ -6,15 +6,15 @@
 export const DUMMY_MODE = process.env.DUMMY_MODE === "true";
 
 export const DUMMY_USER_ID = "00000000-0000-0000-0000-000000000001";
-// A valid Stellar testnet address so dummy mode passes G-address validation.
-export const DUMMY_WALLET = "GCQQ6AEDGGFJKOQRTZIRNRPFRW5QXII5PYJSQA6DJ7UPGJQCY4HDEYSW";
+// A valid EVM address so dummy mode passes 0x-address validation.
+export const DUMMY_WALLET = "0x1111111111111111111111111111111111111111";
 
 /** Matches the shape returned by supabase.auth.getUser() */
 export const DUMMY_USER = {
   id: DUMMY_USER_ID,
   aud: "authenticated",
   role: "authenticated",
-  email: `${DUMMY_WALLET.toLowerCase()}@wallet.xlm`,
+  email: `${DUMMY_WALLET.toLowerCase()}@wallet.bnb`,
   email_confirmed_at: new Date().toISOString(),
   phone: "",
   confirmed_at: new Date().toISOString(),
